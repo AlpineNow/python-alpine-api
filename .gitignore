@@ -1,4 +1,4 @@
-.pyc
+*.pyc
 .idea/*
 .DS_Store
 
