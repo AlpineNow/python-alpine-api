@@ -1,29 +1,25 @@
-__author__ = "T.J. Bay"
-
 import requests
-import json
 
-class Error(Exception):
-    pass
 
 class AlpineAPI(object):
 
     def __init__(self):
         self.alpine_session = requests.Session()
-        adapter = requests.adapters.HTTPAdapter(pool_connections = 100, pool_maxsize=100)
+        adapter = requests.adapters.HTTPAdapter(pool_connections=100, pool_maxsize=100)
         self.alpine_session.mount("http://", adapter)
         self.alpine_base_url = None
         self.token = None
         self.user_id = None
+        self.version = 0.1
 
-"""Helper Methods"""
+    """Helper Methods"""
     def set_alpine_url(self, url):
         self.alpine_base_url = url
         start_index = self.alpine_base_url.find("://") + 3
         host_info = self.alpine_base_url[start_index:]
         self.alpine_session.headers.update({"Host": host_info})
 
-"""Sessions"""
+    """Sessions"""
     def login(self, username, password):
         # Works with http only
 
@@ -46,18 +42,16 @@ class AlpineAPI(object):
         else:
             print("Login failed with status code: {}".format(login_response.status_code))
 
-    def logout():
+    def logout(self):
         pass
 
-    def get_login_status():
+    def get_login_status(self):
         pass
 
-"""Config"""
+    """Config"""
     def get_chorus_version(self):
         """
         Returns the chorus version as a
-        :param token: security token for authentication
-        :param chorus_address: address of the chorus host to get a version from
         :return: version as a string
         """
         url = self.alpine_base_url + "/VERSION"
@@ -68,53 +62,52 @@ class AlpineAPI(object):
 
         return response.content    
 
-"""License"""
-    def get_licence_info():
+    """License"""
+    def get_licence_info(self):
         pass
 
-"""User functions"""
-    def create_user():
+    """User functions"""
+    def create_user(self):
         pass
 
-    def get_user_id():
+    def get_user_id(self):
         pass
 
-    def delete_user():
+    def delete_user(self):
         pass
 
-    def update_user_info():
+    def update_user_info(self):
         pass
 
-    def get_user_info():
+    def get_user_info(self):
         pass
 
-    def get_users_list():
+    def get_users_list(self):
         pass
 
-"""Workspaces"""
-    def get_workspaces_list():
+    """Workspaces"""
+    def get_workspaces_list(self):
         pass
 
-    def create_new_workspace():
+    def create_new_workspace(self):
         pass
 
-    def delete_workspace():
+    def delete_workspace(self):
         pass
 
-    def get_member_list_for_workspace():
+    def get_member_list_for_workspace(self):
         pass
 
-    def update_workspace_membership():
+    def update_workspace_membership(self):
         pass
 
-    def get_workspace_details():
+    def get_workspace_details(self):
         pass
 
-    def update_workspace_details():
+    def update_workspace_details(self):
         pass
 
-
-"""Workfiles"""
+    """Workfiles"""
     # def run_workflow_with_variables(wid, wf_var):
     #     alpine_session.headers.update({"x-token": session_id})
     #     run_url = alpine_base_url + "/alpinedatalabs/api/v1/json/workflows/" + str(workflow_id) + "/run" + "?saveResult=true"
@@ -142,12 +135,12 @@ class AlpineAPI(object):
         process_id = run_response.json()['meta']['processId']
         return process_id 
 
-    def download_workflow_results():
-        result_url = alpine_base_url + "/alpinedatalabs/api/v1/json/workflows/" + str(workflow_id) + "/results/" + str(process_id)
-        response = alpine_session.get(result_url)
+    def download_workflow_results(self, workflow_id, process_id):
+        result_url = self.alpine_base_url + "/alpinedatalabs/api/v1/json/workflows/" + str(workflow_id) + "/results/" + str(process_id)
+        response = self.alpine_session.get(result_url)
         return response
 
-    def query_workflow_status():
+    def query_workflow_status(self):
         pass
 
     # def get_workflow_status(pid, sid):
@@ -171,77 +164,77 @@ class AlpineAPI(object):
     #     else:
     #         raise Exception("Workflow failed with status {0}: {1}".format(status_response.status_code, status_response.reason))
             
-    def stop_workflow():
+    def stop_workflow(self):
         pass
 
-    def run_workfile():
+    def run_workfile(self):
         pass
 
-    def delete_workfile():
+    def delete_workfile(self):
         pass
 
-    def get_workfile_details():
+    def get_workfile_details(self):
         pass
 
-    def update_workfile():
+    def update_workfile(self):
         pass
 
-"""Job Scheduler"""
-    def create_job():
+    """Job Scheduler"""
+    def create_job(self):
         pass
 
-    def delete_job():
+    def delete_job(self):
         pass
 
-    def get_job_information():
+    def get_job_information(self):
         pass
 
-    def display_all_jobs():
+    def display_all_jobs(self):
         pass
 
-    def get_latest_job_result():
+    def get_latest_job_result(self):
         pass
 
-    def run_job():
+    def run_job(self):
         pass
 
-    def stop_job():
+    def stop_job(self):
         pass
 
-    def update_job():
+    def update_job(self):
         pass
 
-    def create_job_task():
+    def create_job_task(self):
         pass
 
-    def delete_job_task():
+    def delete_job_task(self):
         pass
 
-    def update_job_task():
+    def update_job_task(self):
         pass
 
-"""Status"""
-    def get_server_status():
+    """Status"""
+    def get_server_status(self):
         pass
 
-"""Notebooks"""
-    def run_notebook():
+    """Notebooks"""
+    def run_notebook(self):
         pass
 
-    def stop_notebook_container():
+    def stop_notebook_container(self):
         pass
 
-"""Data - does there need to be separate functions for DB, HD, JDBC Hive?""" 
-    def get_datasource_list():
+    """Data - does there need to be separate functions for DB, HD, JDBC Hive?"""
+    def get_datasource_list(self):
         pass
 
-    def register_datasource_connection():
+    def register_datasource_connection(self):
         pass
 
-    def get_datasource_info():
+    def get_datasource_info(self):
         pass
 
-    def delete_datasource_connection():
+    def delete_datasource_connection(self):
         pass
 
 
