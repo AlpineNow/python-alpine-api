@@ -1,46 +1,69 @@
 import requests
-
+from urlparse import urlparse
 
 class AlpineAPI(object):
 
-    def __init__(self):
+    def __init__(self, alpine_url, username, password):
+        """
+        Sets internal values for API version number, scheme, hostname, user_id, token
+        Performs login to check that parameters are set correctly
+        :param alpine_url:
+        :param username:
+        :param password:
+        """
+
+        self.version = 0.1
+
         self.alpine_session = requests.Session()
         adapter = requests.adapters.HTTPAdapter(pool_connections=100, pool_maxsize=100)
         self.alpine_session.mount("http://", adapter)
-        self.alpine_base_url = None
+
+        # Do some url parsing here:
+        self.scheme, self.hostname = self._extract_base_url(alpine_url)
+        self.alpine_base_url = self.scheme + "://" + self.hostname
+        self.alpine_session.headers.update({"Host": self.hostname})
+
+        self.user_id = username
+        # Don't save password
+
         self.token = None
-        self.user_id = None
-        self.version = 0.1
+
+        # Login and error_checking here, don't save the password,
+        self.login(self.user_id, password)
 
     """Helper Methods"""
-    def set_alpine_url(self, url):
-        self.alpine_base_url = url
-        start_index = self.alpine_base_url.find("://") + 3
-        host_info = self.alpine_base_url[start_index:]
-        self.alpine_session.headers.update({"Host": host_info})
+    @staticmethod
+    def _extract_base_url(url):
+        """
+        Attempts to find the scheme (http or https) and hostname of any user-entered url.
+        :param url:
+        :return: (scheme, hostname)
+        """
+        o = urlparse(url)
+        return o.scheme, o.hostname
 
     """Sessions"""
     def login(self, username, password):
         # Works with http only
 
-        if self.alpine_base_url is None:
+        if self.hostname is None:
             print("Please set the Alpine URL via set_alpine_url()")
             raise Exception("No Alpine URL defined")
     
         # Attempt to login
         login_url = self.alpine_base_url + "/sessions?session_id=NULL"
-        print(login_url)
+        print("Logging into: {}".format(login_url))
 
-        body = {"username": username, "password": password}
+        body = {"username": self.user_id, "password": password}
         login_response = self.alpine_session.post(login_url, data=body)
     
         if login_response.status_code == 201:
             response = login_response.json()
             self.token = response['response']['session_id']
             self.user_id = response['response']['user']['id']
-            print("Succesfully logged in")
+            print("Successfully logged in with username <{}>".format(username))
         else:
-            print("Login failed with status code: {}".format(login_response.status_code))
+            print("Login failed with status code: <{}>".format(login_response.status_code))
 
     def logout(self):
         pass
@@ -56,11 +79,8 @@ class AlpineAPI(object):
         """
         url = self.alpine_base_url + "/VERSION"
         url = url + "?session_id=" + self.token
-
         response = self.alpine_session.get(url)
-        print("The Alpine Chorus version is {0}".format(response.content))
-
-        return response.content    
+        return response.content
 
     """License"""
     def get_licence_info(self):
