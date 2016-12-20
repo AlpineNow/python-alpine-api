@@ -11,7 +11,6 @@ class AlpineAPI(object):
         :param username:
         :param password:
         """
-
         self.version = 0.1
 
         self.alpine_session = requests.Session()
@@ -30,6 +29,9 @@ class AlpineAPI(object):
 
         # Login and error_checking here, don't save the password,
         self.login(self.user_id, password)
+        self.alpine_session.headers.update({"x-token": self.token})
+        self.alpine_session.headers.update({"Content-Type": "application/json"})
+
 
     """Helper Methods"""
     @staticmethod
@@ -44,7 +46,7 @@ class AlpineAPI(object):
 
     """Sessions"""
     def login(self, username, password):
-        # Works with http only
+        # Works with http only so far
 
         if self.hostname is None:
             print("Please set the Alpine URL via set_alpine_url()")
@@ -78,7 +80,6 @@ class AlpineAPI(object):
         :return: version as a string
         """
         url = self.alpine_base_url + "/VERSION"
-        url = url + "?session_id=" + self.token
         response = self.alpine_session.get(url)
         return response.content
 
@@ -128,40 +129,41 @@ class AlpineAPI(object):
         pass
 
     """Workfiles"""
-    # def run_workflow_with_variables(wid, wf_var):
-    #     alpine_session.headers.update({"x-token": session_id})
-    #     run_url = alpine_base_url + "/alpinedatalabs/api/v1/json/workflows/" + str(workflow_id) + "/run" + "?saveResult=true"
-    #     alpine_session.headers.update({"Content-Type": "application/json"})
-    #     run_response = alpine_session.post(run_url, data=wf_var, timeout=1000)
+    def run_workflow(self, wid, workflow_variables_list=None):
+        """
+        Run a workflow with optional workflow variables. Any workflow variables must be defined in the workflow.
+        See format details below.
+        :param wid:
+        :param workflow_variables: a list of dicts of workflow variables [{"name":"@lambda", "value":"0.5"}]
+        :return:
+        """
 
-    #     process_id = run_response.json()['meta']['processId']
-    #     return process_id
+        # Format workflow variables
+        start = '{"meta":{"version":1}, "variables":'
+        workflow_variables_formatted = start + str(workflow_variables_list).replace("\'", "\"") + '}'
 
-    def run_workflow(self, wid):
-        
-        # Add workflow variables
-        run_url = self.alpine_base_url + "/alpinedatalabs/api/v1/json/workflows/" + str(wid) + "/run"
+        run_url = self.alpine_base_url + "/alpinedatalabs/api/v1/json/workflows/" + str(wid) + "/run" + "?saveResult=true"
         print run_url
         
-        chorus_host = self.alpine_base_url.split("http://")[1]
-        
-        self.alpine_session.headers.update({"x-token": self.token})
-        # self.alpine_session.headers.update({"Host": chorus_host})
-        self.alpine_session.headers.update({"Content-Type": "application/json"})
-        run_response = self.alpine_session.post(run_url, timeout=30)
+        run_response = self.alpine_session.post(run_url, data=workflow_variables_formatted, timeout=30)
         
         print run_response.content
             
         process_id = run_response.json()['meta']['processId']
         return process_id 
 
+    def query_workflow_status(self, pid):
+        query_url = self.alpine_base_url + "/alpinedatalabs/api/v1/json/processes/" + str(pid) + "/query"
+        query_response = self.alpine_session.get(query_url, timeout=60)
+        print(query_response.text)
+
     def download_workflow_results(self, workflow_id, process_id):
-        result_url = self.alpine_base_url + "/alpinedatalabs/api/v1/json/workflows/" + str(workflow_id) + "/results/" + str(process_id)
+        result_url = self.alpine_base_url + "/alpinedatalabs/api/v1/json/workflows/" + str(
+        workflow_id) + "/results/" + str(process_id)
         response = self.alpine_session.get(result_url)
         return response
 
-    def query_workflow_status(self):
-        pass
+
 
     # def get_workflow_status(pid, sid):
         
