@@ -17,7 +17,7 @@ class AlpineAPI(object):
         # adapter = requests.adapters.HTTPAdapter(pool_connections=100, pool_maxsize=100)
         # self.alpine_session.mount("http://", adapter)
         # Do some url parsing here:
-        self.scheme, self.hostname = self._extract_base_url(alpine_url)
+        self.scheme, self.hostname = self._extract_url(alpine_url)
         self.alpine_base_url = self.scheme + "://" + self.hostname
         self.alpine_session.headers.update({"Host": self.hostname})
 
@@ -34,7 +34,7 @@ class AlpineAPI(object):
     """Helper Methods"""
 
     @staticmethod
-    def _extract_base_url(url):
+    def _extract_url(url):
         """
         Attempts to find the scheme (http or https) and hostname of any user-entered url.
         :param url:
@@ -54,7 +54,6 @@ class AlpineAPI(object):
 
         # Attempt to login
         login_url = self.alpine_base_url + "/sessions?session_id=NULL"
-        print("Logging into: {}".format(login_url))
 
         body = {"username": self.user_id, "password": password}
         login_response = self.alpine_session.post(login_url, data=body)
@@ -68,13 +67,20 @@ class AlpineAPI(object):
             print("Login failed with status code: <{}>".format(login_response.status_code))
 
     def logout(self):
-        pass
+        # Is there a way to do this without explicitly including the token in the url?
+        url = self.alpine_base_url + "/sessions" + "?session_id=" + self.token
+        response = self.alpine_session.delete(url)
+        print("Received response code {0} with reason {1}".format(response.status_code, response.reason))
+        return response
 
     def get_login_status(self):
-        pass
+        url = self.alpine_base_url + "/sessions"
+        print("Checking to see if the user is still logged in....")
+        response = self.alpine_session.get(url)
+        print("Received response code {0} with reason {1}".format(response.status_code, response.reason))
+        return response
 
     """Config"""
-
     def get_chorus_version(self):
         """
         Returns the chorus version as a
@@ -86,8 +92,10 @@ class AlpineAPI(object):
 
     """License"""
 
-    def get_licence_info(self):
-        pass
+    def get_license_info(self):
+        url = self.alpine_base_url + "/license"
+        response = self.alpine_session.get(url)
+        return response.content
 
     """User functions"""
 
@@ -142,7 +150,6 @@ class AlpineAPI(object):
         :param workflow_variables_list: a list of dicts of workflow variables e.g. [{"name":"@lambda", "value":"0.5"}]
         :return:
         """
-
         # Format workflow variables
         start = '{"meta":{"version":1}, "variables":'
         workflow_variables_formatted = start + str(workflow_variables_list).replace("\'", "\"") + '}'
