@@ -12,11 +12,16 @@ TODO List:
 7. Fix our current docs
 8. Rewrite current API guide to use these functions
 9. Add https functionality
+10. Why is token in the header OK sometimes, other times it need to be appended to the url?
+11. Check if it works with port.
+12. Do we want to warn people when they might be getting incomplete info?
+    Example: asking for 50 users. If we return only 40 users, no warning. If we return 50 users, give a warning.
 """
 
 """
 Style
-1. Define payloads as dictionary objects then use json.dumps() to convert to string in the request.
+1. Define payload as dictionary objects then use json.dumps() to convert to string in the request.
+   Or can we use json= in requests?
 2.
 """
 
@@ -166,23 +171,84 @@ class AlpineAPI(object):
 
     """Workspaces"""
 
-    def get_workspaces_list(self):
+    def get_workspaces_list(self, active=False, user_id=None, page=1, per_page=50):
+        url = self.alpine_base_url + "/workspaces"
+        payload = { "active": active,
+                    "user_id": user_id,
+                    "page": page,
+                    "per_page": per_page
+                    }
+        response = self.alpine_session.get(url, data=json.dumps(payload))
+
+        if response.status_code == 200:
+            return response.json()
+        else:
+            print("Failed with status code <{}>".format(response.status_code))
+            return None
+
+    def create_new_workspace(self, name, public, summary):
+        """
+        :param name:
+        :param public:
+        :param summary:
+        :return:
+        """
+        url = self.alpine_base_url + "/workspaces" + "?session_id=" + self.token
+        payload = { "name": name, "public": public, "summary": summary}
+        response = self.alpine_session.post(url, data=json.dumps(payload))
+
+        if response.status_code == 201:
+            print("Successfully created workspace <{}>.".format(name))
+            return
+        elif response.status_code == 422:
+            print("Workspace <{}> already exists.".format(name))
+        else:
+            print("Unknown status code = {}".format(response.status_code))
+        return response
+
+    def delete_workspace(self, name):
         pass
 
-    def create_new_workspace(self):
-        pass
-
-    def delete_workspace(self):
-        pass
-
-    def get_member_list_for_workspace(self):
-        pass
+    def get_member_list_for_workspace(self, workspace_name, per_page=200):
+        """
+        :param workspace_name:
+        :param per_page:
+        :return:
+        """
+        workspace_id = self._get_workspace_id(workspace_name, per_page)
+        url = self.alpine_base_url + "/workspaces/" + str(workspace_id) + "/members"
+        response = self.alpine_session.get(url).json()
+        return response
 
     def update_workspace_membership(self):
         pass
 
-    def get_workspace_details(self):
-        pass
+    def _get_workspace_id(self, workspace_name, per_page=200):
+        """
+        :param workspace_name:
+        :param per_page:
+        :return:
+        """
+        workspace_list = self.get_workspaces_list(per_page=per_page)['response']
+
+        for workspace in workspace_list:
+            if workspace['name'] == workspace_name:
+                return workspace['id']
+
+        print("No match found for workspace {}".format(workspace_name))
+        print("Please check spelling or search more records")
+        return None
+
+    def get_workspace_details(self, workspace_name, per_page=200):
+        """
+        :param workspace_name:
+        :param per_page:
+        :return:
+        """
+        workspace_id = self._get_workspace_id(workspace_name, per_page)
+        url = self.alpine_base_url + "/workspaces/" + str(workspace_id)
+        response = self.alpine_session.get(url).json()
+        return response
 
     def update_workspace_details(self):
         pass
