@@ -25,7 +25,6 @@ Style
 2.
 """
 
-
 class AlpineAPI(object):
     def __init__(self, alpine_url, username, password):
         """
@@ -79,7 +78,6 @@ class AlpineAPI(object):
         # Attempt to login
         login_url = self.alpine_base_url + "/sessions?session_id=NULL"
         print(login_url)
-
 
         body = {"username": self.user_id, "password": password}
         login_response = self.alpine_session.post(login_url, data=body)
@@ -254,8 +252,7 @@ class AlpineAPI(object):
         pass
 
     """Workfiles"""
-
-    def run_workflow(self, wid, workflow_variables_list=None):
+    def run_workflow(self, wid, workflow_variables_list=[]):
         """
         Run a workflow with optional workflow variables. Any workflow variables must be defined in the workflow.
         See format details below.
@@ -264,7 +261,7 @@ class AlpineAPI(object):
         :return:
         """
 
-        payload = { "meta": {"version": 1}, "variables" : workflow_variables_list}
+        payload = {"meta": {"version": 1}, "variables": workflow_variables_list}
 
         run_url = self.alpine_base_url + "/alpinedatalabs/api/v1/json/workflows/" \
                   + str(wid) + "/run" + "?saveResult=true"
