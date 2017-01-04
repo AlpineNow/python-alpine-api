@@ -7,20 +7,18 @@
 """Simple Command-Line Sample For Alpine API.
 Command-line application to login and logout with Alpine API
 Usage:
-  $ python workfile.py
+  $ python datasource.py
 To get detailed log output run:
-  $ python workfile.py --logging_level=DEBUG
+  $ python datasource.py --logging_level=DEBUG
 """
 
 __author__ = 'ggao@alpinenow.com (Guohui Gao)'
 
-import sys, os, time
+import sys
 from api.chorus.chorus import Chorus
 from api.chorus.user import User
 from api.chorus.datasource import DataSource
 from api.chorus.workspace import Workspace
-from api.chorus.workfile import Workfile
-from api.alpine.alpine import Alpine
 from api.exception import *
 
 def main(argv):
@@ -68,6 +66,11 @@ def main(argv):
          "value": "awscdh57singlenode.alpinenow.local:8031"},
         {"key": "yarn.resourcemanager.scheduler.address", "value": "awscdh57singlenode.alpinenow.local:8030"}
     ]
+
+    # Creating a Hadoop Datasource for test get/update functions
+
+
+
     # Create a chorus session
     chorus_session = Chorus(chorus_host, chorus_port)
     # Login with the admin user credential
@@ -77,12 +80,13 @@ def main(argv):
     datasource_session = DataSource(chorus_session)
     # Create a Greenplum Datasource
     datasource_session.delete_db_data_source_if_exists(sample_datasource_db_name)
-    datasource_gp = datasource_session.add_greenplum_data_source(sample_datasource_db_name,
+    datasource_info = datasource_session.add_greenplum_data_source(sample_datasource_db_name,
                                                               sample_datasource_db_description,
                                                               sample_datasource_db_host, sample_datasource_db_port,
                                                               sample_datasource_db_database_name,
                                                               sample_datasource_db_database_username,
                                                               sample_datasource_db_database_password)
+    print "Created Datasource Info: {0}".format(datasource_info)
 
     # Create a Hadoop datasource
     datasource_session.delete_hadoop_data_source_if_exists(sample_datasource_hadoop_name)
@@ -98,6 +102,7 @@ def main(argv):
                                                                   sample_datasource_hadoop_group_list,
                                                                   sample_datasource_hadoop_additional_parameters
                                                                   )
+    print "Created Datasource Info: {0}".format(datasource_info)
     # Create a workspace session for workspace management
     workspace_session = Workspace(chorus_session)
     # Delete sample workspaces if exists
@@ -105,6 +110,7 @@ def main(argv):
     # Create a new sample workspace
     workspace_info = workspace_session.create_new_workspace(workspace_name=sample_workspace_name, public=sample_workspace_public_state_true,
                                            summary="")
+    print "Created Workspace Info: {0}".format(workspace_info)
 
     # Create a new sample user with admin roles
     user_session = User(chorus_session)
@@ -113,30 +119,6 @@ def main(argv):
                                  sample_title, sample_deparment, admin=sample_admin_type, user_type=sample_user_type)
 
     member_list = workspace_session.update_workspace_membership(sample_workspace_name, sample_username, sample_member_role)
-
-    workfile_session = Workfile(chorus_session)
-    afm_path = "afm/hadoop_bat_column_filter.afm"
-    workfile_session.delete_workfile_if_exists("hadoop_bat_column_filter", workspace_info['id'])
-    workfile_info = workfile_session.upload_hdfs_afm(workspace_info['id'], datasource_hadoop['id'], afm_path)
-    print "Uploaded Workfile Info: {0}".format(workfile_info)
-
-    alpine_session = Alpine(chorus_session)
-    variables = [{"name": "@min_credit_line", "value": "7"}]
-    process_id = alpine_session.run_workflow(workfile_info['id'], variables)
-    workfile_status = None
-    max_waiting_seconds = 100
-    for i in range(0, max_waiting_seconds):
-        workfile_status = alpine_session.query_workflow_status(process_id)
-        if workfile_status in ["WORKING"]:
-            time.sleep(10)
-        elif workfile_status == "FINISHED":
-            print "Workfile Finished after waiting for {0} seconds".format(i*10)
-            break
-        else:
-            raise RunFlowFailureException("Workflow run into unexpected stage: {0}".format(workfile_status))
-    if workfile_status != "FINISHED":
-        raise RunFlowFailureException("Run Flow not Finished after running for {0} seconds"
-                                          .format(max_waiting_seconds*10))
 
 
     # Delete the Datasource

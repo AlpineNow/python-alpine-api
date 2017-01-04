@@ -271,4 +271,4 @@ class Workspace(ChorusObject):
         try:
             self.delete_workspace(workspace_name)
         except WorkspaceNotFoundException:
-            self.logger.debug ("Workspace {0} not found, so we don't need to delete the Workspace".format(workspace_name))
+            self.logger.debug ("Workspace {0} not found, don't need to delete the Workspace".format(workspace_name))

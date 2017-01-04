@@ -23,7 +23,6 @@ class TestAlpine(ChorusTestCase):
             workfile_status = alpine.query_workflow_status(process_id)
         response = alpine.download_workflow_results(15, process_id)
 
-
     def test_run_workflow(self):
         variables = [{"name": "@min_credit_line", "value": "7"}]
         chorus_session = Chorus(self.host, self.port)
@@ -45,7 +44,6 @@ class TestAlpine(ChorusTestCase):
             else:
                 self.fail("Invalid workfile status {0}".format(workfile_status))
 
-
     def test_download_workflow_results(self):
         variables = [{"name": "@min_credit_line", "value": "7"}]
         chorus_session = Chorus(self.host, self.port)
@@ -57,7 +55,6 @@ class TestAlpine(ChorusTestCase):
             time.sleep(1)
             workfile_status = alpine.query_workflow_status(process_id)
         response =alpine.download_workflow_results(15, process_id)
-
 
     def test_stop_workflow(self):
         variables = [{"name": "@min_credit_line", "value": "7"}]

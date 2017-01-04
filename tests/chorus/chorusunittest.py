@@ -3,6 +3,7 @@ from api.exception import *
 
 
 class ChorusTestCase(TestCase):
+
     def setUp(self):
         self.host = "10.10.0.204"
         self.port = "8080"

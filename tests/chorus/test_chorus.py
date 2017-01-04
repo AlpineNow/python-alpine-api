@@ -45,6 +45,7 @@ class TestChorus(ChorusTestCase):
         chorus_session.login(self.username, self.password)
         chorus_session.setup_logging()
         chorus_session.logger
+
     def test__add_token_to_url(self):
         chorus_session = Chorus(self.host, self.port)
         chorus_session.token = "this_is_token_string"

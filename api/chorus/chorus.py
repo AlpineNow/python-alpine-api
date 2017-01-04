@@ -25,7 +25,7 @@ class ChorusObject(object):
         self.logger = logging.getLogger("debug")    # debug or api
 
     def _add_token_to_url(self, url):
-        return "{0}?session_id={1}".format(url, self.token)
+        return unicode("{0}?session_id={1}".format(url, self.token))
 
     def setup_logging(self,
                       default_path='logging.json',
