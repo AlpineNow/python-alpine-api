@@ -1,5 +1,3 @@
-__author__ = 'guohuigao'
-
 import requests
 import json
 from chorus import *

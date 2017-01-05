@@ -15,7 +15,7 @@ class TestWorkfile(ChorusTestCase):
         self.assertIsNotNone(workfile_list)
         #TODO add more validation for this test
 
-    def test_get_workfile_details(self):
+    def test_get_workfile_info(self):
         chorus_session = Chorus(self.host, self.port)
         chorus_session.login(self.username, self.password)
         workfile_session = Workfile(chorus_session)
@@ -36,47 +36,46 @@ class TestWorkfile(ChorusTestCase):
         chorus_session = Chorus(self.host, self.port)
         chorus_session.login(self.username, self.password)
         workfile_session = Workfile(chorus_session)
-        response = workfile_session.run_workflow("test_row_filter_hd", 2, variables)
-        self.assertEqual(response.status_code, 202)
-        self.assertEqual(response.json()['response']['status'], "running")
+        process_id = workfile_session.run_workflow(15, variables)
+        workfile_session.wait_for_workflow_finished(process_id)
 
     def test_query_workflow_status(self):
-        valid_workfile_status = ["running","idle"]
+        valid_workfile_status = ["WORKING", "FINISHED"]
         variables = [{"name": "@min_credit_line", "value": "7"}]
         chorus_session = Chorus(self.host, self.port)
         chorus_session.login(self.username, self.password)
         workfile_session = Workfile(chorus_session)
-        response = workfile_session.run_workflow("test_row_filter_hd", 2, variables)
-        self.assertEqual(response.json()['response']['status'], "running")
+        process_id = workfile_session.run_workflow(15, variables)
         for i in range(0, 100):
-            workfile_status = workfile_session.query_workflow_status("test_row_filter_hd",2)
+            workfile_status = workfile_session.query_workflow_status(process_id)
             if workfile_status in valid_workfile_status:
-                time.sleep(1)
+                if workfile_status == "FINISHED":
+                    break
+                else:
+                    time.sleep(1)
             else:
-                self.fail("Invalid workfile_session status {0}".format(workfile_status))
-
-    def test_stop_workflow(self):
-        chorus_session = Chorus(self.host, self.port)
-        chorus_session.login(self.username, self.password)
-        workfile_session = Workfile(chorus_session)
-        workfile_session.run_workflow("test_row_filter_hd", 2)
-        response = workfile_session.stop_workflow("test_row_filter_hd", 2)
-        self.assertEqual(response.status_code, 202)
-        self.assertEqual(response.json()['response']['status'], "idle")
+                self.fail("Invalid workfile status {0}".format(workfile_status))
 
     def test_download_workflow_results(self):
-        chorus_session = Chorus(self.host, self.port)
-        chorus_session.login(self.username, self.password)
-        workfile_session = Workfile(chorus_session)
-        workfile_session.get_workflow_results("test_row_filter_hd", 2)
-
-    def test_get_running_workflows(self):
         variables = [{"name": "@min_credit_line", "value": "7"}]
         chorus_session = Chorus(self.host, self.port)
         chorus_session.login(self.username, self.password)
         workfile_session = Workfile(chorus_session)
-        response = workfile_session.run_workflow("test_row_filter_hd", 2, variables)
-        workfile_session.get_running_workflows()
+        process_id = workfile_session.run_workflow(15, variables)
+        workfile_status = workfile_session.query_workflow_status(process_id)
+        while workfile_status != "FINISHED":
+            time.sleep(1)
+            workfile_status = workfile_session.query_workflow_status(process_id)
+        response = workfile_session.download_workflow_results(15, process_id)
+
+    def test_stop_workflow(self):
+        variables = [{"name": "@min_credit_line", "value": "7"}]
+        chorus_session = Chorus(self.host, self.port)
+        chorus_session.login(self.username, self.password)
+        workfile_session = Workfile(chorus_session)
+        process_id = workfile_session.run_workflow(15, variables)
+        finish_state = workfile_session.stop_workflow(process_id)
+        self.assertEqual(finish_state, "FINISHED")
 
     def test_upload_hdfs_afm(self):
         chorus_session = Chorus(self.host, self.port)
@@ -100,4 +99,3 @@ class TestWorkfile(ChorusTestCase):
 
         workfile_info = workfile_session.upload_db_afm(2, 1, 1, "GpdbDataSource", "gpdb_database", afm_path)
         self.assertEqual(workfile_info['file_name'], "db_bat_row_fil")
-

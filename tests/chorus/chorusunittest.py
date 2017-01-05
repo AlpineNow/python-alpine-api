@@ -8,8 +8,8 @@ class ChorusTestCase(TestCase):
         self.host = "10.10.0.204"
         self.port = "8080"
         self.regex_chorus_version_string = "6.2.*"
-        self.username = "chorusadmin"
-        self.password = "secret"
+        self.username = "demoadmin"
+        self.password = "password"
 
     def tearDown(self):
         pass

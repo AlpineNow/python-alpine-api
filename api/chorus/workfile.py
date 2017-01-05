@@ -1,10 +1,9 @@
-__author__ = 'guohuigao'
-
-import requests
-import json
 from chorus import *
+from urlparse import urljoin
+from urlparse import urlparse
 
 from api.exception import *
+import time
 
 class Workfile(ChorusObject):
 
@@ -14,6 +13,11 @@ class Workfile(ChorusObject):
             self.base_url = chorus_session.base_url
             self.session = chorus_session.session
             self.token = chorus_session.token
+            self.chorus_domain = '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(self.base_url))
+            self.logger.debug(self.chorus_domain)
+            self.alpine_base_url = urljoin(self.chorus_domain,
+                                           "alpinedatalabs/api/{0}/json".format(self.alpine_api_version))
+            self.logger.debug("alpine_base_url is: {0}".format(self.alpine_base_url))
         else:
             raise ChorusSessionNotFoundException()
 
@@ -59,7 +63,7 @@ class Workfile(ChorusObject):
         for workfile in workfile_list:
             if workfile['file_name'] == workfile_name:
                 return workfile
-        raise WorkfileNotFoundException("The Work file with name <{0}> is not found in workspace id:{1}".format(
+        raise WorkfileNotFoundException("The workfile with name <{0}> is not found in workspace id:{1}".format(
             workfile_name, workspace_id
         ))
 
@@ -73,88 +77,122 @@ class Workfile(ChorusObject):
         workfile_detail = self.get_workfile_info(workfile_name, workspace_id)
         return workfile_detail['id']
 
-    def run_workflow(self, workfile_name, workspace_id, variables=None):
+    def run_workflow(self, workflow_id, variables=None):
         """
 
-        :param workfile_name:
-        :param workspace_id:
+        :param workflow_id:
         :param variables:
         :return:
         """
-        #Using the Chorus API to run a workflow
-        #TODO variable is not working for chorus API
-        # Format workflow variables
-        workflow_id = self.get_workfile_id(workfile_name, workspace_id)
         workflow_variables = '{{"meta": {{"version": 1}}, "variables": {0}}}'.format(variables).replace("\'", "\"")
 
-        url = "{0}/workfiles/{1}/run".format(self.base_url, workflow_id)
-        url = self._add_token_to_url(url)
-        response = self.session.post(url, data=workflow_variables,timeout=30)
-        if response.status_code == 202:
-            self.logger.debug("Workflow {0} started".format(workflow_id))
-            return response
-        else:
-            raise RunFlowFailureException("Run Workflow {0} failed with status code {1}".format(workflow_id, response.status_code))
+        url = "{0}/workflows/{1}/run?saveResult=true".format(self.alpine_base_url, workflow_id)
 
-    def query_workflow_status(self, workfile_name, workspace_id):
+        self.session.headers.update({"x-token": self.token})
+        self.session.headers.update({"Content-Type": "application/json"})
+
+        response = self.session.post(url, data=workflow_variables, timeout=30)
+        self.session.headers.pop("Content-Type")
+        self.logger.debug(response.content)
+        if response.status_code == 200:
+            process_id = response.json()['meta']['processId']
+
+            self.logger.debug("Workflow {0} started with process {1}".format(workflow_id, process_id))
+            return process_id
+        else:
+            raise RunFlowFailureException(
+                "Run Workflow {0} failed with status code {1}".format(workflow_id, response.status_code))
+
+    def query_workflow_status(self, process_id):
         """
 
-        :param workfile_name:
-        :param workspace_id:
+        :param process_id:
         :return:
         """
-        workfile_detail = self.get_workfile_info(workfile_name, workspace_id)
-        return workfile_detail['status']
+        url = "{0}/processes/{1}/query".format(self.alpine_base_url, process_id)
+        self.session.headers.update({"Content-Type": "application/json"})
+        response = self.session.get(url, timeout=60)
+        self.session.headers.pop("Content-Type")
+        self.logger.debug(response.text)
 
-    def stop_workflow(self, workfile_name, workspace_id ):
+        in_progress_states = ["IN_PROGRESS", "NODE_STARTED", "STARTED", "NODE_FINISHED"]
+        if response.status_code == 200:
+            try:
+                if response.json()['meta']['state'] in in_progress_states:
+                    return "WORKING"
+            except ValueError:
+                if response.text == 'Workflow not started or already stopped.\n' or \
+                                response.text == "invalid processId or workflow already stopped.\n":
+                    return "FINISHED"
+                else:
+                    return "FAILED"
+        else:
+            raise RunFlowFailureException("Workflow failed with status {0}: {1}"
+                                          .format(response.status_code, response.reason))
+
+    def download_workflow_results(self, workflow_id, process_id):
         """
 
-        :param workfile_name:
-        :param workspace_id:
+        :param workflow_id:
+        :param process_id:
         :return:
         """
-        workflow_id = self.get_workfile_id(workfile_name, workspace_id)
-        url = "{0}/workfiles/{1}/stop".format(self.base_url, workflow_id)
-        url = self._add_token_to_url(url)
-        response = self.session.post(url, timeout=30)
-        if response.status_code == 202:
-            self.logger.debug("Workflow {0} stopped".format(workflow_id))
-            return response
+        url = "{0}/workflows/{1}/results/{2}".format(self.alpine_base_url, workflow_id, process_id)
+        response = self.session.get(url)
+        self.logger.debug(response.content)
+        if response.status_code == 200:
+            if response.content == "\"\"":
+                raise Exception("results of flow {0} for session {1} are empty, "
+                                "please check whether there are results not cleared"
+                                .format(workflow_id, process_id))
+            else:
+                return response
         else:
-            raise StopFlowFailureException(
-                "Stop Workflow {0} failed with status code {1}".format(workflow_id, response.status_code))
+            raise Exception("Download Workflow Results failed with status {0}: {1}"
+                            .format(response.status_code, response.reason))
 
-    def get_workflow_results(self, workfile_name, workspace_id):
+    def stop_workflow(self, process_id):
         """
 
-        :param workfile_name:
-        :param workspace_id:
+        :param process_id:
         :return:
         """
-        workflow_id = self.get_workfile_id(workfile_name, workspace_id)
-        url = "{0}workfiles/{1}/results".format(self.base_url, workflow_id)
-        url = self._add_token_to_url(url)
-        response = self.session.get(url, timeout=30)
-        if response.status_code == 202:
-            return response
+        url = "{0}/processes/{1}/stop".format(self.alpine_base_url, process_id)
+        response = self.session.post(url, timeout=60)
+        self.logger.debug(response.text)
+        if response.status_code == 200:
+            if response.json()['status'] == "Flow stopped.\n":
+                return "FINISHED"
+            else:
+                return "FAILED"
         else:
-            raise Exception("failed to get workflow results")
+            raise StopFlowFailureException("Workflow failed with status {0}: {1}"
+                                           .format(response.status_code, response.reason))
 
-    def get_running_workflows(self):
+    def wait_for_workflow_finished(self, process_id, timeout=3600):
         """
-
-        :return:
+        Waits for a workflow
+        :param process_id: process ID of the workflow / worklet to monitor
+        :param timeout: amount of time in seconds to wait for workflow / worklet to finish
+        :return: True if success, otherwise, raise exception
         """
-        self.base_url = "http://10.10.0.204:8080/"
-        url = "{0}/#admin/running_workflow".format(self.base_url)
-        url = self._add_token_to_url(url)
-        self.logger.debug("debug")
-        response = self.session.get(url, timeout=30)
-        self.logger.debug(response)
-        if response.status_code == 202:
-            return response
-        else:
-            raise Exception("failed to get workflow results")
+        self.logger.debug("Waiting for process ID: {0} to complete...".format(process_id))
+        wait_count = 0
+        workflow_status = self.query_workflow_status(process_id)
+        while workflow_status == "WORKING":  # loop while waiting for workflow to complete
+            self.logger.debug(
+                "Workflow status: {0}, on retry {1} sleeping for 10 seconds".format(workflow_status, wait_count))
+            time.sleep(10)
+            wait_count += 10
+            if wait_count >= timeout:
+                self.stop_workflow(process_id)
+                raise RunFlowTimeoutException(
+                    "The Workflow with process ID: {0} has exceeded a runtime of {1} seconds".format(process_id,
+                                                                                                     timeout))
+            if workflow_status == "FAILED":  # we don't expect a failure...
+                raise RunFlowFailureException("The workflow with process id: {0} failed...".format(process_id))
+            workflow_status = self.query_workflow_status(process_id)
+        return workflow_status
 
     def download_workflow_results(self, workflow_id, process_id):
         """
@@ -165,20 +203,8 @@ class Workfile(ChorusObject):
         """
         result_url = self.alpine_base_url + "/alpinedatalabs/api/v1/json/workflows/" \
                      + str(workflow_id) + "/results/" + str(process_id)
-        response = self.alpine_session.get(result_url)
+        response = self.session.get(result_url)
         return response
-
-    def create_new_workflow(self, workflow_name):
-        pass
-
-    def create_new_notebook(self, workflow_name):
-        pass
-
-    def create_new_link(self, workflow_name):
-        pass
-
-    def create_new_sql_file(self, workflow_name):
-        pass
 
     def delete_workfile(self, workfile_name, workspace_id):
         """
@@ -205,10 +231,7 @@ class Workfile(ChorusObject):
         try:
             self.delete_workfile(workfile_name, workspace_id)
         except WorkfileNotFoundException:
-            self.logger.debug ("Workspace {0} not found, don't need to delete the Workspace".format(workfile_name))
-
-    def update_workfile(self):
-        pass
+            self.logger.debug("Workspace {0} not found, don't need to delete the Workspace".format(workfile_name))
 
     def upload_hdfs_afm(self, workspace_id, data_source_id, afm_file):
         """
@@ -235,7 +258,8 @@ class Workfile(ChorusObject):
         response = self.session.post(url, files=files, data=payload, verify=False)
         return response.json()['response']
 
-    def upload_db_afm(self, workspace_id, data_source_id, database_id, datasource_type, database_type, afm_file):
+    def upload_db_afm(self, workspace_id, data_source_id, database_id, datasource_type, database_type,
+                      afm_file):
         """
         Uploads a DB afm file for execution
         :param workspace_id:
@@ -262,6 +286,24 @@ class Workfile(ChorusObject):
         self.logger.debug("POSTing to: {0}\n With payload: {1}".format(url, payload))
         response = self.session.post(url, files=files, data=payload, verify=False)
         return response.json()['response']
+
+    #TODO
+    def create_new_workflow(self, workflow_name):
+        pass
+
+    def create_new_notebook(self, workflow_name):
+        pass
+
+    def create_new_link(self, workflow_name):
+        pass
+
+    def create_new_sql_file(self, workflow_name):
+        pass
+
+
+    def update_workfile(self):
+        pass
+
 
     # TODO
     def upload_hdfs_and_db_afm(self, workspace_id, hdfs_datasource_id,
@@ -291,4 +333,3 @@ class Workfile(ChorusObject):
         files = {"workfile[versions_attributes][0][contents]": open(afm_file, 'rb')}
         response = self._post_afm(url, files, payload)
         return response
-

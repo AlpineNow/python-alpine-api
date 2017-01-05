@@ -103,7 +103,7 @@ class TestWorkspace(ChorusTestCase):
         workspace_session.delete_workspace_if_exists(workspace_name=test_workspace_name)
         workspace_session.create_new_workspace(workspace_name=test_workspace_name, public=True,
                                        summary="Summary")
-        member_list = workspace_session.update_workspace_membership(test_workspace_name, "chorusadmin", new_role)
+        member_list = workspace_session.update_workspace_membership(test_workspace_name, "demoadmin", new_role)
         fail = True
         for member in member_list:
             if member['username'] == self.username:

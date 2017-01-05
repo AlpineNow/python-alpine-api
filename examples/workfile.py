@@ -12,24 +12,25 @@ To get detailed log output run:
   $ python workfile.py --logging_level=DEBUG
 """
 
-__author__ = 'ggao@alpinenow.com (Guohui Gao)'
-
 import sys, os, time
 from api.chorus.chorus import Chorus
 from api.chorus.user import User
 from api.chorus.datasource import DataSource
 from api.chorus.workspace import Workspace
 from api.chorus.workfile import Workfile
-from api.alpine.alpine import Alpine
 from api.exception import *
+import logging
 
-def main(argv):
-    chorus_host = "10.10.0.204"
-    chorus_port = "8080"
-    admin_username = "chorusadmin"
-    admin_password = "secret"
+def help():
+    print "Usage: host=[host] port=[port] user=[username] password=[password]"
+
+def main(chorus_host, chorus_port, username, password):
+    chorus_host = chorus_host
+    chorus_port = chorus_port
+    admin_username = username
+    admin_password = password
     sample_username = "test_user"
-    sample_password = "secret"
+    sample_password = "password"
     sample_firstname = "First"
     sample_lastname = "Last"
     sample_member_role = "Business Analyst"
@@ -41,7 +42,7 @@ def main(argv):
     sample_workspace_name = "API Sample Workspace"
     sample_workspace_public_state_true = True
     # Demo Database Info (Greenplum)
-    sample_datasource_db_name = "Test_GP"
+    sample_datasource_db_name = "Demo_GP"
     sample_datasource_db_description = "Test Greenplum"
     sample_datasource_db_host = "10.10.0.151"
     sample_datasource_db_port = 5432
@@ -50,7 +51,7 @@ def main(argv):
     sample_datasource_db_database_password = "miner_demo"
 
     # Demo Hadoop Info (Cloudera CDH5.7)
-    sample_datasource_hadoop_name = "Test_Cloudera"
+    sample_datasource_hadoop_name = "Demo_Cloudera"
     sample_datasource_hadoop_version_string = "Cloudera CDH5.4-5.7"
     sample_datasource_hadoop_description = "Test Cloudera"
     sample_datasource_hadoop_namenode_host = "awscdh57singlenode.alpinenow.local"
@@ -70,6 +71,17 @@ def main(argv):
     ]
     # Create a chorus session
     chorus_session = Chorus(chorus_host, chorus_port)
+    #use chorus logger
+    chorus_session.logger.debug("This is a debug message")
+    chorus_session.logger.info("This is a info message")
+    chorus_session.logger.error("This is a error message")
+
+    # use a custom logger
+    custom_logger = logging.getLogger("custom")
+    custom_logger.debug("This is a custom debug message")
+    custom_logger.info("This is a custom info message")
+    custom_logger.error("This is a custom error message")
+
     # Login with the admin user credential
     chorus_session.login(admin_username, admin_password)
 
@@ -120,13 +132,12 @@ def main(argv):
     workfile_info = workfile_session.upload_hdfs_afm(workspace_info['id'], datasource_hadoop['id'], afm_path)
     print "Uploaded Workfile Info: {0}".format(workfile_info)
 
-    alpine_session = Alpine(chorus_session)
     variables = [{"name": "@min_credit_line", "value": "7"}]
-    process_id = alpine_session.run_workflow(workfile_info['id'], variables)
+    process_id = workfile_session.run_workflow(workfile_info['id'], variables)
     workfile_status = None
     max_waiting_seconds = 100
     for i in range(0, max_waiting_seconds):
-        workfile_status = alpine_session.query_workflow_status(process_id)
+        workfile_status = workfile_session.query_workflow_status(process_id)
         if workfile_status in ["WORKING"]:
             time.sleep(10)
         elif workfile_status == "FINISHED":
@@ -153,6 +164,14 @@ def main(argv):
     #response = user_session.delete_user(sample_username)
     #print "Received response code {0} with reason {1}...".format(response.status_code, response.reason)
 
-
 if __name__ == '__main__':
-  main(sys.argv)
+    self = sys.modules['__main__']
+    if len(sys.argv) >= 5:
+        host = sys.argv[1].split('=')[1]
+        port = sys.argv[2].split('=')[1]
+        username = sys.argv[3].split('=')[1]
+        password = sys.argv[4].split('=')[1]
+        main(host, port, username,password)
+
+    else:
+        help()

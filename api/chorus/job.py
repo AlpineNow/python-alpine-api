@@ -1,5 +1,3 @@
-__author__ = 'guohuigao'
-
 import requests
 import json
 from chorus import *
@@ -85,7 +83,7 @@ class Job(ChorusObject):
         for job in job_list:
             if job['name'] ==job_name:
                 return job
-        raise JobNotFoundException("The Job with name {0} doesn't exits".format(job_name))
+        raise JobNotFoundException("The Job with name {0} doesn't exist".format(job_name))
 
     def get_job_id(self, workspace_id, job_name):
         """

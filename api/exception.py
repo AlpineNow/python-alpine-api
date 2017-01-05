@@ -1,8 +1,6 @@
 """
 Exception classes - Subclassing to check for specific errors
 """
-__author__ = 'guohuigao'
-
 
 class ChorusException(Exception):
     """
@@ -75,6 +73,13 @@ class LoginFailureException(ChorusException):
 
 
 class RunFlowFailureException(ChorusException):
+    """
+
+    """
+    pass
+
+
+class RunFlowTimeoutException(ChorusException):
     """
 
     """

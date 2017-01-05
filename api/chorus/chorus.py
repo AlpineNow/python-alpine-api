@@ -1,5 +1,3 @@
-__author__ = 'guohuigao'
-
 import requests
 import os
 import sys
@@ -10,7 +8,8 @@ import logging.config
 from api.exception import *
 
 class ChorusObject(object):
-    api_version = 1
+    chorus_api_version = 1
+    alpine_api_version = "v1"
     token = None
     session = None
 
