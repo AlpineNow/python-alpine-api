@@ -36,13 +36,13 @@ class AlpineAPI(object):
         """
         self.version = 0.1
 
-        self.alpine_session = requests.Session()
+        self.workfile_session = requests.Session()
         # adapter = requests.adapters.HTTPAdapter(pool_connections=100, pool_maxsize=100)
-        # self.alpine_session.mount("http://", adapter)
+        # self.workfile_session.mount("http://", adapter)
         # Do some url parsing here:
         self.scheme, self.hostname = self._extract_url(alpine_url)
         self.alpine_base_url = self.scheme + "://" + self.hostname
-        self.alpine_session.headers.update({"Host": self.hostname})
+        self.workfile_session.headers.update({"Host": self.hostname})
 
         self.user_id = username
         # Don't save password
@@ -51,8 +51,8 @@ class AlpineAPI(object):
 
         # Login and error_checking here, don't save the password,
         self.login(self.user_id, password)
-        self.alpine_session.headers.update({"x-token": self.token})
-        self.alpine_session.headers.update({"Content-Type": "application/json"})
+        self.workfile_session.headers.update({"x-token": self.token})
+        self.workfile_session.headers.update({"Content-Type": "application/json"})
 
     """Helper Methods"""
 
@@ -80,7 +80,7 @@ class AlpineAPI(object):
         print(login_url)
 
         body = {"username": self.user_id, "password": password}
-        login_response = self.alpine_session.post(login_url, data=body)
+        login_response = self.workfile_session.post(login_url, data=body)
 
         if login_response.status_code == 201:
             response = login_response.json()
@@ -93,14 +93,14 @@ class AlpineAPI(object):
     def logout(self):
         # Is there a way to do this without explicitly including the token in the url?
         url = self.alpine_base_url + "/sessions" + "?session_id=" + self.token
-        response = self.alpine_session.delete(url)
+        response = self.workfile_session.delete(url)
         print("Received response code {0} with reason {1}".format(response.status_code, response.reason))
         return response
 
     def get_login_status(self):
         url = self.alpine_base_url + "/sessions"
         print("Checking to see if the user is still logged in....")
-        response = self.alpine_session.get(url)
+        response = self.workfile_session.get(url)
         print("Received response code {0} with reason {1}".format(response.status_code, response.reason))
         return response
 
@@ -112,14 +112,14 @@ class AlpineAPI(object):
         :return: version as a string
         """
         url = self.alpine_base_url + "/VERSION"
-        response = self.alpine_session.get(url)
+        response = self.workfile_session.get(url)
         return response.content
 
     """License"""
 
     def get_license_info(self):
         url = self.alpine_base_url + "/license"
-        response = self.alpine_session.get(url)
+        response = self.workfile_session.get(url)
         return response.content
 
     """User functions"""
@@ -275,7 +275,7 @@ class AlpineAPI(object):
 
     def query_workflow_status(self, pid):
         query_url = self.alpine_base_url + "/alpinedatalabs/api/v1/json/processes/" + str(pid) + "/query"
-        query_response = self.alpine_session.get(query_url, timeout=60)
+        query_response = self.workfile_session.get(query_url, timeout=60)
 
         print(query_response.text)
 
@@ -297,7 +297,7 @@ class AlpineAPI(object):
     def download_workflow_results(self, workflow_id, process_id):
         result_url = self.alpine_base_url + "/alpinedatalabs/api/v1/json/workflows/" \
                      + str(workflow_id) + "/results/" + str(process_id)
-        response = self.alpine_session.get(result_url)
+        response = self.workfile_session.get(result_url)
         return response
 
     def stop_workflow(self, process_id):
