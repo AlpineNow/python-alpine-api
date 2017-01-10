@@ -1,5 +1,5 @@
+from api.chorus import Chorus
 from chorusunittest import ChorusTestCase
-from api.chorus.chorus import Chorus
 
 
 class TestChorus(ChorusTestCase):

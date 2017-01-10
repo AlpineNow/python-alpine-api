@@ -1,9 +1,4 @@
-from chorus import *
-from urlparse import urljoin
-from urlparse import urlparse
-
 from api.exception import *
-import time
 
 
 class TouchPoint(ChorusObject):

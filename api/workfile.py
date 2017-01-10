@@ -1,9 +1,11 @@
-from chorus import *
+import time
+import json
 from urlparse import urljoin
 from urlparse import urlparse
 
 from api.exception import *
-import time
+from chorus import ChorusObject
+
 
 class Workfile(ChorusObject):
 

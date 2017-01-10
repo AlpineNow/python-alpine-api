@@ -1,8 +1,10 @@
-from chorusunittest import ChorusTestCase
-from api.chorus.chorus import Chorus
-from api.chorus.workfile import Workfile
-import time
 import os
+import time
+
+from api.chorus.workfile import Workfile
+
+from api.chorus import Chorus
+from chorusunittest import ChorusTestCase
 
 
 class TestWorkfile(ChorusTestCase):

@@ -1,8 +1,5 @@
-import requests
-import json
-from chorus import *
 from user import *
-from api.exception import *
+
 
 class Workspace(ChorusObject):
 

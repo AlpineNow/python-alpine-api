@@ -1,7 +1,8 @@
-from chorusunittest import ChorusTestCase
-from api.chorus.chorus import Chorus
 from api.chorus.user import User
+
+from api.chorus import Chorus
 from api.exception import *
+from chorusunittest import ChorusTestCase
 
 
 class TestUser(ChorusTestCase):
