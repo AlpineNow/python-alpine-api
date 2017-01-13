@@ -1,7 +1,8 @@
-import requests
 import json
-from chorus import *
+
 from api.exception import *
+from chorus import ChorusObject
+
 
 class User(ChorusObject):
 

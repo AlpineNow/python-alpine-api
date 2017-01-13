@@ -1,6 +1,4 @@
-import requests
 import json
-from chorus import *
 
 from api.exception import *
 

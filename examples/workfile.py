@@ -12,14 +12,18 @@ To get detailed log output run:
   $ python workfile.py --logging_level=DEBUG
 """
 
-import sys, os, time
-from api.chorus.chorus import Chorus
-from api.chorus.user import User
-from api.chorus.datasource import DataSource
-from api.chorus.workspace import Workspace
-from api.chorus.workfile import Workfile
-from api.exception import *
 import logging
+import sys
+import time
+
+from api.chorus.datasource import DataSource
+from api.chorus.user import User
+from api.chorus.workfile import Workfile
+from api.chorus.workspace import Workspace
+
+from api.chorus import Chorus
+from api.exception import *
+
 
 def help():
     print "Usage: host=[host] port=[port] user=[username] password=[password]"
