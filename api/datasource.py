@@ -1,19 +1,12 @@
-import requests
 import json
-from chorus import *
-
 from api.exception import *
+from api.chorus import ChorusObject
+
 
 class DataSource(ChorusObject):
 
-    def __init__(self, chorus_session=None):
-        super(DataSource, self).__init__()
-        if chorus_session:
-            self.base_url = chorus_session.base_url
-            self.session = chorus_session.session
-            self.token = chorus_session.token
-        else:
-            raise ChorusSessionNotFoundException()
+    def __init__(self, base_url=None, session=None, token = None):
+        super(DataSource, self).__init__(base_url, session, token)
 
     ###--- DB Data Source Functions ---###
     def get_db_data_source_list(self, per_page=100):

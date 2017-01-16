@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Process Description="" UserName="2" Version="6.2.0.0">
+<DataSources>
+<DataSource name="Demo_Hadoop" type="Hadoop">
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hdfsHostname" value="awscdh57singlenode.alpinenow.local"/>
+<Parameter key="hdfsPort" value="8020"/>
+<Parameter key="hadoopVersion" value="Cloudera CDH5.4-5.7"/>
+<Parameter key="jobHostname" value="awscdh57singlenode.alpinenow.local"/>
+<Parameter key="jobPort" value="8032"/>
+<Parameter key="userName" value="yarn"/>
+<Parameter key="useHA" value="false"/>
+<Parameter key="groupName" value="hadoop"/>
+<Parameter key="securityMode" value="simple"/>
+<Parameter key="hdfsPrincipal" value=""/>
+<Parameter key="hdfsKeyTab" value=""/>
+<Parameter key="mapredPrincipal" value=""/>
+<Parameter key="mapredKeyTab" value=""/>
+<Parameter key="schedulerHost" value="awscdh57singlenode.alpinenow.local"/>
+<Parameter key="schedulerPort" value="8030"/>
+<Parameter key="ALP_HD_KVP[mapreduce.jobhistory.address]" value="awscdh57singlenode.alpinenow.local:10020"/>
+<Parameter key="ALP_HD_KVP[mapreduce.jobhistory.webapp.address]" value="awscdh57singlenode.alpinenow.local:19888"/>
+<Parameter key="ALP_HD_KVP[yarn.resourcemanager.scheduler.address]" value="awscdh57singlenode.alpinenow.local:8030"/>
+<Parameter key="ALP_HD_KVP[alpine.hadoopuser.enabled]" value="false"/>
+<Parameter key="ALP_HD_KVP[yarn.resourcemanager.admin.address]" value="awscdh57singlenode.alpinenow.local:8033"/>
+<Parameter key="ALP_HD_KVP[yarn.resourcemanager.resource-tracker.address]" value="awscdh57singlenode.alpinenow.local:8031"/>
+<Parameter key="ALP_HD_KVP[yarn.app.mapreduce.am.staging-dir]" value="/tmp"/>
+</DataSource>
+</DataSources>
+<Operator X="84" Y="35" name="credit.csv" type="com.alpine.miner.gef.runoperator.hadoop.HadoopFileOperator" uuid="1483689452154">
+<Note/>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopFileName" value="/automation_test_data/csv/credit.csv"/>
+<Parameter key="hadoopFileFormat" value="Text File"/>
+<HadoopFileStructureModel delimiter="Comma" escapChar="\" includeHeader="true" other="" quoteChar="&quot;">
+<col n="id" t="long"/>
+<col n="times90dayslate" t="long"/>
+<col n="revolving_util" t="double"/>
+<col n="debt_ratio" t="double"/>
+<col n="credit_lines" t="long"/>
+<col n="monthly_income" t="double"/>
+<col n="times30dayslate_2years" t="long"/>
+<col n="srsdlqncy" t="long"/>
+</HadoopFileStructureModel>
+<InPutFieldList>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopCompressionFormat" value=""/>
+<Parameter key="hadoopFileName" value="/automation_test_data/csv/credit.csv"/>
+</InPutFieldList>
+</Operator>
+<Operator X="78" Y="141" name="demographics.csv" type="com.alpine.miner.gef.runoperator.hadoop.HadoopFileOperator" uuid="1483689473651">
+<Note/>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopFileName" value="/automation_test_data/csv/demographics.csv"/>
+<Parameter key="hadoopFileFormat" value="Text File"/>
+<HadoopFileStructureModel delimiter="Comma" escapChar="\" includeHeader="true" other="" quoteChar="&quot;">
+<col n="id" t="long"/>
+<col n="name" t="chararray"/>
+<col n="age" t="long"/>
+<col n="num_dep" t="long"/>
+<col n="edu" t="long"/>
+</HadoopFileStructureModel>
+<InPutFieldList>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopCompressionFormat" value=""/>
+<Parameter key="hadoopFileName" value="/automation_test_data/csv/demographics.csv"/>
+</InPutFieldList>
+</Operator>
+<Operator X="197" Y="86" name="Join" type="com.alpine.miner.gef.runoperator.hadoop.HadoopJoinOperator" uuid="1483689501692">
+<Note/>
+<Parameter key="storeResults" value="false"/>
+<Parameter key="resultsLocation" value="/tmp/alpine_out/@user_name/@flow_name"/>
+<Parameter key="resultsName" value="join_0"/>
+<Parameter key="override" value="Yes"/>
+<Parameter key="hiveResultDatabase" value="@default_schema"/>
+<Parameter key="hiveResultTableName" value="alp@user_id_@flow_id_join_0"/>
+<Parameter key="dropIfExist" value="Yes"/>
+<advancedSettings>
+<AdvancedParameterSubParameter defaultValue="" displayName="Max JVM Heap Size (MB) (-1=Automatic)" key="inMemoryRfVMSize" overridden="false" userSpecified="false" value="-1"/>
+</advancedSettings>
+<HadoopJoinDefinition>
+<JoinFileModel file="/automation_test_data/csv/credit.csv" operID="1483689452154"/>
+<JoinFileModel file="/automation_test_data/csv/demographics.csv" operID="1483689473651"/>
+<JoinColumnModel columnName="id" columnType="long" fileId="1483689452154" newColumnName="id_creditcsv"/>
+<JoinColumnModel columnName="times90dayslate" columnType="long" fileId="1483689452154" newColumnName="times90dayslate"/>
+<JoinColumnModel columnName="revolving_util" columnType="double" fileId="1483689452154" newColumnName="revolving_util"/>
+<JoinColumnModel columnName="debt_ratio" columnType="double" fileId="1483689452154" newColumnName="debt_ratio"/>
+<JoinColumnModel columnName="credit_lines" columnType="long" fileId="1483689452154" newColumnName="credit_lines"/>
+<JoinColumnModel columnName="monthly_income" columnType="double" fileId="1483689452154" newColumnName="monthly_income"/>
+<JoinColumnModel columnName="times30dayslate_2years" columnType="long" fileId="1483689452154" newColumnName="times30dayslate_2years"/>
+<JoinColumnModel columnName="srsdlqncy" columnType="long" fileId="1483689452154" newColumnName="srsdlqncy"/>
+<JoinColumnModel columnName="name" columnType="chararray" fileId="1483689473651" newColumnName="name"/>
+<JoinColumnModel columnName="age" columnType="long" fileId="1483689473651" newColumnName="age"/>
+<JoinColumnModel columnName="num_dep" columnType="long" fileId="1483689473651" newColumnName="num_dep"/>
+<JoinColumnModel columnName="edu" columnType="long" fileId="1483689473651" newColumnName="edu"/>
+<JoinConditionModel conditionList="=" fileId="1483689452154" keyColumnAliasList="id_creditcsv" keyColumnList="id"/>
+<JoinConditionModel conditionList="=" fileId="1483689473651" keyColumnAliasList="id_demographicscsv" keyColumnList="id"/>
+<joinType joinTypeValue="JOIN"/>
+<joinReplicateOption joinReplicateOption="NONE"/>
+<usePig usePig="true"/>
+</HadoopJoinDefinition>
+<InPutFieldList>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopCompressionFormat" value=""/>
+<Parameter key="hadoopFileName" value="/automation_test_data/csv/credit.csv"/>
+</InPutFieldList>
+<InPutFieldList>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopCompressionFormat" value=""/>
+<Parameter key="hadoopFileName" value="/automation_test_data/csv/demographics.csv"/>
+</InPutFieldList>
+</Operator>
+<Operator X="309" Y="87" name="Row Filter" type="com.alpine.miner.gef.runoperator.hadoop.HadoopRowFilterOperator" uuid="1483689545153">
+<Note/>
+<Parameter key="useRowLimit" value="false"/>
+<Parameter key="rowLimit" value=""/>
+<Parameter key="storeResults" value="false"/>
+<Parameter key="resultsLocation" value="/tmp/alpine_out/@user_name/@flow_name"/>
+<Parameter key="resultsName" value="rowfil_0"/>
+<Parameter key="override" value="Yes"/>
+<Parameter key="hiveResultDatabase" value="@default_schema"/>
+<Parameter key="hiveResultTableName" value="alp@user_id_@flow_id_rowfil_0"/>
+<Parameter key="dropIfExist" value="Yes"/>
+<RowFilterConditionModel conditionValue="" sqlType="nosql" useAll="true">
+<RowFilterConditionItem columnName="age" condition="&gt;" firstValue="@min_age" secondValue=""/>
+<RowFilterConditionItem columnName="age" condition="&lt;=" firstValue="@max_age" secondValue=""/>
+</RowFilterConditionModel>
+<InPutFieldList>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopCompressionFormat" value=""/>
+<Parameter key="hadoopFileName" value="@default_tempdir/alpine_runtime/@user_name/@flow_name/join_0"/>
+</InPutFieldList>
+</Operator>
+<Operator X="453" Y="87" name="Random Sampling" type="com.alpine.miner.gef.runoperator.hadoop.HadoopRandomSamplingOperator" uuid="1483689660578">
+<Note/>
+<Parameter key="sampleCount" value="3"/>
+<Parameter key="sampleSizeType" value="Percentage"/>
+<Parameter key="randomSeed" value=" "/>
+<Parameter key="consistent" value="false"/>
+<Parameter key="replacement" value="false"/>
+<Parameter key="disjoint" value="true"/>
+<Parameter key="storeResults" value="false"/>
+<Parameter key="resultsLocation" value="/tmp/alpine_out/@user_name/@flow_name"/>
+<Parameter key="resultsName" value="rsamp_0"/>
+<Parameter key="override" value="Yes"/>
+<Parameter key="hiveResultDatabase" value="@default_schema"/>
+<Parameter key="hiveResultTableName" value="alp@user_id_@flow_id_rsamp_0"/>
+<Parameter key="dropIfExist" value="Yes"/>
+<SampleSizeModel>
+<sampleIDs sampleID="1"/>
+<sampleIDs sampleID="2"/>
+<sampleIDs sampleID="3"/>
+<sampleSizes sampleSize="10"/>
+<sampleSizes sampleSize="20"/>
+<sampleSizes sampleSize="70"/>
+</SampleSizeModel>
+<InPutFieldList>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopCompressionFormat" value=""/>
+<Parameter key="hadoopFileName" value="@default_tempdir/alpine_runtime/@user_name/@flow_name/rowfil_0"/>
+</InPutFieldList>
+</Operator>
+<Operator X="269" Y="175" name="Sample Selector-1" type="com.alpine.miner.gef.runoperator.hadoop.HadoopSampleSelectorOperator" uuid="1483689766035">
+<Note/>
+<Parameter key="selectedFile" value="Sample_1"/>
+<InPutFieldList>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopCompressionFormat" value=""/>
+<Parameter key="hadoopFileName" value="@default_tempdir/alpine_runtime/@user_name/@flow_name/rsamp_0/Sample_1"/>
+</InPutFieldList>
+<InPutFieldList>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopCompressionFormat" value=""/>
+<Parameter key="hadoopFileName" value="@default_tempdir/alpine_runtime/@user_name/@flow_name/rsamp_0/Sample_2"/>
+</InPutFieldList>
+<InPutFieldList>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopCompressionFormat" value=""/>
+<Parameter key="hadoopFileName" value="@default_tempdir/alpine_runtime/@user_name/@flow_name/rsamp_0/Sample_3"/>
+</InPutFieldList>
+</Operator>
+<Operator X="643" Y="176" name="Sample Selector-70%" type="com.alpine.miner.gef.runoperator.hadoop.HadoopSampleSelectorOperator" uuid="1483689768854">
+<Note/>
+<Parameter key="selectedFile" value="Sample_3"/>
+<InPutFieldList>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopCompressionFormat" value=""/>
+<Parameter key="hadoopFileName" value="@default_tempdir/alpine_runtime/@user_name/@flow_name/rsamp_0/Sample_1"/>
+</InPutFieldList>
+<InPutFieldList>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopCompressionFormat" value=""/>
+<Parameter key="hadoopFileName" value="@default_tempdir/alpine_runtime/@user_name/@flow_name/rsamp_0/Sample_2"/>
+</InPutFieldList>
+<InPutFieldList>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopCompressionFormat" value=""/>
+<Parameter key="hadoopFileName" value="@default_tempdir/alpine_runtime/@user_name/@flow_name/rsamp_0/Sample_3"/>
+</InPutFieldList>
+</Operator>
+<Operator X="461" Y="177" name="Sample Selector-20%" type="com.alpine.miner.gef.runoperator.hadoop.HadoopSampleSelectorOperator" uuid="1483689770886">
+<Note/>
+<Parameter key="selectedFile" value="Sample_2"/>
+<InPutFieldList>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopCompressionFormat" value=""/>
+<Parameter key="hadoopFileName" value="@default_tempdir/alpine_runtime/@user_name/@flow_name/rsamp_0/Sample_1"/>
+</InPutFieldList>
+<InPutFieldList>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopCompressionFormat" value=""/>
+<Parameter key="hadoopFileName" value="@default_tempdir/alpine_runtime/@user_name/@flow_name/rsamp_0/Sample_2"/>
+</InPutFieldList>
+<InPutFieldList>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopCompressionFormat" value=""/>
+<Parameter key="hadoopFileName" value="@default_tempdir/alpine_runtime/@user_name/@flow_name/rsamp_0/Sample_3"/>
+</InPutFieldList>
+</Operator>
+<Operator X="621" Y="276" name="Logistic Regression" type="com.alpine.miner.gef.runoperator.hadoop.HadoopLogisticRegressionOperator" uuid="1483689848414">
+<Note/>
+<Parameter key="dependentColumn" value="srsdlqncy"/>
+<Parameter key="max_generations" value="10"/>
+<Parameter key="epsilon" value="0.0001"/>
+<Parameter key="columnNames" value="id_creditcsv,times90dayslate,revolving_util,debt_ratio,credit_lines,monthly_income,times30dayslate_2years,age,num_dep,edu"/>
+<Parameter key="useApproximation" value="No"/>
+<Parameter key="useReg" value="No"/>
+<Parameter key="lorPenalizingParameter" value="0"/>
+<Parameter key="retrainWORegularization" value="No"/>
+<Parameter key="elasticParameter" value="0.0"/>
+<Parameter key="useSpark" value="Yes"/>
+<advancedSettings>
+<AdvancedParameterSubParameter defaultValue="" displayName="Max JVM Heap Size (MB) (-1=Automatic)" key="inMemoryRfVMSize" overridden="false" userSpecified="false" value="-1"/>
+<AdvancedParameterSubParameter defaultValue="" displayName="Disable Dynamic Allocation" key="noDynamicAllocation" overridden="false" userSpecified="false" value="false"/>
+<AdvancedParameterSubParameter defaultValue="" displayName="Number of Spark Executors (-1=Automatic)" key="numSparkWorkers" overridden="false" userSpecified="false" value="-1"/>
+<AdvancedParameterSubParameter defaultValue="" displayName="Spark Executor Memory (MB) (-1=Automatic)" key="sparkExecutorMemory" overridden="false" userSpecified="false" value="-1"/>
+<AdvancedParameterSubParameter defaultValue="" displayName="Spark Driver Memory (MB) (-1=Automatic)" key="sparkDriverMemory" overridden="false" userSpecified="false" value="-1"/>
+<AdvancedParameterSubParameter defaultValue="" displayName="Storage Level" key="sparkStorageLevel" overridden="false" userSpecified="false" value="MEMORY_AND_DISK_SER"/>
+<AdvancedParameterSubParameter defaultValue="" displayName="Repartition the RDD" key="repartitionRDD" overridden="false" userSpecified="false" value="false"/>
+<AdvancedParameterSubParameter defaultValue="" displayName="Number of partitions (-1=Automatic)" key="numPartitions" overridden="false" userSpecified="false" value="-1"/>
+<AdvancedParameterSubParameter defaultValue="" displayName="Categorical Feature Unique Value Limit" key="maxNumCategoricalBins" overridden="false" userSpecified="false" value="256"/>
+</advancedSettings>
+<Parameter key="varSelPath" value=""/>
+<InPutFieldList>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopCompressionFormat" value=""/>
+<Parameter key="hadoopFileName" value="@default_tempdir/alpine_runtime/@user_name/@flow_name/rsamp_0/Sample_3"/>
+</InPutFieldList>
+</Operator>
+<Operator X="382" Y="247" name="Lift" type="com.alpine.miner.gef.runoperator.hadoop.HadoopLiftOperator" uuid="1483689861367">
+<Note/>
+<Parameter key="columnValue" value="1"/>
+<InPutFieldList>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopCompressionFormat" value=""/>
+<Parameter key="hadoopFileName" value="@default_tempdir/alpine_runtime/@user_name/@flow_name/rsamp_0/Sample_2"/>
+</InPutFieldList>
+</Operator>
+<Operator X="443" Y="323" name="ROC" type="com.alpine.miner.gef.runoperator.hadoop.HadoopROCOperator" uuid="1483689898332">
+<Note/>
+<Parameter key="columnValue" value="1"/>
+<InPutFieldList>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopCompressionFormat" value=""/>
+<Parameter key="hadoopFileName" value="@default_tempdir/alpine_runtime/@user_name/@flow_name/rsamp_0/Sample_2"/>
+</InPutFieldList>
+</Operator>
+<Operator X="507" Y="395" name="Confusion Matrix" type="com.alpine.miner.gef.runoperator.hadoop.HadoopConfusionOperator" uuid="1483689904346">
+<Note/>
+<InPutFieldList>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopCompressionFormat" value=""/>
+<Parameter key="hadoopFileName" value="@default_tempdir/alpine_runtime/@user_name/@flow_name/rsamp_0/Sample_2"/>
+</InPutFieldList>
+</Operator>
+<Operator X="280" Y="319" name="Classifier" type="com.alpine.miner.gef.runoperator.hadoop.HadoopClassifierPredictOperator" uuid="1483689994808">
+<Note/>
+<Parameter key="storeResults" value="false"/>
+<Parameter key="resultsLocation" value="/tmp/alpine_out/@user_name/@flow_name"/>
+<Parameter key="resultsName" value="classifier_0"/>
+<Parameter key="override" value="Yes"/>
+<Parameter key="hiveResultDatabase" value="@default_schema"/>
+<Parameter key="hiveResultTableName" value="alp@user_id_@flow_id_classifier_0"/>
+<Parameter key="dropIfExist" value="Yes"/>
+<InPutFieldList>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopCompressionFormat" value=""/>
+<Parameter key="hadoopFileName" value="@default_tempdir/alpine_runtime/@user_name/@flow_name/rsamp_0/Sample_1"/>
+</InPutFieldList>
+</Operator>
+<Operator X="382" Y="402" name="Predictor" type="com.alpine.miner.gef.runoperator.hadoop.HadoopPredictOperator" uuid="1483690001964">
+<Note/>
+<Parameter key="storeResults" value="false"/>
+<Parameter key="resultsLocation" value="/tmp/alpine_out/@user_name/@flow_name"/>
+<Parameter key="resultsName" value="pred_0"/>
+<Parameter key="override" value="Yes"/>
+<Parameter key="hiveResultDatabase" value="@default_schema"/>
+<Parameter key="hiveResultTableName" value="alp@user_id_@flow_id_pred_0"/>
+<Parameter key="dropIfExist" value="Yes"/>
+<InPutFieldList>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopCompressionFormat" value=""/>
+<Parameter key="hadoopFileName" value="@default_tempdir/alpine_runtime/@user_name/@flow_name/rsamp_0/Sample_1"/>
+</InPutFieldList>
+</Operator>
+<Operator X="642" Y="87" name="Summary Statistics" type="com.alpine.miner.gef.runoperator.hadoop.HadoopValueAnalysisOperator" uuid="1483690060047">
+<Note/>
+<Parameter key="columnNames" value="times90dayslate,revolving_util,debt_ratio,credit_lines,monthly_income,times30dayslate_2years,srsdlqncy,age,num_dep,edu"/>
+<Parameter key="doDistinct" value="Yes"/>
+<Parameter key="topN" value="10"/>
+<Parameter key="storeResults" value="false"/>
+<Parameter key="resultsLocation" value="/tmp/alpine_out/@user_name/@flow_name"/>
+<Parameter key="resultsName" value="summary_0"/>
+<Parameter key="override" value="Yes"/>
+<Parameter key="hiveResultDatabase" value="@default_schema"/>
+<Parameter key="hiveResultTableName" value="alp@user_id_@flow_id_summary_0"/>
+<Parameter key="dropIfExist" value="Yes"/>
+<Parameter key="useSpark" value="Yes"/>
+<advancedSettings>
+<AdvancedParameterSubParameter defaultValue="" displayName="Disable Dynamic Allocation" key="noDynamicAllocation" overridden="false" userSpecified="false" value="false"/>
+<AdvancedParameterSubParameter defaultValue="" displayName="Number of Spark Executors (-1=Automatic)" key="numSparkWorkers" overridden="false" userSpecified="false" value="-1"/>
+<AdvancedParameterSubParameter defaultValue="" displayName="Spark Executor Memory (MB) (-1=Automatic)" key="sparkExecutorMemory" overridden="false" userSpecified="false" value="-1"/>
+<AdvancedParameterSubParameter defaultValue="" displayName="Spark Driver Memory (MB) (-1=Automatic)" key="sparkDriverMemory" overridden="false" userSpecified="false" value="-1"/>
+</advancedSettings>
+<InPutFieldList>
+<Parameter key="connName" value="Demo_Hadoop"/>
+<Parameter key="hadoopCompressionFormat" value=""/>
+<Parameter key="hadoopFileName" value="@default_tempdir/alpine_runtime/@user_name/@flow_name/rsamp_0/Sample_3"/>
+</InPutFieldList>
+</Operator>
+<Link source="credit.csv" target="Join"/>
+<Link source="demographics.csv" target="Join"/>
+<Link source="Join" target="Row Filter"/>
+<Link source="Row Filter" target="Random Sampling"/>
+<Link source="Random Sampling" target="Sample Selector-1"/>
+<Link source="Random Sampling" target="Sample Selector-20%"/>
+<Link source="Random Sampling" target="Sample Selector-70%"/>
+<Link source="Sample Selector-70%" target="Logistic Regression"/>
+<Link source="Logistic Regression" target="Lift"/>
+<Link source="Logistic Regression" target="ROC"/>
+<Link source="Logistic Regression" target="Confusion Matrix"/>
+<Link source="Sample Selector-20%" target="Lift"/>
+<Link source="Sample Selector-20%" target="ROC"/>
+<Link source="Sample Selector-20%" target="Confusion Matrix"/>
+<Link source="Sample Selector-1" target="Classifier"/>
+<Link source="Sample Selector-1" target="Predictor"/>
+<Link source="Logistic Regression" target="Predictor"/>
+<Link source="Logistic Regression" target="Classifier"/>
+<Link source="Sample Selector-70%" target="Summary Statistics"/>
+<VariableModel>
+<Variable>
+<Name>@flow_name</Name>
+<Value>@flow_name</Value>
+</Variable>
+<Variable>
+<Name>@user_name</Name>
+<Value>@user_name</Value>
+</Variable>
+<Variable>
+<Name>@user_id</Name>
+<Value>@user_id</Value>
+</Variable>
+<Variable>
+<Name>@flow_id</Name>
+<Value>@flow_id</Value>
+</Variable>
+<Variable>
+<Name>@default_schema</Name>
+<Value>public</Value>
+</Variable>
+<Variable>
+<Name>@default_prefix</Name>
+<Value>ch2</Value>
+</Variable>
+<Variable>
+<Name>@default_tempdir</Name>
+<Value>/tmp</Value>
+</Variable>
+<Variable>
+<Name>@default_delimiter</Name>
+<Value>,</Value>
+</Variable>
+<Variable>
+<Name>@pig_number_of_reducers</Name>
+<Value>-1</Value>
+</Variable>
+<Variable>
+<Name>@max_age</Name>
+<Value>55</Value>
+</Variable>
+<Variable>
+<Name>@min_age</Name>
+<Value>20</Value>
+</Variable>
+</VariableModel>
+</Process>

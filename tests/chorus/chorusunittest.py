@@ -1,5 +1,4 @@
 from unittest import TestCase
-from api.exception import *
 
 
 class ChorusTestCase(TestCase):

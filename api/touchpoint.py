@@ -1,21 +1,11 @@
-from chorus import *
-from urlparse import urljoin
-from urlparse import urlparse
-
 from api.exception import *
-import time
+from api.chorus import ChorusObject
 
 
 class TouchPoint(ChorusObject):
 
-    def __init__(self, chorus_session=None):
-        super(TouchPoint, self).__init__()
-        if chorus_session:
-            self.base_url = chorus_session.base_url
-            self.session = chorus_session.session
-            self.token = chorus_session.token
-        else:
-            raise ChorusSessionNotFoundException()
+    def __init__(self, base_url, session, token):
+        super(TouchPoint, self).__init__(base_url, session, token)
 
 
     def add_touchpoint(self, touchpoint_name, workfile_id, workspace_id, touchpoint_description):

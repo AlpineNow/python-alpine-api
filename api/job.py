@@ -1,19 +1,13 @@
-import requests
 import json
-from chorus import *
-
 from api.exception import *
+from api.chorus import ChorusObject
+
+
 
 class Job(ChorusObject):
 
-    def __init__(self, chorus_session=None):
-        super(Job, self).__init__()
-        if chorus_session:
-            self.base_url = chorus_session.base_url
-            self.session = chorus_session.session
-            self.token = chorus_session.token
-        else:
-            raise ChorusSessionNotFoundException()
+    def __init__(self, base_url, session, token):
+        super(Job, self).__init__(base_url, session, token)
 
     def add_job(self, workspace_id, job_name, interval_unit="on_demand", interval_value=0, next_run=""):
         """

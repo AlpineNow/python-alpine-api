@@ -1,18 +1,13 @@
-import requests
 import json
-from chorus import *
+from api import *
 from api.exception import *
+from api.chorus import ChorusObject
+
 
 class User(ChorusObject):
 
-    def __init__(self, chorus_session=None):
-        super(User, self).__init__()
-        if chorus_session:
-            self.base_url = chorus_session.base_url
-            self.session = chorus_session.session
-            self.token = chorus_session.token
-        else:
-            raise ChorusSessionNotFoundException()
+    def __init__(self, base_url, session, token):
+        super(User, self).__init__(base_url, session, token)
 
     def create_user(self, username, password, first_name, last_name, email, title, dept,
                     notes ="Add Via API", admin="admin", user_type="analytics_developer"):
