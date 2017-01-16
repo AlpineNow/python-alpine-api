@@ -1,4 +1,3 @@
-from .chorus import ChorusObject
 from .alpine import Alpine
 from .user import User
 from .workfile import Workfile
