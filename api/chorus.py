@@ -2,9 +2,6 @@ import json
 import logging
 import logging.config
 import os
-import sys
-import requests
-from api import *
 
 class ChorusObject(object):
     chorus_api_version = 1
