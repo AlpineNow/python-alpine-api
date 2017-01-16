@@ -50,7 +50,8 @@ class Alpine(ChorusObject):
         self.ca_certs = ca_certs
         self.validate_certs = validate_certs
         self.user_id=None
-        # init sub session classes
+        if username and password:
+            self.login(username, password)
 
     def login(self, username, password):
         """

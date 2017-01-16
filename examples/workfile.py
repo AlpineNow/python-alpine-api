@@ -128,8 +128,9 @@ def main(chorus_host, chorus_port, username, password):
     sample_workspace_public_state_true = True
 
     # Create a chorus session
-    alpine_session = Alpine(chorus_host, chorus_port)
-    alpine_session.login(username, password)
+    # alpine_session = Alpine(chorus_host, chorus_port)
+    # alpine_session.login(username, password)
+    alpine_session = Alpine(chorus_host, chorus_port, username, password)
 
     # Logging Examples
     # use chorus logger
