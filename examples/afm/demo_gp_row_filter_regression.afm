@@ -1,0 +1,625 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Process Description="" UserName="2" Version="6.2.0.0">
+<DataSources>
+<DataSource name="miner_demo" type="Database">
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Parameter key="url" value="jdbc:postgresql://10.10.0.151:5432/miner_demo"/>
+<Parameter key="userName" value="miner_demo"/>
+<Parameter key="useSSL" value="false"/>
+<Parameter key="password" value="bWluZXJfZGVtbw=="/>
+<Parameter key="system" value="Greenplum"/>
+</DataSource>
+</DataSources>
+<Operator X="98" Y="42" name="credit" type="com.alpine.miner.gef.runoperator.datasource.DbTableOperator" uuid="1483688385488">
+<Note/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Parameter key="schemaName" value="demo"/>
+<Parameter key="tableName" value="credit"/>
+</Operator>
+<Operator X="100" Y="138" name="demographics" type="com.alpine.miner.gef.runoperator.datasource.DbTableOperator" uuid="1483688389969">
+<Note/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Parameter key="schemaName" value="demo"/>
+<Parameter key="tableName" value="demographics"/>
+</Operator>
+<Operator X="216" Y="92" name="Join" type="com.alpine.miner.gef.runoperator.datasource.TableJoinOperator" uuid="1483688399696">
+<Note/>
+<Parameter key="createSequenceID" value="No"/>
+<Parameter key="outputType" value="TABLE"/>
+<Parameter key="outputSchema" value="@default_schema"/>
+<Parameter key="outputTable" value="alp@user_id_@flow_id_join_0"/>
+<StorageParameters appendOnly="false" columnarStorage="false" compression="false" compressionLevel="1" isDistributedRandomly="true"/>
+<Parameter key="dropIfExist" value="Yes"/>
+<TableJoinDefinition>
+<JoinTableModel alias="gk" operID="1483688385488" schema="demo" table="credit"/>
+<JoinTableModel alias="sd" operID="1483688389969" schema="demo" table="demographics"/>
+<JoinColumnModel columnName="id" columnType="BIGINT" newColumnName="id" tableAlias="gk"/>
+<JoinColumnModel columnName="times90dayslate" columnType="INTEGER" newColumnName="times90dayslate" tableAlias="gk"/>
+<JoinColumnModel columnName="revolving_util" columnType="NUMERIC" newColumnName="revolving_util" tableAlias="gk"/>
+<JoinColumnModel columnName="debt_ratio" columnType="NUMERIC" newColumnName="debt_ratio" tableAlias="gk"/>
+<JoinColumnModel columnName="credit_lines" columnType="INTEGER" newColumnName="credit_lines" tableAlias="gk"/>
+<JoinColumnModel columnName="monthly_income" columnType="NUMERIC" newColumnName="monthly_income" tableAlias="gk"/>
+<JoinColumnModel columnName="times30dayslate_2years" columnType="INTEGER" newColumnName="times30dayslate_2years" tableAlias="gk"/>
+<JoinColumnModel columnName="srsdlqncy" columnType="INTEGER" newColumnName="srsdlqncy" tableAlias="gk"/>
+<JoinColumnModel columnName="id" columnType="BIGINT" newColumnName="sd.id" tableAlias="sd"/>
+<JoinColumnModel columnName="name" columnType="TEXT" newColumnName="name" tableAlias="sd"/>
+<JoinColumnModel columnName="age" columnType="BIGINT" newColumnName="age" tableAlias="sd"/>
+<JoinColumnModel columnName="num_dep" columnType="INTEGER" newColumnName="num_dep" tableAlias="sd"/>
+<JoinColumnModel columnName="edu" columnType="INTEGER" newColumnName="edu" tableAlias="sd"/>
+<JoinConditionModel andOr="" column1="&quot;sd&quot;.&quot;id&quot;" column2="&quot;gk&quot;.&quot;id&quot;" condition="=" joinType="JOIN" tableAlias1="gk" tableAlias2="sd"/>
+</TableJoinDefinition>
+<InPutFieldList id="1483688385488">
+<Parameter key="schema" value="demo"/>
+<Parameter key="table" value="credit"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Fields>
+<Field name="id" type="BIGINT"/>
+<Field name="times90dayslate" type="INTEGER"/>
+<Field name="revolving_util" type="NUMERIC"/>
+<Field name="debt_ratio" type="NUMERIC"/>
+<Field name="credit_lines" type="INTEGER"/>
+<Field name="monthly_income" type="NUMERIC"/>
+<Field name="times30dayslate_2years" type="INTEGER"/>
+<Field name="srsdlqncy" type="INTEGER"/>
+</Fields>
+</InPutFieldList>
+<InPutFieldList id="1483688389969">
+<Parameter key="schema" value="demo"/>
+<Parameter key="table" value="demographics"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Fields>
+<Field name="id" type="BIGINT"/>
+<Field name="name" type="TEXT"/>
+<Field name="age" type="BIGINT"/>
+<Field name="num_dep" type="INTEGER"/>
+<Field name="edu" type="INTEGER"/>
+</Fields>
+</InPutFieldList>
+</Operator>
+<Operator X="318" Y="90" name="Variable" type="com.alpine.miner.gef.runoperator.field.VariableOperator" uuid="1483688407534">
+<Note/>
+<Parameter key="columnNames" value="id,times90dayslate,revolving_util,debt_ratio,credit_lines,monthly_income,times30dayslate_2years,srsdlqncy,name,age,num_dep,edu"/>
+<Parameter key="outputType" value="TABLE"/>
+<Parameter key="outputSchema" value="@default_schema"/>
+<Parameter key="outputTable" value="alp@user_id_@flow_id_var_0"/>
+<StorageParameters appendOnly="false" columnarStorage="false" compression="false" compressionLevel="1" isDistributedRandomly="true"/>
+<Parameter key="dropIfExist" value="Yes"/>
+<QuantileModel useApproximation=""/>
+<DerivedFieldsModel>
+<DerivedFieldItem columnName="bool_srsdlqncy" dataType="BOOLEAN" expression="case when &quot;srsdlqncy&quot; =1 then True else False end" multiVarColumn="" multiVarFormat="" multiVarReplacementExpression="case when &quot;srsdlqncy&quot; =1 then True else False end" multiVarReturnColumns=""/>
+</DerivedFieldsModel>
+<InPutFieldList id="1483688399696">
+<Parameter key="schema" value="@default_schema"/>
+<Parameter key="table" value="alp@user_id_@flow_id_join_0"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Fields>
+<Field name="id" type="BIGINT"/>
+<Field name="times90dayslate" type="INTEGER"/>
+<Field name="revolving_util" type="NUMERIC"/>
+<Field name="debt_ratio" type="NUMERIC"/>
+<Field name="credit_lines" type="INTEGER"/>
+<Field name="monthly_income" type="NUMERIC"/>
+<Field name="times30dayslate_2years" type="INTEGER"/>
+<Field name="srsdlqncy" type="INTEGER"/>
+<Field name="sd.id" type="BIGINT"/>
+<Field name="name" type="TEXT"/>
+<Field name="age" type="BIGINT"/>
+<Field name="num_dep" type="INTEGER"/>
+<Field name="edu" type="INTEGER"/>
+</Fields>
+</InPutFieldList>
+</Operator>
+<Operator X="584" Y="87" name="Random Sampling" type="com.alpine.miner.gef.runoperator.sampling.RandomSamplingOperator" uuid="1483688426014">
+<Note/>
+<Parameter key="sampleCount" value="3"/>
+<Parameter key="sampleSizeType" value="Percentage"/>
+<Parameter key="randomSeed" value="0.1"/>
+<Parameter key="consistent" value="true"/>
+<Parameter key="replacement" value="false"/>
+<Parameter key="disjoint" value="true"/>
+<Parameter key="keyColumnList" value="monthly_income"/>
+<Parameter key="outputSchema" value="@default_schema"/>
+<Parameter key="outputTable" value="alp@user_id_@flow_id_rsamp_0"/>
+<StorageParameters appendOnly="false" columnarStorage="false" compression="false" compressionLevel="1" isDistributedRandomly="true"/>
+<Parameter key="dropIfExist" value="Yes"/>
+<SampleSizeModel>
+<sampleIDs sampleID="1"/>
+<sampleIDs sampleID="2"/>
+<sampleIDs sampleID="3"/>
+<sampleSizes sampleSize="10"/>
+<sampleSizes sampleSize="20"/>
+<sampleSizes sampleSize="70"/>
+</SampleSizeModel>
+<InPutFieldList id="1483688506768">
+<Parameter key="schema" value="@default_schema"/>
+<Parameter key="table" value="alp@user_id_@flow_id_rowfil_0"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Fields>
+<Field name="id" type="BIGINT"/>
+<Field name="times90dayslate" type="INTEGER"/>
+<Field name="revolving_util" type="NUMERIC"/>
+<Field name="debt_ratio" type="NUMERIC"/>
+<Field name="credit_lines" type="INTEGER"/>
+<Field name="monthly_income" type="NUMERIC"/>
+<Field name="times30dayslate_2years" type="INTEGER"/>
+<Field name="srsdlqncy" type="INTEGER"/>
+<Field name="name" type="TEXT"/>
+<Field name="age" type="BIGINT"/>
+<Field name="num_dep" type="INTEGER"/>
+<Field name="edu" type="INTEGER"/>
+<Field name="bool_srsdlqncy" type="BOOLEAN"/>
+</Fields>
+</InPutFieldList>
+</Operator>
+<Operator X="434" Y="86" name="Row Filter" type="com.alpine.miner.gef.runoperator.field.FilterOperator" uuid="1483688506768">
+<Note/>
+<Parameter key="outputType" value="TABLE"/>
+<Parameter key="outputSchema" value="@default_schema"/>
+<Parameter key="outputTable" value="alp@user_id_@flow_id_rowfil_0"/>
+<StorageParameters appendOnly="false" columnarStorage="false" compression="false" compressionLevel="1" isDistributedRandomly="true"/>
+<Parameter key="dropIfExist" value="Yes"/>
+<RowFilterConditionModel conditionValue="" sqlType="nosql" useAll="true">
+<RowFilterConditionItem columnName="age" condition="&lt;=" firstValue="@max_age" secondValue=""/>
+<RowFilterConditionItem columnName="age" condition="&gt;" firstValue="@min_age" secondValue=""/>
+</RowFilterConditionModel>
+<InPutFieldList id="1483688407534">
+<Parameter key="schema" value="@default_schema"/>
+<Parameter key="table" value="alp@user_id_@flow_id_var_0"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Fields>
+<Field name="id" type="BIGINT"/>
+<Field name="times90dayslate" type="INTEGER"/>
+<Field name="revolving_util" type="NUMERIC"/>
+<Field name="debt_ratio" type="NUMERIC"/>
+<Field name="credit_lines" type="INTEGER"/>
+<Field name="monthly_income" type="NUMERIC"/>
+<Field name="times30dayslate_2years" type="INTEGER"/>
+<Field name="srsdlqncy" type="INTEGER"/>
+<Field name="name" type="TEXT"/>
+<Field name="age" type="BIGINT"/>
+<Field name="num_dep" type="INTEGER"/>
+<Field name="edu" type="INTEGER"/>
+<Field name="bool_srsdlqncy" type="BOOLEAN"/>
+</Fields>
+</InPutFieldList>
+</Operator>
+<Operator X="379" Y="171" name="Sample Selector-10%" type="com.alpine.miner.gef.runoperator.sampling.SampleSelectorOperator" uuid="1483688764506">
+<Note/>
+<Parameter key="selectedTable" value="@default_schema.alp@user_id_@flow_id_rsamp_0_0"/>
+<InPutFieldList id="1483688426014">
+<Parameter key="schema" value="@default_schema"/>
+<Parameter key="table" value="alp@user_id_@flow_id_rsamp_0_0"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Fields>
+<Field name="id" type="BIGINT"/>
+<Field name="times90dayslate" type="INTEGER"/>
+<Field name="revolving_util" type="NUMERIC"/>
+<Field name="debt_ratio" type="NUMERIC"/>
+<Field name="credit_lines" type="INTEGER"/>
+<Field name="monthly_income" type="NUMERIC"/>
+<Field name="times30dayslate_2years" type="INTEGER"/>
+<Field name="srsdlqncy" type="INTEGER"/>
+<Field name="name" type="TEXT"/>
+<Field name="age" type="BIGINT"/>
+<Field name="num_dep" type="INTEGER"/>
+<Field name="edu" type="INTEGER"/>
+<Field name="bool_srsdlqncy" type="BOOLEAN"/>
+</Fields>
+</InPutFieldList>
+<InPutFieldList id="1483688426014">
+<Parameter key="schema" value="@default_schema"/>
+<Parameter key="table" value="alp@user_id_@flow_id_rsamp_0_1"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Fields>
+<Field name="id" type="BIGINT"/>
+<Field name="times90dayslate" type="INTEGER"/>
+<Field name="revolving_util" type="NUMERIC"/>
+<Field name="debt_ratio" type="NUMERIC"/>
+<Field name="credit_lines" type="INTEGER"/>
+<Field name="monthly_income" type="NUMERIC"/>
+<Field name="times30dayslate_2years" type="INTEGER"/>
+<Field name="srsdlqncy" type="INTEGER"/>
+<Field name="name" type="TEXT"/>
+<Field name="age" type="BIGINT"/>
+<Field name="num_dep" type="INTEGER"/>
+<Field name="edu" type="INTEGER"/>
+<Field name="bool_srsdlqncy" type="BOOLEAN"/>
+</Fields>
+</InPutFieldList>
+<InPutFieldList id="1483688426014">
+<Parameter key="schema" value="@default_schema"/>
+<Parameter key="table" value="alp@user_id_@flow_id_rsamp_0_2"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Fields>
+<Field name="id" type="BIGINT"/>
+<Field name="times90dayslate" type="INTEGER"/>
+<Field name="revolving_util" type="NUMERIC"/>
+<Field name="debt_ratio" type="NUMERIC"/>
+<Field name="credit_lines" type="INTEGER"/>
+<Field name="monthly_income" type="NUMERIC"/>
+<Field name="times30dayslate_2years" type="INTEGER"/>
+<Field name="srsdlqncy" type="INTEGER"/>
+<Field name="name" type="TEXT"/>
+<Field name="age" type="BIGINT"/>
+<Field name="num_dep" type="INTEGER"/>
+<Field name="edu" type="INTEGER"/>
+<Field name="bool_srsdlqncy" type="BOOLEAN"/>
+</Fields>
+</InPutFieldList>
+</Operator>
+<Operator X="591" Y="171" name="Sample Selector-20%" type="com.alpine.miner.gef.runoperator.sampling.SampleSelectorOperator" uuid="1483688768486">
+<Note/>
+<Parameter key="selectedTable" value="@default_schema.alp@user_id_@flow_id_rsamp_0_1"/>
+<InPutFieldList id="1483688426014">
+<Parameter key="schema" value="@default_schema"/>
+<Parameter key="table" value="alp@user_id_@flow_id_rsamp_0_0"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Fields>
+<Field name="id" type="BIGINT"/>
+<Field name="times90dayslate" type="INTEGER"/>
+<Field name="revolving_util" type="NUMERIC"/>
+<Field name="debt_ratio" type="NUMERIC"/>
+<Field name="credit_lines" type="INTEGER"/>
+<Field name="monthly_income" type="NUMERIC"/>
+<Field name="times30dayslate_2years" type="INTEGER"/>
+<Field name="srsdlqncy" type="INTEGER"/>
+<Field name="name" type="TEXT"/>
+<Field name="age" type="BIGINT"/>
+<Field name="num_dep" type="INTEGER"/>
+<Field name="edu" type="INTEGER"/>
+<Field name="bool_srsdlqncy" type="BOOLEAN"/>
+</Fields>
+</InPutFieldList>
+<InPutFieldList id="1483688426014">
+<Parameter key="schema" value="@default_schema"/>
+<Parameter key="table" value="alp@user_id_@flow_id_rsamp_0_1"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Fields>
+<Field name="id" type="BIGINT"/>
+<Field name="times90dayslate" type="INTEGER"/>
+<Field name="revolving_util" type="NUMERIC"/>
+<Field name="debt_ratio" type="NUMERIC"/>
+<Field name="credit_lines" type="INTEGER"/>
+<Field name="monthly_income" type="NUMERIC"/>
+<Field name="times30dayslate_2years" type="INTEGER"/>
+<Field name="srsdlqncy" type="INTEGER"/>
+<Field name="name" type="TEXT"/>
+<Field name="age" type="BIGINT"/>
+<Field name="num_dep" type="INTEGER"/>
+<Field name="edu" type="INTEGER"/>
+<Field name="bool_srsdlqncy" type="BOOLEAN"/>
+</Fields>
+</InPutFieldList>
+<InPutFieldList id="1483688426014">
+<Parameter key="schema" value="@default_schema"/>
+<Parameter key="table" value="alp@user_id_@flow_id_rsamp_0_2"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Fields>
+<Field name="id" type="BIGINT"/>
+<Field name="times90dayslate" type="INTEGER"/>
+<Field name="revolving_util" type="NUMERIC"/>
+<Field name="debt_ratio" type="NUMERIC"/>
+<Field name="credit_lines" type="INTEGER"/>
+<Field name="monthly_income" type="NUMERIC"/>
+<Field name="times30dayslate_2years" type="INTEGER"/>
+<Field name="srsdlqncy" type="INTEGER"/>
+<Field name="name" type="TEXT"/>
+<Field name="age" type="BIGINT"/>
+<Field name="num_dep" type="INTEGER"/>
+<Field name="edu" type="INTEGER"/>
+<Field name="bool_srsdlqncy" type="BOOLEAN"/>
+</Fields>
+</InPutFieldList>
+</Operator>
+<Operator X="811" Y="170" name="Sample Selector-70%" type="com.alpine.miner.gef.runoperator.sampling.SampleSelectorOperator" uuid="1483688771952">
+<Note/>
+<Parameter key="selectedTable" value="@default_schema.alp@user_id_@flow_id_rsamp_0_2"/>
+<InPutFieldList id="1483688426014">
+<Parameter key="schema" value="@default_schema"/>
+<Parameter key="table" value="alp@user_id_@flow_id_rsamp_0_0"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Fields>
+<Field name="id" type="BIGINT"/>
+<Field name="times90dayslate" type="INTEGER"/>
+<Field name="revolving_util" type="NUMERIC"/>
+<Field name="debt_ratio" type="NUMERIC"/>
+<Field name="credit_lines" type="INTEGER"/>
+<Field name="monthly_income" type="NUMERIC"/>
+<Field name="times30dayslate_2years" type="INTEGER"/>
+<Field name="srsdlqncy" type="INTEGER"/>
+<Field name="name" type="TEXT"/>
+<Field name="age" type="BIGINT"/>
+<Field name="num_dep" type="INTEGER"/>
+<Field name="edu" type="INTEGER"/>
+<Field name="bool_srsdlqncy" type="BOOLEAN"/>
+</Fields>
+</InPutFieldList>
+<InPutFieldList id="1483688426014">
+<Parameter key="schema" value="@default_schema"/>
+<Parameter key="table" value="alp@user_id_@flow_id_rsamp_0_1"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Fields>
+<Field name="id" type="BIGINT"/>
+<Field name="times90dayslate" type="INTEGER"/>
+<Field name="revolving_util" type="NUMERIC"/>
+<Field name="debt_ratio" type="NUMERIC"/>
+<Field name="credit_lines" type="INTEGER"/>
+<Field name="monthly_income" type="NUMERIC"/>
+<Field name="times30dayslate_2years" type="INTEGER"/>
+<Field name="srsdlqncy" type="INTEGER"/>
+<Field name="name" type="TEXT"/>
+<Field name="age" type="BIGINT"/>
+<Field name="num_dep" type="INTEGER"/>
+<Field name="edu" type="INTEGER"/>
+<Field name="bool_srsdlqncy" type="BOOLEAN"/>
+</Fields>
+</InPutFieldList>
+<InPutFieldList id="1483688426014">
+<Parameter key="schema" value="@default_schema"/>
+<Parameter key="table" value="alp@user_id_@flow_id_rsamp_0_2"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Fields>
+<Field name="id" type="BIGINT"/>
+<Field name="times90dayslate" type="INTEGER"/>
+<Field name="revolving_util" type="NUMERIC"/>
+<Field name="debt_ratio" type="NUMERIC"/>
+<Field name="credit_lines" type="INTEGER"/>
+<Field name="monthly_income" type="NUMERIC"/>
+<Field name="times30dayslate_2years" type="INTEGER"/>
+<Field name="srsdlqncy" type="INTEGER"/>
+<Field name="name" type="TEXT"/>
+<Field name="age" type="BIGINT"/>
+<Field name="num_dep" type="INTEGER"/>
+<Field name="edu" type="INTEGER"/>
+<Field name="bool_srsdlqncy" type="BOOLEAN"/>
+</Fields>
+</InPutFieldList>
+</Operator>
+<Operator X="703" Y="253" name="Logistic Regression" type="com.alpine.miner.gef.runoperator.logisticregression.LogisticRegressionOperator" uuid="1483688841271">
+<Note/>
+<Parameter key="dependentColumn" value="bool_srsdlqncy"/>
+<Parameter key="goodValue" value="t"/>
+<Parameter key="max_generations" value="10"/>
+<Parameter key="epsilon" value="0.00000001"/>
+<Parameter key="columnNames" value="times90dayslate,revolving_util,debt_ratio,credit_lines,monthly_income,times30dayslate_2years,age,num_dep,edu"/>
+<Parameter key="isStepWise" value="false"/>
+<Parameter key="stepWiseType" value="FORWARD"/>
+<Parameter key="criterionType" value=""/>
+<Parameter key="checkValue" value="0.05"/>
+<Parameter key="splitModelGroupByColumn" value=""/>
+<InPutFieldList id="1483688771952">
+<Parameter key="schema" value="@default_schema"/>
+<Parameter key="table" value="alp@user_id_@flow_id_rsamp_0_2"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Fields>
+<Field name="id" type="BIGINT"/>
+<Field name="times90dayslate" type="INTEGER"/>
+<Field name="revolving_util" type="NUMERIC"/>
+<Field name="debt_ratio" type="NUMERIC"/>
+<Field name="credit_lines" type="INTEGER"/>
+<Field name="monthly_income" type="NUMERIC"/>
+<Field name="times30dayslate_2years" type="INTEGER"/>
+<Field name="srsdlqncy" type="INTEGER"/>
+<Field name="name" type="TEXT"/>
+<Field name="age" type="BIGINT"/>
+<Field name="num_dep" type="INTEGER"/>
+<Field name="edu" type="INTEGER"/>
+<Field name="bool_srsdlqncy" type="BOOLEAN"/>
+</Fields>
+</InPutFieldList>
+</Operator>
+<Operator X="513" Y="227" name="Lift" type="com.alpine.miner.gef.runoperator.model.evaluator.LIFTOperator" uuid="1483688884166">
+<Note/>
+<Parameter key="dependentColumn" value="bool_srsdlqncy"/>
+<Parameter key="columnValue" value="t"/>
+<Parameter key="useModel" value="true"/>
+<InPutFieldList id="1483688768486">
+<Parameter key="schema" value="@default_schema"/>
+<Parameter key="table" value="alp@user_id_@flow_id_rsamp_0_1"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Fields>
+<Field name="id" type="BIGINT"/>
+<Field name="times90dayslate" type="INTEGER"/>
+<Field name="revolving_util" type="NUMERIC"/>
+<Field name="debt_ratio" type="NUMERIC"/>
+<Field name="credit_lines" type="INTEGER"/>
+<Field name="monthly_income" type="NUMERIC"/>
+<Field name="times30dayslate_2years" type="INTEGER"/>
+<Field name="srsdlqncy" type="INTEGER"/>
+<Field name="name" type="TEXT"/>
+<Field name="age" type="BIGINT"/>
+<Field name="num_dep" type="INTEGER"/>
+<Field name="edu" type="INTEGER"/>
+<Field name="bool_srsdlqncy" type="BOOLEAN"/>
+</Fields>
+</InPutFieldList>
+</Operator>
+<Operator X="536" Y="295" name="ROC" type="com.alpine.miner.gef.runoperator.model.evaluator.ROCOperator" uuid="1483688888457">
+<Note/>
+<Parameter key="dependentColumn" value="bool_srsdlqncy"/>
+<Parameter key="columnValue" value="t"/>
+<Parameter key="useModel" value="true"/>
+<InPutFieldList id="1483688768486">
+<Parameter key="schema" value="@default_schema"/>
+<Parameter key="table" value="alp@user_id_@flow_id_rsamp_0_1"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Fields>
+<Field name="id" type="BIGINT"/>
+<Field name="times90dayslate" type="INTEGER"/>
+<Field name="revolving_util" type="NUMERIC"/>
+<Field name="debt_ratio" type="NUMERIC"/>
+<Field name="credit_lines" type="INTEGER"/>
+<Field name="monthly_income" type="NUMERIC"/>
+<Field name="times30dayslate_2years" type="INTEGER"/>
+<Field name="srsdlqncy" type="INTEGER"/>
+<Field name="name" type="TEXT"/>
+<Field name="age" type="BIGINT"/>
+<Field name="num_dep" type="INTEGER"/>
+<Field name="edu" type="INTEGER"/>
+<Field name="bool_srsdlqncy" type="BOOLEAN"/>
+</Fields>
+</InPutFieldList>
+</Operator>
+<Operator X="581" Y="373" name="Confusion Matrix" type="com.alpine.miner.gef.runoperator.model.evaluator.ConfusionMatrixOperator" uuid="1483688893554">
+<Note/>
+<Parameter key="dependentColumn" value="bool_srsdlqncy"/>
+<Parameter key="useModel" value="true"/>
+<InPutFieldList id="1483688768486">
+<Parameter key="schema" value="@default_schema"/>
+<Parameter key="table" value="alp@user_id_@flow_id_rsamp_0_1"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Fields>
+<Field name="id" type="BIGINT"/>
+<Field name="times90dayslate" type="INTEGER"/>
+<Field name="revolving_util" type="NUMERIC"/>
+<Field name="debt_ratio" type="NUMERIC"/>
+<Field name="credit_lines" type="INTEGER"/>
+<Field name="monthly_income" type="NUMERIC"/>
+<Field name="times30dayslate_2years" type="INTEGER"/>
+<Field name="srsdlqncy" type="INTEGER"/>
+<Field name="name" type="TEXT"/>
+<Field name="age" type="BIGINT"/>
+<Field name="num_dep" type="INTEGER"/>
+<Field name="edu" type="INTEGER"/>
+<Field name="bool_srsdlqncy" type="BOOLEAN"/>
+</Fields>
+</InPutFieldList>
+</Operator>
+<Operator X="349" Y="285" name="Classifier" type="com.alpine.miner.gef.runoperator.model.DatabaseClassifierOperator" uuid="1483688940405">
+<Note/>
+<Parameter key="outputSchema" value="@default_schema"/>
+<Parameter key="outputTable" value="alp@user_id_@flow_id_class_0"/>
+<Parameter key="dropIfExist" value="Yes"/>
+<InPutFieldList id="1483688764506">
+<Parameter key="schema" value="@default_schema"/>
+<Parameter key="table" value="alp@user_id_@flow_id_rsamp_0_0"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Fields>
+<Field name="id" type="BIGINT"/>
+<Field name="times90dayslate" type="INTEGER"/>
+<Field name="revolving_util" type="NUMERIC"/>
+<Field name="debt_ratio" type="NUMERIC"/>
+<Field name="credit_lines" type="INTEGER"/>
+<Field name="monthly_income" type="NUMERIC"/>
+<Field name="times30dayslate_2years" type="INTEGER"/>
+<Field name="srsdlqncy" type="INTEGER"/>
+<Field name="name" type="TEXT"/>
+<Field name="age" type="BIGINT"/>
+<Field name="num_dep" type="INTEGER"/>
+<Field name="edu" type="INTEGER"/>
+<Field name="bool_srsdlqncy" type="BOOLEAN"/>
+</Fields>
+</InPutFieldList>
+</Operator>
+<Operator X="432" Y="393" name="Predictor" type="com.alpine.miner.gef.runoperator.model.DatabasePredictorOperator" uuid="1483688945287">
+<Note/>
+<Parameter key="outputSchema" value="@default_schema"/>
+<Parameter key="outputTable" value="alp@user_id_@flow_id_pred_0"/>
+<Parameter key="dropIfExist" value="Yes"/>
+<InPutFieldList id="1483688764506">
+<Parameter key="schema" value="@default_schema"/>
+<Parameter key="table" value="alp@user_id_@flow_id_rsamp_0_0"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Fields>
+<Field name="id" type="BIGINT"/>
+<Field name="times90dayslate" type="INTEGER"/>
+<Field name="revolving_util" type="NUMERIC"/>
+<Field name="debt_ratio" type="NUMERIC"/>
+<Field name="credit_lines" type="INTEGER"/>
+<Field name="monthly_income" type="NUMERIC"/>
+<Field name="times30dayslate_2years" type="INTEGER"/>
+<Field name="srsdlqncy" type="INTEGER"/>
+<Field name="name" type="TEXT"/>
+<Field name="age" type="BIGINT"/>
+<Field name="num_dep" type="INTEGER"/>
+<Field name="edu" type="INTEGER"/>
+<Field name="bool_srsdlqncy" type="BOOLEAN"/>
+</Fields>
+</InPutFieldList>
+</Operator>
+<Link source="credit" target="Join"/>
+<Link source="demographics" target="Join"/>
+<Link source="Join" target="Variable"/>
+<Link source="Variable" target="Row Filter"/>
+<Link source="Row Filter" target="Random Sampling"/>
+<Link source="Random Sampling" target="Sample Selector-20%"/>
+<Link source="Random Sampling" target="Sample Selector-70%"/>
+<Link source="Random Sampling" target="Sample Selector-10%"/>
+<Link source="Sample Selector-70%" target="Logistic Regression"/>
+<Link source="Sample Selector-20%" target="Lift"/>
+<Link source="Sample Selector-20%" target="ROC"/>
+<Link source="Sample Selector-20%" target="Confusion Matrix"/>
+<Link source="Logistic Regression" target="Lift"/>
+<Link source="Logistic Regression" target="ROC"/>
+<Link source="Logistic Regression" target="Confusion Matrix"/>
+<Link source="Logistic Regression" target="Predictor"/>
+<Link source="Logistic Regression" target="Classifier"/>
+<Link source="Sample Selector-10%" target="Classifier"/>
+<Link source="Sample Selector-10%" target="Predictor"/>
+<VariableModel>
+<Variable>
+<Name>@flow_name</Name>
+<Value>@flow_name</Value>
+</Variable>
+<Variable>
+<Name>@user_name</Name>
+<Value>@user_name</Value>
+</Variable>
+<Variable>
+<Name>@user_id</Name>
+<Value>@user_id</Value>
+</Variable>
+<Variable>
+<Name>@flow_id</Name>
+<Value>@flow_id</Value>
+</Variable>
+<Variable>
+<Name>@default_schema</Name>
+<Value>public</Value>
+</Variable>
+<Variable>
+<Name>@default_prefix</Name>
+<Value>ch2</Value>
+</Variable>
+<Variable>
+<Name>@default_tempdir</Name>
+<Value>/tmp</Value>
+</Variable>
+<Variable>
+<Name>@default_delimiter</Name>
+<Value>,</Value>
+</Variable>
+<Variable>
+<Name>@pig_number_of_reducers</Name>
+<Value>-1</Value>
+</Variable>
+<Variable>
+<Name>@max_age</Name>
+<Value>55</Value>
+</Variable>
+<Variable>
+<Name>@min_age</Name>
+<Value>20</Value>
+</Variable>
+</VariableModel>
+</Process>

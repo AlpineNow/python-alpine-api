@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Process Description="" UserName="665" Version="6.2.0.0">
+<DataSources>
+<DataSource name="miner_demo" type="Database">
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Parameter key="url" value="jdbc:postgresql://10.10.0.151:5432/miner_demo"/>
+<Parameter key="userName" value="miner_demo"/>
+<Parameter key="useSSL" value="false"/>
+<Parameter key="password" value="bWluZXJfZGVtbw=="/>
+<Parameter key="system" value="Greenplum"/>
+</DataSource>
+</DataSources>
+<Operator X="443" Y="98" name="Row Filter" type="com.alpine.miner.gef.runoperator.field.FilterOperator" uuid="1406658558341">
+<Note/>
+<Parameter key="outputType" value="TABLE"/>
+<Parameter key="outputSchema" value="@default_schema"/>
+<Parameter key="outputTable" value="@default_prefix_rowfil_0"/>
+<StorageParameters appendOnly="false" columnarStorage="false" compression="false" compressionLevel="1" isDistributedRandomly="true"/>
+<Parameter key="dropIfExist" value="Yes"/>
+<RowFilterConditionModel conditionValue="" sqlType="nosql" useAll="true">
+<RowFilterConditionItem columnName="credit_lines" condition="&gt;" firstValue="@min_credit_line" secondValue=""/>
+</RowFilterConditionModel>
+<InPutFieldList id="1484569443418">
+<Parameter key="schema" value="demo"/>
+<Parameter key="table" value="credit"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Fields>
+<Field name="id" type="BIGINT"/>
+<Field name="times90dayslate" type="INTEGER"/>
+<Field name="revolving_util" type="NUMERIC"/>
+<Field name="debt_ratio" type="NUMERIC"/>
+<Field name="credit_lines" type="INTEGER"/>
+<Field name="monthly_income" type="NUMERIC"/>
+<Field name="times30dayslate_2years" type="INTEGER"/>
+<Field name="srsdlqncy" type="INTEGER"/>
+</Fields>
+</InPutFieldList>
+</Operator>
+<Operator X="166" Y="218" name="credit" type="com.alpine.miner.gef.runoperator.datasource.DbTableOperator" uuid="1484569443418">
+<Note/>
+<Parameter key="dbConnectionName" value="miner_demo"/>
+<Parameter key="schemaName" value="demo"/>
+<Parameter key="tableName" value="credit"/>
+</Operator>
+<Link source="credit" target="Row Filter"/>
+<VariableModel>
+<Variable>
+<Name>@flow_name</Name>
+<Value>@flow_name</Value>
+</Variable>
+<Variable>
+<Name>@user_name</Name>
+<Value>@user_name</Value>
+</Variable>
+<Variable>
+<Name>@user_id</Name>
+<Value>@user_id</Value>
+</Variable>
+<Variable>
+<Name>@flow_id</Name>
+<Value>@flow_id</Value>
+</Variable>
+<Variable>
+<Name>@default_schema</Name>
+<Value>public</Value>
+</Variable>
+<Variable>
+<Name>@default_prefix</Name>
+<Value>ch40</Value>
+</Variable>
+<Variable>
+<Name>@default_tempdir</Name>
+<Value>/tmp</Value>
+</Variable>
+<Variable>
+<Name>@default_delimiter</Name>
+<Value>,</Value>
+</Variable>
+<Variable>
+<Name>@pig_number_of_reducers</Name>
+<Value>-1</Value>
+</Variable>
+<Variable>
+<Name>@min_credit_line</Name>
+<Value>10</Value>
+</Variable>
+</VariableModel>
+</Process>

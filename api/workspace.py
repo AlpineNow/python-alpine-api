@@ -1,16 +1,12 @@
-from user import *
+import json
+from api.exception import *
+from api.alpineobject import AlpineObject
 
 
-class Workspace(ChorusObject):
+class Workspace(AlpineObject):
 
-    def __init__(self, chorus_session=None):
-        super(Workspace, self).__init__()
-        if chorus_session:
-            self.base_url = chorus_session.base_url
-            self.session = chorus_session.session
-            self.token = chorus_session.token
-        else:
-            raise ChorusSessionNotFoundException()
+    def __init__(self, base_url, session, token):
+        super(Workspace, self).__init__(base_url, session, token)
 
     def create_new_workspace(self, workspace_name, public=False, summary=None):
         """
@@ -187,7 +183,7 @@ class Workspace(ChorusObject):
         self.session.headers.pop("Content-Type")  # Remove header, as it affects other tests
         return response.json()['response']
 
-    def update_workspace_membership(self, workspace_name, username, role):
+    def update_workspace_membership(self, workspace_name, user_id, role):
         """
 
         :param workspace_name:
@@ -196,8 +192,6 @@ class Workspace(ChorusObject):
         :return:
         """
         workspace_id = self.get_workspace_id(workspace_name)
-        user = User(self)
-        user_id = user.get_user_id(username)
         url = "{0}/workspaces/{1}/members".format(self.base_url,workspace_id)
         url = self._add_token_to_url(url)
         # Build payload with user ids and role

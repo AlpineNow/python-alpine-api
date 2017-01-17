@@ -1,27 +1,28 @@
 import json
-
 from api.exception import *
+from api.alpineobject import AlpineObject
 
-class Job(ChorusObject):
 
-    def __init__(self, chorus_session=None):
-        super(Job, self).__init__()
-        if chorus_session:
-            self.base_url = chorus_session.base_url
-            self.session = chorus_session.session
-            self.token = chorus_session.token
-        else:
-            raise ChorusSessionNotFoundException()
+
+class Job(AlpineObject):
+    """
+
+    """
+
+    def __init__(self, base_url, session, token):
+        super(Job, self).__init__(base_url, session, token)
 
     def add_job(self, workspace_id, job_name, interval_unit="on_demand", interval_value=0, next_run=""):
         """
+        Adding a job to a workspace with specified configuration
 
-        :param workspace_id:
-        :param job_name:
-        :param interval_unit:
-        :param interval_value:
-        :param next_run:
-        :return:
+        :param workspace_id: id of the workspace where the job to be created
+        :param job_name: name of the job that to be created
+        :param interval_unit: units on_demand or in weeks days and hours
+        :param interval_value: how many times should it run
+        :param next_run: when should the next run happen
+        :return: Job info of the new added one
+
         """
         url = "{0}/workspaces/{1}/jobs".format(self.base_url, workspace_id)
         url = self._add_token_to_url(url)
@@ -45,10 +46,12 @@ class Job(ChorusObject):
 
     def get_jobs_list(self, workspace_id, per_page=50):
         """
+        Get a list of jobs from a workspace
 
-        :param workspace_id:
-        :param per_page:
-        :return:
+        :param workspace_id: Id of the workspace to query on
+        :param per_page: How many jobs to search for each query
+        :return: Returns the list of Jobs.
+
         """
         jobs_list = None
         url = "{0}/workspaces/{1}/jobs".format(self.base_url, workspace_id)
@@ -72,9 +75,10 @@ class Job(ChorusObject):
 
     def get_job_info(self, workspace_id, job_name):
         """
+        Get Job info from a workspace
 
-        :param workspace_id:
-        :param job_name:
+        :param workspace_id: Id of the workspace to query on
+        :param job_name: name of the job to query on
         :return:
         """
         job_list = self.get_jobs_list(workspace_id)
@@ -85,9 +89,10 @@ class Job(ChorusObject):
 
     def get_job_id(self, workspace_id, job_name):
         """
+        Get Job Id from a workspace
 
-        :param workspace_id:
-        :param job_name:
+        :param workspace_id: Id of the workspace to query on
+        :param job_name: name of the job to query on
         :return:
         """
         job = self.get_job_info(workspace_id, job_name)
@@ -95,10 +100,12 @@ class Job(ChorusObject):
 
     def delete_job_from_workspace(self, workspace_id, job_name):
         """
+        Delete job from a workspace
 
-        :param workspace_id:
-        :param job_name:
-        :return:
+        :param workspace_id: Id of the workspace to be deleted in
+        :param job_name: name of the job to delete
+        :return: response for the delete action
+
         """
         job_id = self.get_job_id(workspace_id, job_name)
         self.logger.debug("The job id of the job: {0} is {1}".format(job_name, job_id))
@@ -114,24 +121,28 @@ class Job(ChorusObject):
 
     def delete_job_from_workspace_if_exists(self, workspace_id, job_name):
         """
+        Delete job from a workspace if the job exists. Skip if job doesn't exist
 
-        :param workspace_id:
-        :param job_name:
-        :return:
+        :param workspace_id: Id of the workspace to be deleted in
+        :param job_name: name of the job to delete
+        :return: response for the delete action if job exists
+
         """
         try:
-            self.delete_job_from_workspace(workspace_id,job_name)
+            return self.delete_job_from_workspace(workspace_id,job_name)
         except JobNotFoundException:
             self.logger.debug("Job not found, so we don't need to delete it")
 
     def add_workfile_task(self, workspace_id, job_name, workfile_id, task_type):
         """
+        Add a task to a job
 
-        :param workspace_id:
-        :param job_name:
-        :param workfile_id:
-        :param task_type:
-        :return:
+        :param workspace_id: Id of the workspace for the job
+        :param job_name: Name of the job for which the task is to be added
+        :param workfile_id: Id of the workfile to be added as a task
+        :param task_type: task type could be run_work_flow or run_sql_workfile
+        :return: Info of the new added task
+
         """
         job_id = self.get_job_id(workspace_id, job_name)
         self.logger.debug("The job id of the job: {0} is {1}".format(job_name, job_id))
@@ -149,11 +160,12 @@ class Job(ChorusObject):
 
     def add_workflow_task(self, workspace_id, job_name, workflow_id):
         """
+        Add a workflow task to a job
 
-        :param workspace_id:
-        :param job_name:
-        :param workflow_id:
-        :return:
+        :param workspace_id: Id of the workspace for the job
+        :param job_name: Name of the job for which the task is to be added
+        :param workflow_id: Id of the workflow to be added as a task
+        :return: Info of the new added task
         """
         # Setting the task type to run_work_flow, since this is adding a workflow as a task to a job on a workspace
         task_type = "run_work_flow"
@@ -161,21 +173,25 @@ class Job(ChorusObject):
 
     def add_sqlworkfile_task(self, workspace_id, job_name, sql_workfile_id):
         """
+        Add a Sql Workfile task to a job
 
-        :param workspace_id:
-        :param job_name:
-        :param sql_workfile_id:
-        :return:
+        :param workspace_id: Id of the workspace for the job
+        :param job_name: Name of the job for which the task is to be added
+        :param sql_workfile_id: Id of the sql workfile to be added as a task
+        :return: Information of the new added task
+
         """
         sql_task_type = "run_sql_workfile"
         return self.add_workfile_task(workspace_id,job_name, sql_workfile_id, sql_task_type)
 
     def get_tasks_on_a_job(self, workspace_id, job_name):
         """
+        Get a list of tasks for a job
 
-        :param workspace_id:
-        :param job_name:
-        :return:
+        :param workspace_id: Id of the workspace for the job
+        :param job_name:Name of the job
+        :return: A info list of the tasks
+
         """
         # Getting the job id
         self.logger.debug("Getting the Job id of Job: {0}".format(job_name))
@@ -194,11 +210,13 @@ class Job(ChorusObject):
 
     def get_task_info(self, workspace_id, job_name, task_name):
         """
+        Get the infomation of a task
 
-        :param workspace_id:
-        :param job_name:
-        :param task_name:
-        :return:
+        :param workspace_id: Id of the workspace for the job
+        :param job_name: Name of the job
+        :param task_name: Name of the Task
+        :return: Information of the task
+
         """
         task_name = "Run " + task_name
         task_list = self.get_tasks_on_a_job(workspace_id, job_name)
@@ -211,22 +229,26 @@ class Job(ChorusObject):
 
     def get_task_id(self, workspace_id, job_name, task_name):
         """
+        Get the Id of a task in a job
 
-        :param workspace_id:
-        :param job_name:
-        :param task_name:
-        :return:
+        :param workspace_id: Id of the workspace for the job
+        :param job_name: Name of the job
+        :param task_name: Name of the task
+        :return: Id of the task
+
         """
         task = self.get_task_info(workspace_id, job_name, task_name)
         return int(task['id'])
 
     def delete_task(self, workspace_id, job_name, task_name):
         """
+        Delete a task from the job on a workspace
 
-        :param workspace_id:
-        :param job_name:
-        :param task_name:
-        :return:
+        :param workspace_id: Id of the workspace from which the task has to be deleted
+        :param job_name: Name of the job to from which the task is to be deleted
+        :param task_name: Name of the task
+        :return: Response of the delete action
+
         """
         job_id = self.get_job_id(workspace_id, job_name)
         task_id = self.get_task_id(workspace_id, job_name, task_name)
