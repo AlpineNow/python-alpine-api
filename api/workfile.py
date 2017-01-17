@@ -72,7 +72,7 @@ class Workfile(AlpineObject):
         workfile_detail = self.get_workfile_info(workfile_name, workspace_id)
         return workfile_detail['id']
 
-    def run_workflow(self, workflow_id, variables=None):
+    def run_workflow(self, workflow_id, variables=[]):
         """
 
         :param workflow_id:
