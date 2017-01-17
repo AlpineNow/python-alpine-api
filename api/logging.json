@@ -22,7 +22,7 @@
             "class": "logging.handlers.RotatingFileHandler",
             "level": "INFO",
             "formatter": "custom",
-            "filename": "chourus_api_info.log",
+            "filename": "alpine_api_info.log",
             "maxBytes": 2097152,
             "backupCount": 10,
             "encoding": "utf8"
@@ -32,7 +32,7 @@
             "class": "logging.handlers.RotatingFileHandler",
             "level": "ERROR",
             "formatter": "custom",
-            "filename": "chorus_api_errors.log",
+            "filename": "alpine_api_errors.log",
             "maxBytes": 2097152,
             "backupCount": 10,
             "encoding": "utf8"

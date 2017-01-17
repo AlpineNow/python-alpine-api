@@ -3,9 +3,19 @@ import logging
 import logging.config
 import os
 
-class ChorusObject(object):
-    chorus_api_version = 1
-    alpine_api_version = "v1"
+class AlpineObject(object):
+    """
+    Base Class of Alpine API objects
+
+    """
+    #
+    # api version string
+    #
+    _chorus_api_version = 1
+    #
+    # alpine api version string
+    #
+    _alpine_api_version = "v1"
 
     def __init__(self, base_url=None, session = None, token=None):
         self.base_url = base_url
@@ -21,20 +31,22 @@ class ChorusObject(object):
         return unicode("{0}?session_id={1}".format(url, self.token))
 
     def setup_logging(self,
-                      default_path='logging.json',
+                      default_configuration_setting_file='logging.json',
                       default_level=logging.INFO,
                       env_key='LOG_CFG'):
 
         """
+        Sets internal values for logging
 
-        :param default_path:
-        :param default_level:
-        :param env_key:
-        :return:
+        :param default_configuration_setting_file: the default file for logging configuration.
+        Could be overwrite by environment variable if exists
+        :param default_level: default logging level
+        :param env_key: Environment Variable to read for configuration setting file
+        :return: None
 
         """
 
-        path = default_path
+        path = default_configuration_setting_file
         value = os.getenv(env_key, None)
 
         if value:
@@ -50,8 +62,3 @@ class ChorusObject(object):
         else:
             logging.basicConfig(level=default_level,
                                 format="%(asctime)s %(name)s %(module)s[%(lineno)d] %(levelname)s: %(message)s")
-    def _post_session(self, payload, files = None, verify =False):
-        pass
-
-    def _get_session(self, payload, verify=False):
-        pass

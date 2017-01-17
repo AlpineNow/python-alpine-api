@@ -4,10 +4,10 @@ import time
 from api.alpine import Alpine
 from api.workfile import Workfile
 
-from chorusunittest import ChorusTestCase
+from alpineunittest import AlpineTestCase
 
 
-class TestWorkfile(ChorusTestCase):
+class TestWorkfile(AlpineTestCase):
 
     def setUp(self):
         super(TestWorkfile, self).setUp()

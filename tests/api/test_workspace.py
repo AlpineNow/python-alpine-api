@@ -2,10 +2,10 @@ from api.alpine import Alpine
 from api.workspace import Workspace
 
 from api.exception import *
-from chorusunittest import ChorusTestCase
+from alpineunittest import AlpineTestCase
 
 
-class TestWorkspace(ChorusTestCase):
+class TestWorkspace(AlpineTestCase):
 
     def test_create_new_workspace(self):
         alpine_session = Alpine(self.host, self.port)

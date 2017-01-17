@@ -1,10 +1,10 @@
 from api.alpine import Alpine
 from api.user import User
 from api.exception import *
-from chorusunittest import ChorusTestCase
+from alpineunittest import AlpineTestCase
 
 
-class TestUser(ChorusTestCase):
+class TestUser(AlpineTestCase):
 
     def test_create_user(self):
         alpine_session = Alpine(self.host, self.port)

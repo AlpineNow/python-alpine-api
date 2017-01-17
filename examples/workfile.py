@@ -24,7 +24,7 @@ def help():
     print "Usage: host=[host] port=[port] user=[username] password=[password]"
 
 
-def setUp(chorus_host, chorus_port, username, password):
+def setUp(alpine_host, alpine_port, username, password):
     global db_data_source_id
     global hadoop_data_source_id
     # Demo Database Info (Greenplum)
@@ -55,7 +55,7 @@ def setUp(chorus_host, chorus_port, username, password):
          "value": "awscdh57singlenode.alpinenow.local:8031"},
         {"key": "yarn.resourcemanager.scheduler.address", "value": "awscdh57singlenode.alpinenow.local:8030"}
     ]
-    alpine_session = Alpine(chorus_host, chorus_port)
+    alpine_session = Alpine(alpine_host, alpine_port)
     # Login with the admin user credential
     alpine_session.login(username, password)
     alpine_session.datasource.delete_db_data_source_if_exists(sample_datasource_db_name)
@@ -85,13 +85,13 @@ def setUp(chorus_host, chorus_port, username, password):
     hadoop_data_source_id = datasource_hadoop['id']
 
 
-def tearDown(chorus_host, chorus_port, username, password):
+def tearDown(alpine_host, alpine_port, username, password):
     sample_datasource_db_name = "Demo_GP"
     sample_datasource_hadoop_name = "Demo_Hadoop"
     sample_username = "test_user"
     sample_workspace_name = "API Sample Workspace"
 
-    alpine_session = Alpine(chorus_host, chorus_port)
+    alpine_session = Alpine(alpine_host, alpine_port)
     # Login with the admin user credential
     alpine_session.login(username, password)
     # Delete the Datasource
@@ -109,11 +109,11 @@ def tearDown(chorus_host, chorus_port, username, password):
     print "Received response code {0} with reason {1}...".format(response.status_code, response.reason)
 
 
-def main(chorus_host, chorus_port, username, password):
-    chorus_host = chorus_host
-    chorus_port = chorus_port
+def main(alpine_host, alpine_port, username, password):
+    alpine_host = alpine_host
+    alpine_port = alpine_port
     # Use the setup function to create datasource for use
-    setUp(chorus_host, chorus_port, username, password)
+    setUp(alpine_host, alpine_port, username, password)
     sample_username = "test_user"
     sample_password = "password"
     sample_firstname = "First"
@@ -127,13 +127,13 @@ def main(chorus_host, chorus_port, username, password):
     sample_workspace_name = "API Sample Workspace"
     sample_workspace_public_state_true = True
 
-    # Create a chorus session
-    # alpine_session = Alpine(chorus_host, chorus_port)
+    # Create a Alpine session
+    # alpine_session = Alpine(alpine_host, alpine_port)
     # alpine_session.login(username, password)
-    alpine_session = Alpine(chorus_host, chorus_port, username, password)
+    alpine_session = Alpine(alpine_host, alpine_port, username, password)
 
     # Logging Examples
-    # use chorus logger
+    # use default logger
     alpine_session.logger.debug("This is a debug message")
     alpine_session.logger.info("This is a info message")
     alpine_session.logger.error("This is a error message")
@@ -182,7 +182,7 @@ def main(chorus_host, chorus_port, username, password):
                                           .format(max_waiting_seconds*10))
 
     # Use the Tear dowon function to delete the datasource if needed
-    # tearDown(chorus_host, chorus_port, username, password)
+    # tearDown(alpine_host, alpine_port, username, password)
 
 
 if __name__ == '__main__':

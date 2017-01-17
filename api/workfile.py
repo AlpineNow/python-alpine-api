@@ -2,18 +2,18 @@ import time
 import json
 from urlparse import urljoin
 from urlparse import urlparse
-from api.chorus import ChorusObject
+from api.alpineobject import AlpineObject
 from api.exception import *
 
 
-class Workfile(ChorusObject):
+class Workfile(AlpineObject):
 
     def __init__(self, base_url, session, token):
         super(Workfile, self).__init__(base_url, session, token)
         self.chorus_domain = '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(self.base_url))
         self.logger.debug(self.chorus_domain)
         self.alpine_base_url = urljoin(self.chorus_domain,
-                                       "alpinedatalabs/api/{0}/json".format(self.alpine_api_version))
+                                       "alpinedatalabs/api/{0}/json".format(self._alpine_api_version))
         self.logger.debug("alpine_base_url is: {0}".format(self.alpine_base_url))
 
     def get_workfiles_list(self, workspace_id, per_page=100):
@@ -282,7 +282,7 @@ class Workfile(ChorusObject):
         response = self.session.post(url, files=files, data=payload, verify=False)
         return response.json()['response']
 
-    #TODO
+    #TODO Not finished yet
 
     """Notebooks"""
 

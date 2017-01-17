@@ -1,8 +1,8 @@
 from api.alpine import Alpine
-from chorusunittest import ChorusTestCase
+from alpineunittest import AlpineTestCase
 
 
-class TestChorus(ChorusTestCase):
+class TestAlpine(AlpineTestCase):
 
     def test_login(self):
         alpine_session = Alpine(self.host, self.port)
@@ -15,20 +15,17 @@ class TestChorus(ChorusTestCase):
         logout_response = alpine_session.logout()
         self.assertEqual(logout_response.status_code, 200)
 
-    def test_get_chorus_version(self):
-        self.fail()
-
     def test_get_login_status(self):
         alpine_session = Alpine(self.host, self.port)
         login_info = alpine_session.login(self.username, self.password)
         current_login_info = alpine_session.get_login_status()
         self.assertEqual(login_info['response']['user'], current_login_info['response']['user'])
 
-    def test_get_chorus_version(self):
+    def test_get_alpine_version(self):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
-        chorus_version_string = alpine_session.get_chorus_version()
-        self.assertRegexpMatches(chorus_version_string, self.regex_chorus_version_string)
+        chorus_version_string = alpine_session.get_alpine_version()
+        self.assertRegexpMatches(chorus_version_string, self.regex_alpine_version_string)
 
     def test_get_license_info(self):
         alpine_session = Alpine(self.host, self.port)
@@ -38,7 +35,7 @@ class TestChorus(ChorusTestCase):
         self.assertEqual(chorus_license_info['response']['is_enabled_api'], True)
         self.assertEqual(chorus_license_info['response']['expired'], False)
         self.assertEqual(chorus_license_info['response']['correct_mac_address'], True)
-        self.assertRegexpMatches(chorus_license_info['response']['version'], self.regex_chorus_version_string)
+        self.assertRegexpMatches(chorus_license_info['response']['version'], self.regex_alpine_version_string)
 
     def test_setup_logging(self):
         alpine_session = Alpine(self.host, self.port)

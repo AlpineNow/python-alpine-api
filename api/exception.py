@@ -2,91 +2,91 @@
 Exception classes - Subclassing to check for specific errors
 """
 
-class ChorusException(Exception):
+class AlpineException(Exception):
     """
-    General Chorus Exception
+    General Alpine Exception
     """
     def __init__(self, reason, *args):
-        super(ChorusException, self).__init__(reason, *args)
+        super(AlpineException, self).__init__(reason, *args)
         self.reason = reason
 
     def __repr__(self):
-        return 'ChorusException: %s' % self.reason
+        return 'AlpineException: %s' % self.reason
 
     def __str__(self):
-        return 'ChorusException: %s' % self.reason
+        return 'AlpineException: %s' % self.reason
 
 
-class ChorusSessionNotFoundException(ChorusException):
-    """
-
-        """
-    pass
-
-
-class UserNotFoundException(ChorusException):
+class AlpineSessionNotFoundException(AlpineException):
     """
 
     """
     pass
 
 
-class DataSourceNotFoundException(ChorusException):
-    """
-
-    """
-    pass
-
-class WorkspaceNotFoundException(ChorusException):
+class UserNotFoundException(AlpineException):
     """
 
     """
     pass
 
 
-class WorkfileNotFoundException(ChorusException):
+class DataSourceNotFoundException(AlpineException):
+    """
+
+    """
+    pass
+
+class WorkspaceNotFoundException(AlpineException):
     """
 
     """
     pass
 
 
-class JobNotFoundException(ChorusException):
+class WorkfileNotFoundException(AlpineException):
     """
 
     """
     pass
 
 
-class TaskNotFoundException(ChorusException):
+class JobNotFoundException(AlpineException):
     """
 
     """
     pass
 
 
-class LoginFailureException(ChorusException):
+class TaskNotFoundException(AlpineException):
     """
 
     """
     pass
 
 
-class RunFlowFailureException(ChorusException):
+class LoginFailureException(AlpineException):
     """
 
     """
     pass
 
 
-class RunFlowTimeoutException(ChorusException):
+class RunFlowFailureException(AlpineException):
     """
 
     """
     pass
 
 
-class StopFlowFailureException(ChorusException):
+class RunFlowTimeoutException(AlpineException):
+    """
+
+    """
+    pass
+
+
+class StopFlowFailureException(AlpineException):
     """
 
     """

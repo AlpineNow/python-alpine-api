@@ -20,9 +20,9 @@
 
         "info_file_handler": {
             "class": "logging.handlers.RotatingFileHandler",
-            "level": "DEBUG",
+            "level": "INFO",
             "formatter": "custom",
-            "filename": "chourus_api_info.log",
+            "filename": "alpine_api_info.log",
             "maxBytes": 2097152,
             "backupCount": 10,
             "encoding": "utf8"
@@ -32,7 +32,7 @@
             "class": "logging.handlers.RotatingFileHandler",
             "level": "ERROR",
             "formatter": "custom",
-            "filename": "chorus_api_errors.log",
+            "filename": "alpine_api_errors.log",
             "maxBytes": 2097152,
             "backupCount": 10,
             "encoding": "utf8"
@@ -41,7 +41,7 @@
 
     "loggers": {
         "api": {
-            "level": "DEBUG",
+            "level": "INFO",
             "handlers": ["console"],
             "propagate": "no"
         },

@@ -1,9 +1,9 @@
 import json
 from api.exception import *
-from api.chorus import ChorusObject
+from api.alpineobject import AlpineObject
 
 
-class DataSource(ChorusObject):
+class DataSource(AlpineObject):
 
     def __init__(self, base_url=None, session=None, token = None):
         super(DataSource, self).__init__(base_url, session, token)

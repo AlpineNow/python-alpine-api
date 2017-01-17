@@ -1,7 +1,7 @@
 from api.exception import *
-from api.chorus import ChorusObject
+from api.alpineobject import AlpineObject
 
-class TouchPoint(ChorusObject):
+class TouchPoint(AlpineObject):
 
     def __init__(self, base_url, session, token):
         super(TouchPoint, self).__init__(base_url, session, token)

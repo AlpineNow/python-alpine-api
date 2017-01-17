@@ -1,10 +1,10 @@
 from api.alpine import Alpine
 from api.job import Job
 from api.exception import *
-from chorusunittest import ChorusTestCase
+from alpineunittest import AlpineTestCase
 
 
-class TestJob(ChorusTestCase):
+class TestJob(AlpineTestCase):
     def setUp(self):
         super(TestJob, self).setUp()
         global workspace_id

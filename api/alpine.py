@@ -6,7 +6,7 @@ import sys
 import time
 import json
 import requests
-from api.chorus import ChorusObject
+from api.alpineobject import AlpineObject
 from api.user import User
 from api.datasource import DataSource
 from api.workspace import Workspace
@@ -15,17 +15,46 @@ from api.job import Job
 from api.touchpoint import TouchPoint
 
 
-class Alpine(ChorusObject):
+class Alpine(AlpineObject):
+    """
+    An Entry to do operation with Alpine APIs.
+
+    This class is the main entry for alpine api.
+
+    """
+    #
+    # Entry for User/Datasource/Workspace/Workfile/Job/Touchpoint sessions
+    #
     user = None
+    """Entry for a User session User need to login before using it"""
     datasource = None
+    """Entry for a Data Source session User need to login before using it"""
     workspace = None
+    """Entry for a Workspace session User need to login before using it"""
     workfile = None
+    """Entry for a Workfile session User need to login before using it"""
     job = None
+    """Entry for a Job session User need to login before using it"""
     touchpoint = None
+    """Entry for a Touchpoint session User need to login before using it"""
+
 
     def __init__(self, host=None, port=None, username=None, password=None,
                  is_secure=False, validate_certs=False, ca_certs=None,
                  token=None):
+        """
+        Sets internal values for Alpine API session and Performs login to check that parameters are set correctly
+        while username and password are not null
+
+        :param host: hostname or ip address of the Alpine server
+        :param port: port number for Alpine,
+        :param username: username to login with
+        :param password: password to login with
+        :param is_secure:
+        :param validate_certs:
+        :param ca_certs:
+        :param token:
+        """
 
         super(Alpine, self).__init__(token=token)
 
@@ -55,10 +84,12 @@ class Alpine(ChorusObject):
 
     def login(self, username, password):
         """
-        Logs into Chorus with provided username and password
+        Logs into Alpine with provided username and password
+
         :param username: username to login with
         :param password: password to log in with
         :return: returns a token ID which should be used for other actions
+
         """
         # build the url string and body payload
         url= "{0}/sessions?session_id=NULL".format(self.base_url)
@@ -98,7 +129,9 @@ class Alpine(ChorusObject):
     def logout(self):
         """
         Logout the session
+
         :return: response of the logout session
+
         """
         # Is there a way to do this without explicitly including the token in the url?
         url = "{0}/sessions?session_id={1}".format(self.base_url, self.token)
@@ -114,8 +147,9 @@ class Alpine(ChorusObject):
 
     def get_login_status(self):
         """
+        Get the current login status from Alpine API
 
-        :return:
+        :return: json format of the current login status
 
         """
         url = "{0}/sessions".format(self.base_url)
@@ -124,10 +158,12 @@ class Alpine(ChorusObject):
         self.logger.debug("Received response code {0} with reason {1}".format(response.status_code, response.reason))
         return response.json()
 
-    def get_chorus_version(self):
+    def get_alpine_version(self):
         """
-        Returns the chorus version as a
+        Returns the alpine version as a sting
+
         :return: version as a string
+
         """
         url = "{0}/VERSION".format(self.base_url)
         response = self.session.get(url)
@@ -135,13 +171,11 @@ class Alpine(ChorusObject):
 
     def get_license_info(self):
         """
+        Get the License information of Alpine
 
-        :return:
+        :return: json format license infomation
 
         """
         url = self.base_url + "/license"
         response = self.session.get(url)
         return response.json()
-
-    def clone(self):
-        return self

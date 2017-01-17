@@ -1,10 +1,10 @@
 from api.alpine import Alpine
 from api.datasource import DataSource
 from api.exception import *
-from chorusunittest import ChorusTestCase
+from alpineunittest import AlpineTestCase
 
 
-class TestDataSource(ChorusTestCase):
+class TestDataSource(AlpineTestCase):
 
     def setUp(self):
         super(TestDataSource, self).setUp()
