@@ -1,9 +1,9 @@
 import os
 import time
 
+from api.alpine import Alpine
 from api.workfile import Workfile
 
-from api.alpine import Alpine
 from chorusunittest import ChorusTestCase
 
 

@@ -1,6 +1,5 @@
 from api.alpine import Alpine
 from api.job import Job
-
 from api.exception import *
 from chorusunittest import ChorusTestCase
 

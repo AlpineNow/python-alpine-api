@@ -1,7 +1,6 @@
 from api.exception import *
 from api.chorus import ChorusObject
 
-
 class TouchPoint(ChorusObject):
 
     def __init__(self, base_url, session, token):

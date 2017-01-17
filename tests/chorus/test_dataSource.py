@@ -1,6 +1,5 @@
 from api.alpine import Alpine
 from api.datasource import DataSource
-
 from api.exception import *
 from chorusunittest import ChorusTestCase
 

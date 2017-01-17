@@ -1,4 +1,4 @@
-from user import *
+import json
 from api.exception import *
 from api.chorus import ChorusObject
 

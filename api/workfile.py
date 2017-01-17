@@ -3,7 +3,6 @@ import json
 from urlparse import urljoin
 from urlparse import urlparse
 from api.chorus import ChorusObject
-
 from api.exception import *
 
 
