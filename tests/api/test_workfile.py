@@ -88,7 +88,7 @@ class TestWorkfile(AlpineTestCase):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
         process_id = alpine_session.workfile.run_workflow(workfile_id, variables)
-        alpine_session.workfile.wait_for_workflow_finished(process_id)
+        alpine_session.workfile.wait_for_workflow_to_finish(process_id)
 
     def test_query_workflow_status(self):
         valid_workfile_status = ["WORKING", "FINISHED"]

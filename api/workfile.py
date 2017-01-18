@@ -72,7 +72,7 @@ class Workfile(AlpineObject):
         workfile_detail = self.get_workfile_info(workfile_name, workspace_id)
         return workfile_detail['id']
 
-    def run_workflow(self, workflow_id, variables=None):
+    def run_workflow(self, workflow_id, variables=[]):
         """
 
         :param workflow_id:
@@ -164,10 +164,12 @@ class Workfile(AlpineObject):
             raise StopFlowFailureException("Workflow failed with status {0}: {1}"
                                            .format(response.status_code, response.reason))
 
-    def wait_for_workflow_finished(self, process_id, timeout=3600):
+    def wait_for_workflow_to_finish(self, process_id, verbose=False, query_time=10, timeout=3600):
         """
         Waits for a workflow
         :param process_id: process ID of the workflow / worklet to monitor
+        :param verbose:
+        :param query_time:
         :param timeout: amount of time in seconds to wait for workflow / worklet to finish
         :return: True if success, otherwise, raise exception
         """
@@ -177,8 +179,12 @@ class Workfile(AlpineObject):
         while workflow_status == "WORKING":  # loop while waiting for workflow to complete
             self.logger.debug(
                 "Workflow status: {0}, on retry {1} sleeping for 10 seconds".format(workflow_status, wait_count))
-            time.sleep(10)
-            wait_count += 10
+            time.sleep(query_time)
+            wait_count += query_time
+
+            if verbose == True:
+                print("\rWorkflow in progress for ~{} seconds.".format(wait_count)),
+
             if wait_count >= timeout:
                 self.stop_workflow(process_id)
                 raise RunFlowTimeoutException(
@@ -196,8 +202,12 @@ class Workfile(AlpineObject):
         :param process_id:
         :return:
         """
-        result_url = self.alpine_base_url + "/alpinedatalabs/api/v1/json/workflows/" \
-                     + str(workflow_id) + "/results/" + str(process_id)
+
+        result_url = "{0}/workflows/{1}/results/{2}".format(self.alpine_base_url, workflow_id, process_id)
+
+
+        #result_url = self.alpine_base_url + "/alpinedatalabs/api/v1/json/workflows/" \
+        #             + str(workflow_id) + "/results/" + str(process_id)
         response = self.session.get(result_url)
         return response
 
