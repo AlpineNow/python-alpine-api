@@ -166,7 +166,6 @@ class Alpine(AlpineObject):
             print("Not logged in")
             return {}
 
-
     def get_alpine_version(self):
         """
         Returns the alpine version as a sting
