@@ -4,7 +4,6 @@ import logging.config
 import os
 import sys
 import time
-import json
 import requests
 from api.alpineobject import AlpineObject
 from api.user import User

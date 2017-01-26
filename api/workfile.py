@@ -7,6 +7,9 @@ from api.exception import *
 
 
 class Workfile(AlpineObject):
+    """
+    A collection of api wrappers and helper methods to interact with Alpine Workfiles
+    """
 
     def __init__(self, base_url, session, token):
         super(Workfile, self).__init__(base_url, session, token)
@@ -16,7 +19,8 @@ class Workfile(AlpineObject):
                                        "alpinedatalabs/api/{0}/json".format(self._alpine_api_version))
         self.logger.debug("alpine_base_url is: {0}".format(self.alpine_base_url))
 
-    def find_operator(self, name, operator_list):
+    @staticmethod
+    def find_operator(name, operator_list):
         """
         Helper method to parse a downloaded workflow result for a single operator
 
