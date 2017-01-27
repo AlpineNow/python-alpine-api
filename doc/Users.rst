@@ -1,5 +1,5 @@
-User
-****
+User Functions
+**************
 
 .. automodule:: api.user
 

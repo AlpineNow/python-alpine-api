@@ -1,7 +1,7 @@
 Workfiles
 *********
 
-.. automodule:: api.workfiles
+.. automodule:: api.workfile
 
 .. autoclass:: Workfile
    :members:

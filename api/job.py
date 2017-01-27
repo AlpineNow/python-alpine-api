@@ -3,10 +3,9 @@ from api.exception import *
 from api.alpineobject import AlpineObject
 
 
-
 class Job(AlpineObject):
     """
-
+    Setup and run jobs and tasks
     """
 
     def __init__(self, base_url, session, token):
@@ -22,7 +21,6 @@ class Job(AlpineObject):
         :param interval_value: how many times should it run
         :param next_run: when should the next run happen
         :return: Job info of the new added one
-
         """
         url = "{0}/workspaces/{1}/jobs".format(self.base_url, workspace_id)
         url = self._add_token_to_url(url)
@@ -51,7 +49,6 @@ class Job(AlpineObject):
         :param workspace_id: Id of the workspace to query on
         :param per_page: How many jobs to search for each query
         :return: Returns the list of Jobs.
-
         """
         jobs_list = None
         url = "{0}/workspaces/{1}/jobs".format(self.base_url, workspace_id)
@@ -105,7 +102,6 @@ class Job(AlpineObject):
         :param workspace_id: Id of the workspace to be deleted in
         :param job_name: name of the job to delete
         :return: response for the delete action
-
         """
         job_id = self.get_job_id(workspace_id, job_name)
         self.logger.debug("The job id of the job: {0} is {1}".format(job_name, job_id))
@@ -126,7 +122,6 @@ class Job(AlpineObject):
         :param workspace_id: Id of the workspace to be deleted in
         :param job_name: name of the job to delete
         :return: response for the delete action if job exists
-
         """
         try:
             return self.delete_job_from_workspace(workspace_id,job_name)
@@ -179,21 +174,18 @@ class Job(AlpineObject):
         :param job_name: Name of the job for which the task is to be added
         :param sql_workfile_id: Id of the sql workfile to be added as a task
         :return: Information of the new added task
-
         """
         sql_task_type = "run_sql_workfile"
         return self.add_workfile_task(workspace_id,job_name, sql_workfile_id, sql_task_type)
 
     def get_tasks_on_a_job(self, workspace_id, job_name):
         """
-        Get a list of tasks for a job
 
-        :param workspace_id: Id of the workspace for the job
-        :param job_name:Name of the job
-        :return: A info list of the tasks
-
+        :param workspace_id:
+        :param job_name:
+        :return:
         """
-        # Getting the job id
+
         self.logger.debug("Getting the Job id of Job: {0}".format(job_name))
         job_id = self.get_job_id(workspace_id, job_name)
         self.logger.debug("Retrieved the Job id of the job: {0} to be: {1}".format(job_name, job_id))
@@ -216,7 +208,6 @@ class Job(AlpineObject):
         :param job_name: Name of the job
         :param task_name: Name of the Task
         :return: Information of the task
-
         """
         task_name = "Run " + task_name
         task_list = self.get_tasks_on_a_job(workspace_id, job_name)
@@ -235,7 +226,6 @@ class Job(AlpineObject):
         :param job_name: Name of the job
         :param task_name: Name of the task
         :return: Id of the task
-
         """
         task = self.get_task_info(workspace_id, job_name, task_name)
         return int(task['id'])
@@ -248,7 +238,6 @@ class Job(AlpineObject):
         :param job_name: Name of the job to from which the task is to be deleted
         :param task_name: Name of the task
         :return: Response of the delete action
-
         """
         job_id = self.get_job_id(workspace_id, job_name)
         task_id = self.get_task_id(workspace_id, job_name, task_name)

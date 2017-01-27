@@ -102,6 +102,24 @@ class DataSource(AlpineObject):
     def _add_db_data_source(self, db_type, name, description, host_name, port, db_name, db_username, db_password,
                            share_type=False, public=True, ssl=False, state="online",
                            disable_kerberos_impersonation=False, high_availability=False):
+        """
+        Test
+        :param db_type:
+        :param name:
+        :param description:
+        :param host_name:
+        :param port:
+        :param db_name:
+        :param db_username:
+        :param db_password:
+        :param share_type:
+        :param public:
+        :param ssl:
+        :param state:
+        :param disable_kerberos_impersonation:
+        :param high_availability:
+        :return:
+        """
         url = "{0}/data_sources".format(self.base_url)
         url = self._add_token_to_url(url)
         payload = {"name": name,
@@ -278,4 +296,3 @@ class DataSource(AlpineObject):
             return self.delete_hadoop_data_source(name)
         except DataSourceNotFoundException:
             self.logger.debug("Data source {0} not found, we don't need to delete it".format(name))
-

@@ -8,9 +8,25 @@ class TouchPoint(AlpineObject):
 
 
     def add_touchpoint(self, touchpoint_name, workfile_id, workspace_id, touchpoint_description):
+        """
+        Does nothing
+
+        :param touchpoint_name:
+        :param workfile_id:
+        :param workspace_id:
+        :param touchpoint_description:
+        :return:
+        """
         pass
 
     def delete_touchpoint(self, touchpoint_name, workspace_id):
+        """
+        Does nothing
+
+        :param touchpoint_name:
+        :param workspace_id:
+        :return:
+        """
         pass
 
     def publish_touchpoint(self, workspace_id, touchpoint_name):

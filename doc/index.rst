@@ -27,6 +27,10 @@ Contents:
    Users
    Workfiles
    Workspaces
+   Touchpoint
+   Job
+   Datasource
+   Alpineobject
 
 
 Indices and tables

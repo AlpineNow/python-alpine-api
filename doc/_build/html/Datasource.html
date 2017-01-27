@@ -1,0 +1,372 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Datasource &#8212; Alpine SDK 0.1beta documentation</title>
+    
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1beta',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="top" title="Alpine SDK 0.1beta documentation" href="index.html" />
+    <link rel="next" title="Alpine Object" href="Alpineobject.html" />
+    <link rel="prev" title="Job" href="Job.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Alpineobject.html" title="Alpine Object"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="Job.html" title="Job"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Alpine SDK 0.1beta documentation</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="Job.html"
+                        title="previous chapter">Job</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="Alpineobject.html"
+                        title="next chapter">Alpine Object</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/Datasource.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-api.datasource">
+<span id="datasource"></span><h1>Datasource<a class="headerlink" href="#module-api.datasource" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="api.datasource.DataSource">
+<em class="property">class </em><code class="descclassname">api.datasource.</code><code class="descname">DataSource</code><span class="sig-paren">(</span><em>base_url=None</em>, <em>session=None</em>, <em>token=None</em><span class="sig-paren">)</span><a class="headerlink" href="#api.datasource.DataSource" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="api.datasource.DataSource.add_greenplum_data_source">
+<code class="descname">add_greenplum_data_source</code><span class="sig-paren">(</span><em>name</em>, <em>description</em>, <em>host_name</em>, <em>port</em>, <em>db_name</em>, <em>db_username</em>, <em>db_password</em>, <em>share_type=False</em>, <em>public=True</em>, <em>ssl=False</em>, <em>state='online'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.datasource.DataSource.add_greenplum_data_source" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> &#8211; </li>
+<li><strong>description</strong> &#8211; </li>
+<li><strong>host_name</strong> &#8211; </li>
+<li><strong>port</strong> &#8211; </li>
+<li><strong>db_name</strong> &#8211; </li>
+<li><strong>db_username</strong> &#8211; </li>
+<li><strong>db_password</strong> &#8211; </li>
+<li><strong>share_type</strong> &#8211; </li>
+<li><strong>public</strong> &#8211; </li>
+<li><strong>ssl</strong> &#8211; </li>
+<li><strong>state</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.datasource.DataSource.add_hadoop_data_source">
+<code class="descname">add_hadoop_data_source</code><span class="sig-paren">(</span><em>hadoop_version</em>, <em>name</em>, <em>description</em>, <em>name_node_host</em>, <em>namenode_port</em>, <em>resource_manager_host</em>, <em>resource_manager_port</em>, <em>username</em>, <em>group_list</em>, <em>connection_parameters</em>, <em>share_type=False</em>, <em>public=True</em>, <em>state='online'</em>, <em>high_availability=False</em>, <em>use_kerberos=False</em>, <em>disable_kerberos_impersonation=False</em>, <em>ssl=False</em><span class="sig-paren">)</span><a class="headerlink" href="#api.datasource.DataSource.add_hadoop_data_source" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>hadoop_version</strong> &#8211; </li>
+<li><strong>name</strong> &#8211; </li>
+<li><strong>description</strong> &#8211; </li>
+<li><strong>name_node_host</strong> &#8211; </li>
+<li><strong>namenode_port</strong> &#8211; </li>
+<li><strong>resource_manager_host</strong> &#8211; </li>
+<li><strong>resource_manager_port</strong> &#8211; </li>
+<li><strong>username</strong> &#8211; </li>
+<li><strong>group_list</strong> &#8211; </li>
+<li><strong>connection_parameters</strong> &#8211; </li>
+<li><strong>share_type</strong> &#8211; </li>
+<li><strong>public</strong> &#8211; </li>
+<li><strong>state</strong> &#8211; </li>
+<li><strong>high_availability</strong> &#8211; </li>
+<li><strong>use_kerberos</strong> &#8211; </li>
+<li><strong>disable_kerberos_impersonation</strong> &#8211; </li>
+<li><strong>ssl</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.datasource.DataSource.add_postgres_data_source">
+<code class="descname">add_postgres_data_source</code><span class="sig-paren">(</span><em>name</em>, <em>description</em>, <em>host_name</em>, <em>port</em>, <em>db_name</em>, <em>db_username</em>, <em>db_password</em>, <em>share_type=False</em>, <em>public=True</em>, <em>ssl=False</em>, <em>state='online'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.datasource.DataSource.add_postgres_data_source" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> &#8211; </li>
+<li><strong>description</strong> &#8211; </li>
+<li><strong>host_name</strong> &#8211; </li>
+<li><strong>port</strong> &#8211; </li>
+<li><strong>db_name</strong> &#8211; </li>
+<li><strong>db_username</strong> &#8211; </li>
+<li><strong>db_password</strong> &#8211; </li>
+<li><strong>share_type</strong> &#8211; </li>
+<li><strong>public</strong> &#8211; </li>
+<li><strong>ssl</strong> &#8211; </li>
+<li><strong>state</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.datasource.DataSource.delete_db_data_source">
+<code class="descname">delete_db_data_source</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.datasource.DataSource.delete_db_data_source" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.datasource.DataSource.delete_db_data_source_if_exists">
+<code class="descname">delete_db_data_source_if_exists</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.datasource.DataSource.delete_db_data_source_if_exists" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.datasource.DataSource.delete_hadoop_data_source">
+<code class="descname">delete_hadoop_data_source</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.datasource.DataSource.delete_hadoop_data_source" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.datasource.DataSource.delete_hadoop_data_source_if_exists">
+<code class="descname">delete_hadoop_data_source_if_exists</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.datasource.DataSource.delete_hadoop_data_source_if_exists" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.datasource.DataSource.get_db_data_source_id">
+<code class="descname">get_db_data_source_id</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.datasource.DataSource.get_db_data_source_id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.datasource.DataSource.get_db_data_source_info">
+<code class="descname">get_db_data_source_info</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.datasource.DataSource.get_db_data_source_info" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.datasource.DataSource.get_db_data_source_list">
+<code class="descname">get_db_data_source_list</code><span class="sig-paren">(</span><em>per_page=100</em><span class="sig-paren">)</span><a class="headerlink" href="#api.datasource.DataSource.get_db_data_source_list" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>per_page</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.datasource.DataSource.get_hadoop_data_source_id">
+<code class="descname">get_hadoop_data_source_id</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.datasource.DataSource.get_hadoop_data_source_id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.datasource.DataSource.get_hadoop_data_source_info">
+<code class="descname">get_hadoop_data_source_info</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.datasource.DataSource.get_hadoop_data_source_info" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.datasource.DataSource.get_hadoop_data_source_list">
+<code class="descname">get_hadoop_data_source_list</code><span class="sig-paren">(</span><em>per_page=100</em><span class="sig-paren">)</span><a class="headerlink" href="#api.datasource.DataSource.get_hadoop_data_source_list" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>per_page</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Alpineobject.html" title="Alpine Object"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="Job.html" title="Job"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Alpine SDK 0.1beta documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Alpine Data.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
+    </div>
+  </body>
+</html>

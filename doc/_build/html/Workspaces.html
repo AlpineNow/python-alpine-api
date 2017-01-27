@@ -26,6 +26,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/bizstyle.js"></script>
     <link rel="top" title="Alpine SDK 0.1beta documentation" href="index.html" />
+    <link rel="next" title="Touchpoint" href="Touchpoint.html" />
     <link rel="prev" title="Workfiles" href="Workfiles.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -43,6 +44,9 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
+          <a href="Touchpoint.html" title="Touchpoint"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
           <a href="Workfiles.html" title="Workfiles"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Alpine SDK 0.1beta documentation</a> &#187;</li> 
@@ -50,9 +54,15 @@
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="Workfiles.html"
                         title="previous chapter">Workfiles</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="Touchpoint.html"
+                        title="next chapter">Touchpoint</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -78,8 +88,241 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="workspaces">
-<h1>Workspaces<a class="headerlink" href="#workspaces" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-api.workspace">
+<span id="workspaces"></span><h1>Workspaces<a class="headerlink" href="#module-api.workspace" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="api.workspace.Workspace">
+<em class="property">class </em><code class="descclassname">api.workspace.</code><code class="descname">Workspace</code><span class="sig-paren">(</span><em>base_url</em>, <em>session</em>, <em>token</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workspace.Workspace" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="api.workspace.Workspace.add_workspace_member">
+<code class="descname">add_workspace_member</code><span class="sig-paren">(</span><em>workspace_name</em>, <em>username</em>, <em>role</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workspace.Workspace.add_workspace_member" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workspace_name</strong> &#8211; </li>
+<li><strong>username</strong> &#8211; </li>
+<li><strong>role</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workspace.Workspace.create_new_workspace">
+<code class="descname">create_new_workspace</code><span class="sig-paren">(</span><em>workspace_name</em>, <em>public=False</em>, <em>summary=None</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workspace.Workspace.create_new_workspace" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workspace_name</strong> &#8211; </li>
+<li><strong>public</strong> &#8211; </li>
+<li><strong>summary</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workspace.Workspace.delete_workspace">
+<code class="descname">delete_workspace</code><span class="sig-paren">(</span><em>workspace_name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workspace.Workspace.delete_workspace" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>workspace_name</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workspace.Workspace.delete_workspace_if_exists">
+<code class="descname">delete_workspace_if_exists</code><span class="sig-paren">(</span><em>workspace_name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workspace.Workspace.delete_workspace_if_exists" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>workspace_name</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workspace.Workspace.get_member_list_for_workspace">
+<code class="descname">get_member_list_for_workspace</code><span class="sig-paren">(</span><em>workspace_name</em>, <em>per_page=100</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workspace.Workspace.get_member_list_for_workspace" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workspace_name</strong> &#8211; </li>
+<li><strong>per_page</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workspace.Workspace.get_workspace_id">
+<code class="descname">get_workspace_id</code><span class="sig-paren">(</span><em>workspace_name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workspace.Workspace.get_workspace_id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>workspace_name</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workspace.Workspace.get_workspace_info">
+<code class="descname">get_workspace_info</code><span class="sig-paren">(</span><em>workspace_name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workspace.Workspace.get_workspace_info" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>workspace_name</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workspace.Workspace.get_workspaces_list">
+<code class="descname">get_workspaces_list</code><span class="sig-paren">(</span><em>active=False</em>, <em>user_id=None</em>, <em>per_page=100</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workspace.Workspace.get_workspaces_list" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>active</strong> &#8211; </li>
+<li><strong>user_id</strong> &#8211; </li>
+<li><strong>per_page</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workspace.Workspace.update_workspace_details">
+<code class="descname">update_workspace_details</code><span class="sig-paren">(</span><em>workspace_name=None</em>, <em>is_public=None</em>, <em>is_active=None</em>, <em>summary=None</em>, <em>stage_id=None</em>, <em>owner_id=None</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workspace.Workspace.update_workspace_details" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workspace_name</strong> &#8211; </li>
+<li><strong>is_public</strong> &#8211; </li>
+<li><strong>is_active</strong> &#8211; </li>
+<li><strong>summary</strong> &#8211; </li>
+<li><strong>stage_id</strong> &#8211; </li>
+<li><strong>owner_id</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workspace.Workspace.update_workspace_membership">
+<code class="descname">update_workspace_membership</code><span class="sig-paren">(</span><em>workspace_name</em>, <em>user_id</em>, <em>role</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workspace.Workspace.update_workspace_membership" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workspace_name</strong> &#8211; </li>
+<li><strong>username</strong> &#8211; </li>
+<li><strong>role</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workspace.Workspace.update_workspace_name">
+<code class="descname">update_workspace_name</code><span class="sig-paren">(</span><em>workspace_name</em>, <em>new_workspace_name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workspace.Workspace.update_workspace_name" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workspace_name</strong> &#8211; </li>
+<li><strong>new_workspace_name</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workspace.Workspace.update_workspace_stage">
+<code class="descname">update_workspace_stage</code><span class="sig-paren">(</span><em>workspace_name</em>, <em>stage</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workspace.Workspace.update_workspace_stage" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workspace_name</strong> &#8211; </li>
+<li><strong>stage</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -97,6 +340,9 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="Touchpoint.html" title="Touchpoint"
+             >next</a> |</li>
         <li class="right" >
           <a href="Workfiles.html" title="Workfiles"
              >previous</a> |</li>
