@@ -1,0 +1,413 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Workfiles &#8212; Alpine SDK 0.1beta documentation</title>
+    
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1beta',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="top" title="Alpine SDK 0.1beta documentation" href="index.html" />
+    <link rel="next" title="Workspaces" href="Workspaces.html" />
+    <link rel="prev" title="User Functions" href="Users.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Workspaces.html" title="Workspaces"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="Users.html" title="User Functions"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Alpine SDK 0.1beta documentation</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="Users.html"
+                        title="previous chapter">User Functions</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="Workspaces.html"
+                        title="next chapter">Workspaces</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/Workfiles.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-api.workfile">
+<span id="workfiles"></span><h1>Workfiles<a class="headerlink" href="#module-api.workfile" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="api.workfile.Workfile">
+<em class="property">class </em><code class="descclassname">api.workfile.</code><code class="descname">Workfile</code><span class="sig-paren">(</span><em>base_url</em>, <em>session</em>, <em>token</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workfile.Workfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>A collection of api wrappers and helper methods to interact with Alpine Workfiles</p>
+<dl class="method">
+<dt id="api.workfile.Workfile.delete_workfile">
+<code class="descname">delete_workfile</code><span class="sig-paren">(</span><em>workfile_name</em>, <em>workspace_id</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workfile.Workfile.delete_workfile" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workfile_name</strong> &#8211; </li>
+<li><strong>workspace_id</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workfile.Workfile.download_workflow_results">
+<code class="descname">download_workflow_results</code><span class="sig-paren">(</span><em>workflow_id</em>, <em>process_id</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workfile.Workfile.download_workflow_results" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workflow_id</strong> &#8211; </li>
+<li><strong>process_id</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">JSON object of workflow results.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="api.workfile.Workfile.find_operator">
+<em class="property">static </em><code class="descname">find_operator</code><span class="sig-paren">(</span><em>name</em>, <em>operator_list</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workfile.Workfile.find_operator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper method to parse a downloaded workflow result for a single operator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> &#8211; String that exactly matches the operator name in the workflow</li>
+<li><strong>operator_list</strong> &#8211; A list of operators and associated results. Get from download_workflow_results(...)[&#8216;outputs&#8217;]</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The results of a single operator</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workfile.Workfile.get_notebook_container_response">
+<code class="descname">get_notebook_container_response</code><span class="sig-paren">(</span><em>notebook_address</em>, <em>payload</em>, <em>command_to_execute</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workfile.Workfile.get_notebook_container_response" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>token</strong> &#8211; </li>
+<li><strong>chorus_address</strong> &#8211; </li>
+<li><strong>notebook_address</strong> &#8211; </li>
+<li><strong>payload</strong> &#8211; </li>
+<li><strong>command_to_execute</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workfile.Workfile.get_workfile_id">
+<code class="descname">get_workfile_id</code><span class="sig-paren">(</span><em>workfile_name</em>, <em>workspace_id</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workfile.Workfile.get_workfile_id" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workfile_name</strong> &#8211; </li>
+<li><strong>workspace_id</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workfile.Workfile.get_workfile_info">
+<code class="descname">get_workfile_info</code><span class="sig-paren">(</span><em>workfile_name</em>, <em>workspace_id</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workfile.Workfile.get_workfile_info" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workfile_name</strong> &#8211; </li>
+<li><strong>workspace_id</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workfile.Workfile.get_workfiles_list">
+<code class="descname">get_workfiles_list</code><span class="sig-paren">(</span><em>workspace_id</em>, <em>per_page=100</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workfile.Workfile.get_workfiles_list" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workspace_id</strong> &#8211; </li>
+<li><strong>per_page</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workfile.Workfile.query_workflow_status">
+<code class="descname">query_workflow_status</code><span class="sig-paren">(</span><em>process_id</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workfile.Workfile.query_workflow_status" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>process_id</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workfile.Workfile.run_workflow">
+<code class="descname">run_workflow</code><span class="sig-paren">(</span><em>workflow_id</em>, <em>variables=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workfile.Workfile.run_workflow" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workflow_id</strong> &#8211; </li>
+<li><strong>variables</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workfile.Workfile.stop_notebook_containers">
+<code class="descname">stop_notebook_containers</code><span class="sig-paren">(</span><em>notebook_address</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workfile.Workfile.stop_notebook_containers" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function will stop all the docker containers.
+:param token:
+:param chorus_address:
+:param notebook_address:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workfile.Workfile.stop_workflow">
+<code class="descname">stop_workflow</code><span class="sig-paren">(</span><em>process_id</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workfile.Workfile.stop_workflow" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>process_id</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workfile.Workfile.upload_db_afm">
+<code class="descname">upload_db_afm</code><span class="sig-paren">(</span><em>workspace_id</em>, <em>data_source_id</em>, <em>database_id</em>, <em>datasource_type</em>, <em>database_type</em>, <em>afm_file</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workfile.Workfile.upload_db_afm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uploads a DB afm file for execution
+:param workspace_id:
+:param data_source_id:
+:param database_id:
+:param datasource_type:
+:param database_type:
+:param afm_file:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workfile.Workfile.upload_hdfs_afm">
+<code class="descname">upload_hdfs_afm</code><span class="sig-paren">(</span><em>workspace_id</em>, <em>data_source_id</em>, <em>afm_file</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workfile.Workfile.upload_hdfs_afm" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workspace_id</strong> &#8211; </li>
+<li><strong>data_source_id</strong> &#8211; </li>
+<li><strong>afm_file</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workfile.Workfile.upload_hdfs_and_db_afm">
+<code class="descname">upload_hdfs_and_db_afm</code><span class="sig-paren">(</span><em>workspace_id</em>, <em>hdfs_datasource_id</em>, <em>db_datasource_id</em>, <em>db_datasource_type</em>, <em>database_id</em>, <em>database_type</em>, <em>afm_file</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workfile.Workfile.upload_hdfs_and_db_afm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uploads an afm with both a hdfs and a db data source.
+:param token: session_id
+:param chorus_address: the root url
+:param workspace_name: the workspace where the afm will be uploaded
+:param hdfs_datasource_name: the hdfs data source
+:param database_datasource_name: the db data source
+:param database_name: the database within the the db data source
+:param afm_file: work file name.
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workfile.Workfile.upload_notebook">
+<code class="descname">upload_notebook</code><span class="sig-paren">(</span><em>workspace_id</em>, <em>notebook_file</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workfile.Workfile.upload_notebook" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workspace_id</strong> &#8211; </li>
+<li><strong>notebook_file</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.workfile.Workfile.wait_for_workflow_to_finish">
+<code class="descname">wait_for_workflow_to_finish</code><span class="sig-paren">(</span><em>process_id</em>, <em>verbose=False</em>, <em>query_time=10</em>, <em>timeout=3600</em><span class="sig-paren">)</span><a class="headerlink" href="#api.workfile.Workfile.wait_for_workflow_to_finish" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for a workflow
+:param process_id: process ID of the workflow / worklet to monitor
+:param verbose:
+:param query_time:
+:param timeout: amount of time in seconds to wait for workflow / worklet to finish
+:return: True if success, otherwise, raise exception</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Workspaces.html" title="Workspaces"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="Users.html" title="User Functions"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Alpine SDK 0.1beta documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Alpine Data.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
+    </div>
+  </body>
+</html>

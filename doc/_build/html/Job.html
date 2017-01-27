@@ -1,0 +1,412 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Job &#8212; Alpine SDK 0.1beta documentation</title>
+    
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1beta',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="top" title="Alpine SDK 0.1beta documentation" href="index.html" />
+    <link rel="next" title="Datasource" href="Datasource.html" />
+    <link rel="prev" title="Touchpoint" href="Touchpoint.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Datasource.html" title="Datasource"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="Touchpoint.html" title="Touchpoint"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Alpine SDK 0.1beta documentation</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="Touchpoint.html"
+                        title="previous chapter">Touchpoint</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="Datasource.html"
+                        title="next chapter">Datasource</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/Job.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-api.job">
+<span id="job"></span><h1>Job<a class="headerlink" href="#module-api.job" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="api.job.Job">
+<em class="property">class </em><code class="descclassname">api.job.</code><code class="descname">Job</code><span class="sig-paren">(</span><em>base_url</em>, <em>session</em>, <em>token</em><span class="sig-paren">)</span><a class="headerlink" href="#api.job.Job" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup and run jobs and tasks</p>
+<dl class="method">
+<dt id="api.job.Job.add_job">
+<code class="descname">add_job</code><span class="sig-paren">(</span><em>workspace_id</em>, <em>job_name</em>, <em>interval_unit='on_demand'</em>, <em>interval_value=0</em>, <em>next_run=''</em><span class="sig-paren">)</span><a class="headerlink" href="#api.job.Job.add_job" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adding a job to a workspace with specified configuration</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workspace_id</strong> &#8211; id of the workspace where the job to be created</li>
+<li><strong>job_name</strong> &#8211; name of the job that to be created</li>
+<li><strong>interval_unit</strong> &#8211; units on_demand or in weeks days and hours</li>
+<li><strong>interval_value</strong> &#8211; how many times should it run</li>
+<li><strong>next_run</strong> &#8211; when should the next run happen</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Job info of the new added one</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.job.Job.add_sqlworkfile_task">
+<code class="descname">add_sqlworkfile_task</code><span class="sig-paren">(</span><em>workspace_id</em>, <em>job_name</em>, <em>sql_workfile_id</em><span class="sig-paren">)</span><a class="headerlink" href="#api.job.Job.add_sqlworkfile_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a Sql Workfile task to a job</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workspace_id</strong> &#8211; Id of the workspace for the job</li>
+<li><strong>job_name</strong> &#8211; Name of the job for which the task is to be added</li>
+<li><strong>sql_workfile_id</strong> &#8211; Id of the sql workfile to be added as a task</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Information of the new added task</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.job.Job.add_workfile_task">
+<code class="descname">add_workfile_task</code><span class="sig-paren">(</span><em>workspace_id</em>, <em>job_name</em>, <em>workfile_id</em>, <em>task_type</em><span class="sig-paren">)</span><a class="headerlink" href="#api.job.Job.add_workfile_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a task to a job</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workspace_id</strong> &#8211; Id of the workspace for the job</li>
+<li><strong>job_name</strong> &#8211; Name of the job for which the task is to be added</li>
+<li><strong>workfile_id</strong> &#8211; Id of the workfile to be added as a task</li>
+<li><strong>task_type</strong> &#8211; task type could be run_work_flow or run_sql_workfile</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Info of the new added task</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.job.Job.add_workflow_task">
+<code class="descname">add_workflow_task</code><span class="sig-paren">(</span><em>workspace_id</em>, <em>job_name</em>, <em>workflow_id</em><span class="sig-paren">)</span><a class="headerlink" href="#api.job.Job.add_workflow_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a workflow task to a job</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workspace_id</strong> &#8211; Id of the workspace for the job</li>
+<li><strong>job_name</strong> &#8211; Name of the job for which the task is to be added</li>
+<li><strong>workflow_id</strong> &#8211; Id of the workflow to be added as a task</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Info of the new added task</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.job.Job.delete_job_from_workspace">
+<code class="descname">delete_job_from_workspace</code><span class="sig-paren">(</span><em>workspace_id</em>, <em>job_name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.job.Job.delete_job_from_workspace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete job from a workspace</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workspace_id</strong> &#8211; Id of the workspace to be deleted in</li>
+<li><strong>job_name</strong> &#8211; name of the job to delete</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">response for the delete action</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.job.Job.delete_job_from_workspace_if_exists">
+<code class="descname">delete_job_from_workspace_if_exists</code><span class="sig-paren">(</span><em>workspace_id</em>, <em>job_name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.job.Job.delete_job_from_workspace_if_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete job from a workspace if the job exists. Skip if job doesn&#8217;t exist</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workspace_id</strong> &#8211; Id of the workspace to be deleted in</li>
+<li><strong>job_name</strong> &#8211; name of the job to delete</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">response for the delete action if job exists</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.job.Job.delete_task">
+<code class="descname">delete_task</code><span class="sig-paren">(</span><em>workspace_id</em>, <em>job_name</em>, <em>task_name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.job.Job.delete_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a task from the job on a workspace</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workspace_id</strong> &#8211; Id of the workspace from which the task has to be deleted</li>
+<li><strong>job_name</strong> &#8211; Name of the job to from which the task is to be deleted</li>
+<li><strong>task_name</strong> &#8211; Name of the task</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Response of the delete action</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.job.Job.get_job_id">
+<code class="descname">get_job_id</code><span class="sig-paren">(</span><em>workspace_id</em>, <em>job_name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.job.Job.get_job_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Job Id from a workspace</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workspace_id</strong> &#8211; Id of the workspace to query on</li>
+<li><strong>job_name</strong> &#8211; name of the job to query on</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.job.Job.get_job_info">
+<code class="descname">get_job_info</code><span class="sig-paren">(</span><em>workspace_id</em>, <em>job_name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.job.Job.get_job_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Job info from a workspace</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workspace_id</strong> &#8211; Id of the workspace to query on</li>
+<li><strong>job_name</strong> &#8211; name of the job to query on</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.job.Job.get_jobs_list">
+<code class="descname">get_jobs_list</code><span class="sig-paren">(</span><em>workspace_id</em>, <em>per_page=50</em><span class="sig-paren">)</span><a class="headerlink" href="#api.job.Job.get_jobs_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of jobs from a workspace</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workspace_id</strong> &#8211; Id of the workspace to query on</li>
+<li><strong>per_page</strong> &#8211; How many jobs to search for each query</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Returns the list of Jobs.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.job.Job.get_task_id">
+<code class="descname">get_task_id</code><span class="sig-paren">(</span><em>workspace_id</em>, <em>job_name</em>, <em>task_name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.job.Job.get_task_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the Id of a task in a job</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workspace_id</strong> &#8211; Id of the workspace for the job</li>
+<li><strong>job_name</strong> &#8211; Name of the job</li>
+<li><strong>task_name</strong> &#8211; Name of the task</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Id of the task</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.job.Job.get_task_info">
+<code class="descname">get_task_info</code><span class="sig-paren">(</span><em>workspace_id</em>, <em>job_name</em>, <em>task_name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.job.Job.get_task_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the infomation of a task</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workspace_id</strong> &#8211; Id of the workspace for the job</li>
+<li><strong>job_name</strong> &#8211; Name of the job</li>
+<li><strong>task_name</strong> &#8211; Name of the Task</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Information of the task</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.job.Job.get_tasks_on_a_job">
+<code class="descname">get_tasks_on_a_job</code><span class="sig-paren">(</span><em>workspace_id</em>, <em>job_name</em><span class="sig-paren">)</span><a class="headerlink" href="#api.job.Job.get_tasks_on_a_job" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>workspace_id</strong> &#8211; </li>
+<li><strong>job_name</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="Datasource.html" title="Datasource"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="Touchpoint.html" title="Touchpoint"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Alpine SDK 0.1beta documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Alpine Data.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
+    </div>
+  </body>
+</html>
