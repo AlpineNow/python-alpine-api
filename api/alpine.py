@@ -16,25 +16,15 @@ from api.touchpoint import TouchPoint
 
 class Alpine(AlpineObject):
     """
-    An Entry to do operation with Alpine APIs.
-    This class is the main entry for alpine api.
+    The main entry point for the Alpine API. Most of the API calls require a logged-in user.
     """
-    #
-    # Entry for User/Datasource/Workspace/Workfile/Job/Touchpoint sessions
-    #
-    user = None
-    """Entry for a User session User need to login before using it"""
-    datasource = None
-    """Entry for a Data Source session User need to login before using it"""
-    workspace = None
-    """Entry for a Workspace session User need to login before using it"""
-    workfile = None
-    """Entry for a Workfile session User need to login before using it"""
-    job = None
-    """Entry for a Job session User need to login before using it"""
-    touchpoint = None
-    """Entry for a Touchpoint session User need to login before using it"""
 
+    user = None
+    datasource = None
+    workspace = None
+    workfile = None
+    job = None
+    touchpoint = None
 
     def __init__(self, host=None, port=None, username=None, password=None,
                  is_secure=False, validate_certs=False, ca_certs=None,

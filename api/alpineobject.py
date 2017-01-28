@@ -3,21 +3,19 @@ import logging
 import logging.config
 import os
 
+
 class AlpineObject(object):
     """
     Base Class of Alpine API objects
 
     """
     #
-    # api version string
-    #
-    _chorus_api_version = 1
-    #
     # alpine api version string
     #
-    _alpine_api_version = "v1"
+    _alpine_api_version = "0.1"
+    _min_alpine_version = "6.2"
 
-    def __init__(self, base_url=None, session = None, token=None):
+    def __init__(self, base_url=None, session=None, token=None):
         self.base_url = base_url
         self.session = session
         self.token = token
@@ -29,10 +27,10 @@ class AlpineObject(object):
 
     def _add_token_to_url(self, url):
         """
-        For internal use only
+        Used internally to properly form  URLs.
 
-        :param url: nothing
-        :return: nothing
+        :param url: (string, required) An Alpine API URL
+        :return: (Unicode string) Formatted URL
         """
         return unicode("{0}?session_id={1}".format(url, self.token))
 
@@ -41,11 +39,12 @@ class AlpineObject(object):
                       default_level=logging.INFO,
                       env_key='LOG_CFG'):
         """
-        Sets internal values for logging
+        Sets internal values for logging through a file or an environmental variable
 
-        :param default_configuration_setting_file: the default file for logging configuration. Could be overwrite by environment variable if exists
-        :param default_level: default logging level
-        :param env_key: Environment Variable to read for configuration setting file
+        :param default_configuration_setting_file: Path to logging config file. Will be overwrite by environment
+         variable if it exists.
+        :param default_level: See possible levels here https://docs.python.org/2/library/logging.html#logging-levels
+        :param env_key: Name of environment variable with logging setting.
         :return: None
         """
 
