@@ -13,7 +13,7 @@ class User(AlpineObject):
         super(User, self).__init__(base_url, session, token)
 
     def create_user(self, username, password, first_name, last_name, email, title="", dept="",
-                    notes="Add Via API", admin_role="", app_role="analytics_developer", emails = False):
+                    notes="Add Via API", admin_role="", app_role="analytics_developer", email_notification = False):
         # TODO: What happens when we have incompatible roles?
         # TODO: How to handle LDAP for password?
 
@@ -30,9 +30,9 @@ class User(AlpineObject):
         :param string notes: Note for the user being created.
         :param string admin_role: Administration role. One of app_admin, data_admin or an empty string.
         :param string app_role: Application role. One of analytics_developer, data_analyst, collaborator or business_user.
-        :param bool emails: Option of subscribe to emails.
+        :param bool email_notification: Option to subscribe to email notifications.
 
-        :return: API response
+        :return: Created user information or error message.
         :rtype: dict
         """
 
@@ -58,7 +58,7 @@ class User(AlpineObject):
                    "admin": admin,
                    "roles": roles,
                    "user_type": app_role,
-                   "subscribed_to_emails": emails
+                   "subscribed_to_emails": email_notification
                    }
         response = self.session.post(url, data=json.dumps(payload), verify=False)
         self.logger.debug("Adding user, received response code {0} with reason {1}...".format(
@@ -70,7 +70,7 @@ class User(AlpineObject):
         """
         Delete the user with no error checking.
 
-        :param user_name: (string, required) Username of account to be deleted
+        :param string user_name: Username of account to be deleted
         :return: Response of the delete action.
         """
 
@@ -90,7 +90,7 @@ class User(AlpineObject):
         """
         Delete the User if the user exists or skip without throwing any error if user doesn't exists
 
-        :param user_name: Username of the user to be deleted
+        :param string user_name: Username of the user to be deleted
 
         :return: Response of the delete action.
 
@@ -100,20 +100,24 @@ class User(AlpineObject):
         except UserNotFoundException:
             self.logger.debug("User not found, so we don't need to delete the user")
 
-    def update_user_data(self, user_name, first_name=None, last_name=None, email=None,
-                         title=None, dept=None, notes=None, admin=None, user_type=None):
-        """
-        Updating for user information
+    def update_user_data(self, user_name, first_name=None, last_name=None, email=None, title=None,
+                         dept=None, notes=None, admin_role=None, app_role=None):
+        # TODO: Thouroughly test function!
+        # TODO: Add email notifications?
 
-        :param user_name: Username of the user to be updated
-        :param first_name: Updated First Name of the user
-        :param last_name: Updated Last Name of the user
-        :param email: Updated Email of the user
-        :param title: Updated Title of the user
-        :param dept: Updated Department of the user
-        :param notes: Updated Notes of the user
-        :param admin: Updated Admin of the user
-        :param user_type: Updated User Type of the user
+        """
+        Only included fields will be updated. While only the user_name field is required, at least one other
+        field should be included.
+
+        :param string user_name: A unique username
+        :param string first_name: New first name of the user
+        :param string last_name: New last name of the user
+        :param string email: New email of the user
+        :param string title: New title of the user
+        :param string dept: New department of the user
+        :param string notes: New notes for the user
+        :param string admin_role: Updated Admin of the user
+        :param string app_role: Updated User Type of the user
 
         :return: Information of the updated user
         :rtype: dict
@@ -137,6 +141,13 @@ class User(AlpineObject):
         for field in pop_fields:
             payload.pop(field)
 
+        admin = False
+        roles = ""
+        if admin_role == "app_admin":
+            admin = True
+        elif admin_role == "data_admin":
+            roles = "data_admin"
+
         # replace fields with updated ones from kwargs
         if first_name:
             payload["first_name"] = first_name
@@ -152,8 +163,8 @@ class User(AlpineObject):
             payload["notes"] = notes
         if admin:
             payload["admin"] = admin
-        if user_type:
-            payload["user_type"] = user_type
+        if roles:
+            payload["roles"] = roles
 
         self.logger.debug("Updating the user information {0} to {1}".format(json.dumps(payload), url))
         self.session.headers.update({"Content-Type": "application/json"})  # Set special header for this post
@@ -166,8 +177,8 @@ class User(AlpineObject):
         """
         Gets the ID number of the user.
 
-        :param string user_name: User name of the user to query on
-        :return: ID number  of the user
+        :param string user_name: Unique user name
+        :return: ID number of the user
         :rtype: int
         """
         user_info = self.get_user_data(user_name)
@@ -178,15 +189,15 @@ class User(AlpineObject):
         """
         Get one user's metadata
 
-        :param string user_name: The unique user name
+        :param string user_name: Unique user name
         :return: User data
         :rtype: dict
         """
-        users_list = self.get_users_list()
+        users_list = self.get_users_data_list()
         for user_info in users_list:
             if user_info['username'] == user_name:
                 return user_info
-        raise UserNotFoundException("User {0} Not Found".format(user_name))
+        raise UserNotFoundException("User {0} not found".format(user_name))
 
     def get_users_data_list(self, per_page=100):
         """
