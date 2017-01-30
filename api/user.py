@@ -6,9 +6,9 @@ from api.alpineobject import AlpineObject
 
 class User(AlpineObject):
     """
-    A collection of functions to deal with user accounts.
-
+    A collection of functions to deal with user accounts.]
     """
+
     def __init__(self, base_url, session, token):
         super(User, self).__init__(base_url, session, token)
 
@@ -70,8 +70,9 @@ class User(AlpineObject):
         """
         Delete the user with no error checking.
 
-        :param string user_name: Username of account to be deleted
+        :param string user_name: Username of account to be deleted.
         :return: Response of the delete action.
+
         """
         # TODO: Deal with statuses? 200 = success, 403 = not admin, 404 = not found
 
@@ -82,14 +83,17 @@ class User(AlpineObject):
             self.session.headers.update({"Content-Type": "application/x-www-form-urlencoded"})
             self.logger.debug("Deleting User {0} with id {1}".format(user_name, user_id))
             response = self.session.delete(url)
-            self.logger.debug("Received response code {0} with reason {1}".format(response.status_code, response.reason))
+            self.logger.debug("Received response code {0} with reason {1}"
+                              .format(response.status_code, response.reason))
+            print("User successfully deleted.")
             return response
         except UserNotFoundException:
+            print("User not found.")
             self.logger.debug("User not found, so we don't need to delete the user")
 
     def update_user(self, user_name, first_name=None, last_name=None, email=None, title=None,
                          dept=None, notes=None, admin_role=None, app_role=None, email_notification=None):
-        # TODO: Examine errors!
+        # TODO: Error checking!
 
         """
         Only included fields will be updated.
@@ -144,11 +148,11 @@ class User(AlpineObject):
             payload["notes"] = notes
         if app_role:
             payload["user_type"] = app_role
-        if email_notification != None:
+        if email_notification is not None:
             payload["subscribed_to_emails"] = email_notification
 
         # Logic for setting admin status is slightly more complicated:
-        if admin_role == None:
+        if admin_role is None:
             pass
         elif admin_role == "app_admin":
             payload["admin"] = True
