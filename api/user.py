@@ -14,7 +14,6 @@ class User(AlpineObject):
 
     def create_user(self, username, password, first_name, last_name, email, title="", dept="",
                     notes="Add Via API", admin_role="", app_role="analytics_developer", email_notification=False):
-        # TODO: What happens when we have incompatible roles?
         # TODO: How to handle LDAP for password?
 
         """
@@ -74,33 +73,23 @@ class User(AlpineObject):
         :param string user_name: Username of account to be deleted
         :return: Response of the delete action.
         """
+        # TODO: Deal with statuses? 200 = success, 403 = not admin, 404 = not found
 
-        # Deal with statuses: 200 = success, 403 = not admin, 404 = not found
-
-        user_id = self.get_user_id(user_name)
-        url = "{0}/users/{1}".format(self.base_url, user_id)
-        url = self._add_token_to_url(url)
-        self.session.headers.update({"Content-Type": "application/x-www-form-urlencoded"})
-        self.logger.debug("Deleting User {0} with id {1}".format(user_name, user_id))
-        response = self.session.delete(url)
-        self.logger.debug("Received response code {0} with reason {1}".format(response.status_code, response.reason))
-        return response
-
-    def delete_user_if_exists(self, user_name):
-        """
-        Delete the User if the user exists or skip without throwing any error if user doesn't exists
-
-        :param string user_name: Username of the user to be deleted
-        :return: Response of the delete action.
-        """
         try:
-            return self.delete_user(user_name)
+            user_id = self.get_user_id(user_name)
+            url = "{0}/users/{1}".format(self.base_url, user_id)
+            url = self._add_token_to_url(url)
+            self.session.headers.update({"Content-Type": "application/x-www-form-urlencoded"})
+            self.logger.debug("Deleting User {0} with id {1}".format(user_name, user_id))
+            response = self.session.delete(url)
+            self.logger.debug("Received response code {0} with reason {1}".format(response.status_code, response.reason))
+            return response
         except UserNotFoundException:
             self.logger.debug("User not found, so we don't need to delete the user")
 
     def update_user(self, user_name, first_name=None, last_name=None, email=None, title=None,
                          dept=None, notes=None, admin_role=None, app_role=None, email_notification=None):
-        # TODO: Thouroughly test function!
+        # TODO: Examine errors!
 
         """
         Only included fields will be updated.
