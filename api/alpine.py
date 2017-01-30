@@ -63,7 +63,7 @@ class Alpine(AlpineObject):
 
         self.session = requests.Session()  # instantiate a session for requests
 
-        self.base_url = "{}://{}/api/".format(self.protocol, self.host)
+        self.base_url = "{}://{}/api".format(self.protocol, self.host)
 
         self.ca_certs = ca_certs
         self.validate_certs = validate_certs
@@ -80,8 +80,8 @@ class Alpine(AlpineObject):
         :return: returns a Alpine API authentication token to be used for other actions
         """
         # build the url string and body payload
-        url= "{0}/sessions?session_id=NULL".format(self.base_url)
-        #url = self.base_url + "/sessions?session_id=NULL"
+        url = "{0}/sessions?session_id=NULL".format(self.base_url)
+        # url = self.base_url + "/sessions?session_id=NULL"
         body = {"username": username, "password": password}
         #TODO login with cert.
         cert_path = os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "../host_deploy/resource/ssl/certificates/test.crt")

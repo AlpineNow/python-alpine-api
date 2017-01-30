@@ -13,7 +13,7 @@ class User(AlpineObject):
         super(User, self).__init__(base_url, session, token)
 
     def create_user(self, username, password, first_name, last_name, email, title="", dept="",
-                    notes="Add Via API", admin_role="", app_role="analytics_developer", email_notification = False):
+                    notes="Add Via API", admin_role="", app_role="analytics_developer", email_notification=False):
         # TODO: What happens when we have incompatible roles?
         # TODO: How to handle LDAP for password?
 
@@ -29,7 +29,8 @@ class User(AlpineObject):
         :param string dept: Department of the user being created.
         :param string notes: Note for the user being created.
         :param string admin_role: Administration role. One of app_admin, data_admin or an empty string.
-        :param string app_role: Application role. One of analytics_developer, data_analyst, collaborator or business_user.
+        :param string app_role: Application role. One of analytics_developer, data_analyst,
+        collaborator or business_user.
         :param bool email_notification: Option to subscribe to email notifications.
 
         :return: Created user information or error message.
@@ -42,7 +43,7 @@ class User(AlpineObject):
         if admin_role == "app_admin":
             admin = True
         elif admin_role == "data_admin":
-            roles  = "data_admin"
+            roles = "data_admin"
 
         self.session.headers.update({"Content-Type": "application/json"})  # Set special header for this post
         url = "{0}/users".format(self.base_url)
@@ -64,7 +65,7 @@ class User(AlpineObject):
         self.logger.debug("Adding user, received response code {0} with reason {1}...".format(
             response.status_code, response.reason))
         # self.session.headers.pop("Content-Type")  # Remove header, as it affects other functions
-        return response.json()
+        return response.json()['response']
 
     def delete_user(self, user_name):
         """
@@ -86,42 +87,40 @@ class User(AlpineObject):
         return response
 
     def delete_user_if_exists(self, user_name):
-        # TODO: Does this require admin?
         """
         Delete the User if the user exists or skip without throwing any error if user doesn't exists
 
         :param string user_name: Username of the user to be deleted
-
         :return: Response of the delete action.
-
         """
         try:
             return self.delete_user(user_name)
         except UserNotFoundException:
             self.logger.debug("User not found, so we don't need to delete the user")
 
-    def update_user_data(self, user_name, first_name=None, last_name=None, email=None, title=None,
-                         dept=None, notes=None, admin_role=None, app_role=None):
+    def update_user(self, user_name, first_name=None, last_name=None, email=None, title=None,
+                         dept=None, notes=None, admin_role=None, app_role=None, email_notification=None):
         # TODO: Thouroughly test function!
-        # TODO: Add email notifications?
 
         """
-        Only included fields will be updated. While only the user_name field is required, at least one other
-        field should be included.
+        Only included fields will be updated.
 
-        :param string user_name: A unique username
-        :param string first_name: New first name of the user
-        :param string last_name: New last name of the user
-        :param string email: New email of the user
-        :param string title: New title of the user
-        :param string dept: New department of the user
-        :param string notes: New notes for the user
-        :param string admin_role: Updated Admin of the user
-        :param string app_role: Updated User Type of the user
+        :param string user_name: A unique username.
+        :param string first_name: New first name of the user.
+        :param string last_name: New last name of the user.
+        :param string email: New email of the user.
+        :param string title: New title of the user.
+        :param string dept: New department of the user.
+        :param string notes: New notes for the user.
+        :param string admin_role: New Administration Role. One of app_admin, data_admin or an empty string
+        :param string app_role: New Application Role. One of analytics_developer, data_analyst, \
+                                collaborator or business_user.
+        :param bool email_notification: Change option to subscribe to email notifications.
 
-        :return: Information of the updated user
+        :return: Updated user information.
         :rtype: dict
         """
+
         user_id = self.get_user_id(user_name)
         if user_id is None:
             raise UserNotFoundException("User {0} was not found".format(user_name))
@@ -135,18 +134,11 @@ class User(AlpineObject):
                       'id',
                       'image',
                       'is_deleted',
-                      'subscribed_to_emails',
+                      # 'subscribed_to_emails',
                       'tags',
                       'username']
         for field in pop_fields:
             payload.pop(field)
-
-        admin = False
-        roles = ""
-        if admin_role == "app_admin":
-            admin = True
-        elif admin_role == "data_admin":
-            roles = "data_admin"
 
         # replace fields with updated ones from kwargs
         if first_name:
@@ -161,10 +153,23 @@ class User(AlpineObject):
             payload["dept"] = dept
         if notes:
             payload["notes"] = notes
-        if admin:
-            payload["admin"] = admin
-        if roles:
-            payload["roles"] = roles
+        if app_role:
+            payload["user_type"] = app_role
+        if email_notification != None:
+            payload["subscribed_to_emails"] = email_notification
+
+        # Logic for setting admin status is slightly more complicated:
+        if admin_role == None:
+            pass
+        elif admin_role == "app_admin":
+            payload["admin"] = True
+            payload["roles"] = ""
+        elif admin_role == "data_admin":
+            payload["admin"] = False
+            payload["roles"] = "data_admin"
+        else:
+            payload["admin"] = False
+            payload["roles"] = ""
 
         self.logger.debug("Updating the user information {0} to {1}".format(json.dumps(payload), url))
         self.session.headers.update({"Content-Type": "application/json"})  # Set special header for this post
