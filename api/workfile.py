@@ -8,7 +8,7 @@ from api.exception import *
 
 class Workfile(AlpineObject):
     """
-    A collection of api wrappers and helper methods to interact with Alpine Workfiles
+    A collection of api wrappers and helper methods to interact with Alpine workfiles
     """
 
     def __init__(self, base_url, session, token):
@@ -22,11 +22,13 @@ class Workfile(AlpineObject):
     @staticmethod
     def find_operator(name, operator_list):
         """
-        Helper method to parse a downloaded workflow result for a single operator
+        Helper method to parse a downloaded workflow result to extract data for a single operator.
 
-        :param name: String that exactly matches the operator name in the workflow
-        :param operator_list: A list of operators and associated results. Get from download_workflow_results(...)['outputs']
-        :return: The results of a single operator
+        :param string name: Operator name to extract. Must be an exact match to the name in the workflow.
+        :param list operator_list: A list of operators and associated results. \
+                              Get from download_workflow_results(...)['outputs']
+        :return: Single operator dictionary.
+        :rtype: dict
         """
         for operator in operator_list:
             if operator['out_title'] == name:
@@ -35,13 +37,15 @@ class Workfile(AlpineObject):
 
     def get_workfiles_list(self, workspace_id, per_page=100):
         """
+        Return all workfiles in a workspace.
 
-        :param workspace_id:
-        :param per_page:
+        :param string workspace_id:
+        :param int per_page:
         :return:
+        :rtype:
         """
         workfile_list = None
-        url = "{0}/workspaces/{1}/workfiles".format(self.base_url, workspace_id)
+        url = "{0}/workspaces/{1}/workfiles".format(self.base_url, str(workspace_id))
         url = self._add_token_to_url(url)
 
         if self.session.headers.get("Content-Type") is not None:
@@ -67,9 +71,10 @@ class Workfile(AlpineObject):
     def get_workfile_info(self, workfile_name, workspace_id):
         """
 
-        :param workfile_name:
-        :param workspace_id:
+        :param string workfile_name:
+        :param string workspace_id:
         :return:
+        :rtype:
         """
         workfile_list = self.get_workfiles_list(workspace_id)
         for workfile in workfile_list:
@@ -82,19 +87,22 @@ class Workfile(AlpineObject):
     def get_workfile_id(self, workfile_name, workspace_id):
         """
 
-        :param workfile_name:
-        :param workspace_id:
+        :param string workfile_name:
+        :param string workspace_id:
         :return:
+        :rtype:
         """
         workfile_detail = self.get_workfile_info(workfile_name, workspace_id)
         return workfile_detail['id']
 
     def run_workflow(self, workflow_id, variables=[]):
         """
+        Run a workflow, optionally including a list of workflow variables.
 
-        :param workflow_id:
-        :param variables:
+        :param string workflow_id:
+        :param string variables:
         :return:
+        :rtype: str
         """
         workflow_variables = '{{"meta": {{"version": 1}}, "variables": {0}}}'.format(variables).replace("\'", "\"")
 
