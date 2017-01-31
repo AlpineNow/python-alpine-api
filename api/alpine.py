@@ -33,15 +33,15 @@ class Alpine(AlpineObject):
         Sets internal values for Alpine API session and performs login to check that parameters are set correctly
         while username and password are not null
 
-        :param host: hostname or ip address of the Alpine server
-        :param port: port number for Alpine
-        :param username: username to login with
-        :param password: password to login with
-        :param is_secure:
-        :param validate_certs:
-        :param ca_certs:
-        :param token: Alpine API authentication token
-        :param logging_level: https://docs.python.org/2/howto/logging.html#logging-levels
+        :param string host: hostname or ip address of the Alpine server
+        :param string port: port number for Alpine
+        :param string username: username to login with
+        :param string password: password to login with
+        :param bool is_secure:
+        :param bool validate_certs:
+        :param ??? ca_certs:
+        :param string token: Alpine API authentication token
+        :param string logging_level: https://docs.python.org/2/howto/logging.html#logging-levels (Not implemented!)
         :return: None
         """
 
@@ -73,11 +73,12 @@ class Alpine(AlpineObject):
 
     def login(self, username, password):
         """
-        Logs into Alpine with provided username and password
+        Logs into Alpine with provided username and password.
 
-        :param username: username to login with
-        :param password: password to login with
+        :param string username: username to login with
+        :param string password: password to login with
         :return: returns a Alpine API authentication token to be used for other actions
+        :rtype: string
         """
         # build the url string and body payload
         url = "{0}/sessions?session_id=NULL".format(self.base_url)
@@ -116,9 +117,10 @@ class Alpine(AlpineObject):
 
     def logout(self):
         """
-        Logout of the session
+        Logs out current user.
 
-        :return: response of the logout session
+        :return: response of the logout session.
+        :rtype: ???
         """
         # Is there a way to do this without explicitly including the token in the url?
         url = "{0}/sessions?session_id={1}".format(self.base_url, self.token)
@@ -139,11 +141,11 @@ class Alpine(AlpineObject):
 
     def get_login_status(self):
         """
-        Get the current login status from Alpine API
+        Return the current login status.
 
-        :return: Current login status in JSON format
+        :return: Current login status.
+        :rtype: JSON
         """
-        #TODO: Needs to fail gracefully.
         url = "{0}/sessions".format(self.base_url)
         self.logger.debug("Checking to see if the user is still logged in....")
         response = self.session.get(url)
