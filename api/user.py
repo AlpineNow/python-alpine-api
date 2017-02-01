@@ -65,9 +65,8 @@ class User(AlpineObject):
 
         try:
             return response.json()['response']
-        except:
+        except KeyError:
             return response.json()
-
 
     def delete_user(self, user_name):
         """
@@ -95,7 +94,6 @@ class User(AlpineObject):
                               .format(response.status_code, response.reason))
             print("User successfully deleted.")
             return None
-
 
     def update_user(self, user_name, first_name=None, last_name=None, email=None, title=None,
                          dept=None, notes=None, admin_role=None, app_role=None, email_notification=None):

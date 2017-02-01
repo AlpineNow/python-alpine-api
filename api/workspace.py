@@ -10,11 +10,13 @@ class Workspace(AlpineObject):
 
     def create_new_workspace(self, workspace_name, public=False, summary=None):
         """
+        Will create a workspace
 
-        :param workspace_name:
-        :param public:
-        :param summary:
+        :param str workspace_name: Unique workspace name.
+        :param bool public: Allow the workspace to be viewable by non-members and non-admins.
+        :param str summary: Description of new workspace.
         :return:
+        :rtype: dict
         """
         url = "{0}/workspaces".format(self.base_url)
         url = self._add_token_to_url(url)
@@ -31,13 +33,13 @@ class Workspace(AlpineObject):
     def get_workspace_info(self, workspace_name):
         """
 
-        :param workspace_name:
+        :param str workspace_name:
         :return:
         """
         workspace_list = self.get_workspaces_list()
         for workspace in workspace_list:
             if workspace['name'] == workspace_name:
-                self.logger.debug ("Found workspace {0} in list...".format(workspace_name))
+                self.logger.debug("Found workspace {0} in list...".format(workspace_name))
                 return workspace
         raise WorkspaceNotFoundException("Workspace {0} not found".format(workspace_name))
 
@@ -74,16 +76,19 @@ class Workspace(AlpineObject):
             else:
                 member_list = member_list_response['response']
             if page_total == page_current:
-                break;
+                break
         return member_list
 
-    def get_workspaces_list(self, active=False, user_id=None, per_page=100,):
+    def get_workspaces_list(self, user_name=None, active=False, per_page=100):
+        # TODO: rename!
         """
+        Get a list of metadata about
 
-        :param active:
-        :param user_id:
-        :param per_page:
+        :param str user_name:
+        :param bool active:
+        :param int per_page:
         :return:
+        :rtype: list of dict
         """
         workspace_list = None
         url = "{0}/workspaces".format(self.base_url)
@@ -109,12 +114,13 @@ class Workspace(AlpineObject):
             else:
                 workspace_list = workspace_list_response['response']
             if page_total == page_current:
-                break;
+                break
 
 #        url = url + "&page=1&per_page=1000&user_id={0}".format(user_id)
         return workspace_list
 
     def update_workspace_name(self, workspace_name, new_workspace_name):
+        # TODO: Is this a repeat of update_workspace_details?
         """
 
         :param workspace_name:
@@ -187,12 +193,12 @@ class Workspace(AlpineObject):
         """
 
         :param workspace_name:
-        :param username:
+        :param user_id:
         :param role:
         :return:
         """
         workspace_id = self.get_workspace_id(workspace_name)
-        url = "{0}/workspaces/{1}/members".format(self.base_url,workspace_id)
+        url = "{0}/workspaces/{1}/members".format(self.base_url, workspace_id)
         url = self._add_token_to_url(url)
         # Build payload with user ids and role
         members = []
@@ -200,7 +206,7 @@ class Workspace(AlpineObject):
         # If the user is not an member, add the user,
         # if the user is already a member of the workspace, update the user role
         for member in member_list:
-            if member['id']== user_id:
+            if member['id'] == user_id:
                 continue
             else:
                 members.append({"user_id": member['id'], "role": member['role']})
@@ -252,6 +258,7 @@ class Workspace(AlpineObject):
         return response
 
     def delete_workspace_if_exists(self, workspace_name):
+        # TODO: repeat code!
         """
 
         :param workspace_name:
@@ -260,4 +267,4 @@ class Workspace(AlpineObject):
         try:
             self.delete_workspace(workspace_name)
         except WorkspaceNotFoundException:
-            self.logger.debug ("Workspace {0} not found, don't need to delete the Workspace".format(workspace_name))
+            self.logger.debug("Workspace {0} not found, don't need to delete the Workspace".format(workspace_name))
