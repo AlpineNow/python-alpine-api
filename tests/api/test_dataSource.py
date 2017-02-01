@@ -1,7 +1,6 @@
-from api.alpine import Alpine
-from api.datasource import DataSource
-from api.exception import *
 from alpineunittest import AlpineTestCase
+from api.alpine import Alpine
+from api.exception import *
 
 
 class TestDataSource(AlpineTestCase):

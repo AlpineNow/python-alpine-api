@@ -1,17 +1,15 @@
-import json
-import logging
-import logging.config
 import os
 import sys
-import time
+
 import requests
+
 from api.alpineobject import AlpineObject
-from api.user import User
-from api.datasource import DataSource
-from api.workspace import Workspace
-from api.workfile import Workfile
 from api.job import Job
-from api.touchpoint import TouchPoint
+from api.user import User
+from api.workfile import Workfile
+from api.workspace import Workspace
+from future.datasource import DataSource
+from future.touchpoint import TouchPoint
 
 
 class Alpine(AlpineObject):
@@ -29,6 +27,7 @@ class Alpine(AlpineObject):
     def __init__(self, host=None, port=None, username=None, password=None,
                  is_secure=False, validate_certs=False, ca_certs=None,
                  token=None, logging_level='WARN'):
+        # TODO: Implement logging_level variable
         """
         Sets internal values for Alpine API session and performs login to check that parameters are set correctly
         while username and password are not null
