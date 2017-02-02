@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Process Description="" UserName="209" Version="5.7.0.0">
+<Operator X="140" Y="258" name="credit.csv" type="com.alpine.miner.gef.runoperator.hadoop.HadoopFileOperator" uuid="1422049225010">
+<Note/>
+<Parameter key="connName" value="cdh5_36"/>
+<Parameter key="hadoopFileName" value="/automation_test_data/csv/credit.csv"/>
+<Parameter key="hadoopFileFormat" value="Text File"/>
+<HadoopFileStructureModel delimiter="Comma" escapChar="\" includeHeader="true" other="" quoteChar="&quot;">
+<columnNames columnName="id"/>
+<columnNames columnName="times90dayslate"/>
+<columnNames columnName="revolving_util"/>
+<columnNames columnName="debt_ratio"/>
+<columnNames columnName="credit_lines"/>
+<columnNames columnName="monthly_income"/>
+<columnNames columnName="times30dayslate_2years"/>
+<columnNames columnName="srsdlqncy"/>
+<columnTypes columnType="long"/>
+<columnTypes columnType="long"/>
+<columnTypes columnType="double"/>
+<columnTypes columnType="double"/>
+<columnTypes columnType="long"/>
+<columnTypes columnType="double"/>
+<columnTypes columnType="long"/>
+<columnTypes columnType="long"/>
+</HadoopFileStructureModel>
+<Parameter key="groupName" value="supergroup"/>
+<Parameter key="jobPort" value="8032"/>
+<Parameter key="ALP_HD_KVP[mapred.output.compress]" value="true"/>
+<Parameter key="schedulerPort" value="8030"/>
+<Parameter key="hdfsHostname" value="10.10.2.36"/>
+<Parameter key="ALP_HD_KVP[yarn.resourcemanager.scheduler.address]" value="cdh5-automation1.alpinenow.local:8030"/>
+<Parameter key="ALP_HD_KVP[yarn.resourcemanager.resource-tracker.address]" value="cdh5-automation1.alpinenow.local:8031"/>
+<Parameter key="hadoopVersion" value="Cloudera CDH5.3"/>
+<Parameter key="ALP_HD_KVP[mapreduce.output.fileoutputformat.compress.codec]" value="org.apache.hadoop.io.compress.GzipCodec"/>
+<Parameter key="securityMode" value="simple"/>
+<Parameter key="userName" value="hdfs"/>
+<Parameter key="hdfsPort" value="8020"/>
+<Parameter key="ALP_HD_KVP[mapreduce.map.output.compress.codec]" value="org.apache.hadoop.io.compress.GzipCodec"/>
+<Parameter key="ALP_HD_KVP[mapreduce.jobhistory.webapp.address]" value="cdh5-automation1.alpinenow.local:19888"/>
+<Parameter key="ALP_HD_KVP[yarn.resourcemanager.admin.address]" value="cdh5-automation1.alpinenow.local:8033"/>
+<Parameter key="useHA" value="false"/>
+<Parameter key="schedulerHost" value="cdh5-automation1.alpinenow.local"/>
+<Parameter key="ALP_HD_KVP[mapreduce.output.fileoutputformat.compress]" value="true"/>
+<Parameter key="mapredPrincipal" value=""/>
+<Parameter key="ALP_HD_KVP[mapreduce.jobhistory.address]" value="0.0.0.0:10020"/>
+<Parameter key="ALP_HD_KVP[pig.tmpfilecompression.codec]" value="org.apache.hadoop.io.compress.GzipCodec"/>
+<Parameter key="ALP_HD_KVP[mapreduce.job.reduce.shuffle.consumer.plugin.class]" value="org.apache.hadoop.mapreduce.task.reduce.Shuffle"/>
+<Parameter key="jobHostname" value="10.10.2.36"/>
+<Parameter key="ALP_HD_KVP[yarn.app.mapreduce.am.staging-dir]" value="/user"/>
+<Parameter key="ALP_HD_KVP[mapreduce.job.map.output.collector.class]" value="org.apache.hadoop.mapred.MapTask$MapOutputBuffer"/>
+<Parameter key="ALP_HD_KVP[pig.tmpfilecompression]" value="true"/>
+<Parameter key="hdfsKeyTab" value=""/>
+<Parameter key="hdfsPrincipal" value=""/>
+<Parameter key="mapredKeyTab" value=""/>
+<Parameter key="ALP_HD_KVP[mapreduce.map.output.compress]" value="true"/>
+<InPutFieldList>
+<Parameter key="connName" value="cdh5_36"/>
+<Parameter key="hdfsHostname" value="10.10.2.36"/>
+<Parameter key="hdfsPort" value="8020"/>
+<Parameter key="hadoopVersion" value="Cloudera CDH5.3"/>
+<Parameter key="jobHostname" value="10.10.2.36"/>
+<Parameter key="jobPort" value="8032"/>
+<Parameter key="userName" value="hdfs"/>
+<Parameter key="useHA" value="false"/>
+<Parameter key="groupName" value="supergroup"/>
+<Parameter key="hadoopCompressionFormat" value=""/>
+<Parameter key="hadoopFileFormat" value="Text File"/>
+<Parameter key="hadoopFileName" value="/automation_test_data/csv/credit.csv"/>
+<Parameter key="securityMode" value="simple"/>
+<Parameter key="hdfsPrincipal" value=""/>
+<Parameter key="hdfsKeyTab" value=""/>
+<Parameter key="mapredPrincipal" value=""/>
+<Parameter key="mapredKeyTab" value=""/>
+<Parameter key="schedulerHost" value="cdh5-automation1.alpinenow.local"/>
+<Parameter key="schedulerPort" value="8030"/>
+<Parameter key="ALP_HD_KVP[mapreduce.jobhistory.address]" value="0.0.0.0:10020"/>
+<Parameter key="ALP_HD_KVP[pig.tmpfilecompression]" value="true"/>
+<Parameter key="ALP_HD_KVP[mapreduce.jobhistory.webapp.address]" value="cdh5-automation1.alpinenow.local:19888"/>
+<Parameter key="ALP_HD_KVP[mapreduce.map.output.compress]" value="true"/>
+<Parameter key="ALP_HD_KVP[mapreduce.output.fileoutputformat.compress.codec]" value="org.apache.hadoop.io.compress.GzipCodec"/>
+<Parameter key="ALP_HD_KVP[yarn.resourcemanager.scheduler.address]" value="cdh5-automation1.alpinenow.local:8030"/>
+<Parameter key="ALP_HD_KVP[yarn.resourcemanager.admin.address]" value="cdh5-automation1.alpinenow.local:8033"/>
+<Parameter key="ALP_HD_KVP[mapreduce.map.output.compress.codec]" value="org.apache.hadoop.io.compress.GzipCodec"/>
+<Parameter key="ALP_HD_KVP[mapreduce.job.map.output.collector.class]" value="org.apache.hadoop.mapred.MapTask$MapOutputBuffer"/>
+<Parameter key="ALP_HD_KVP[pig.tmpfilecompression.codec]" value="org.apache.hadoop.io.compress.GzipCodec"/>
+<Parameter key="ALP_HD_KVP[mapred.output.compress]" value="true"/>
+<Parameter key="ALP_HD_KVP[yarn.resourcemanager.resource-tracker.address]" value="cdh5-automation1.alpinenow.local:8031"/>
+<Parameter key="ALP_HD_KVP[mapreduce.job.reduce.shuffle.consumer.plugin.class]" value="org.apache.hadoop.mapreduce.task.reduce.Shuffle"/>
+<Parameter key="ALP_HD_KVP[yarn.app.mapreduce.am.staging-dir]" value="/user"/>
+<Parameter key="ALP_HD_KVP[mapreduce.output.fileoutputformat.compress]" value="true"/>
+<HadoopFileStructureModel delimiter="Comma" escapChar="\" includeHeader="true" other="" quoteChar="&quot;">
+<columnNames columnName="id"/>
+<columnNames columnName="times90dayslate"/>
+<columnNames columnName="revolving_util"/>
+<columnNames columnName="debt_ratio"/>
+<columnNames columnName="credit_lines"/>
+<columnNames columnName="monthly_income"/>
+<columnNames columnName="times30dayslate_2years"/>
+<columnNames columnName="srsdlqncy"/>
+<columnTypes columnType="long"/>
+<columnTypes columnType="long"/>
+<columnTypes columnType="double"/>
+<columnTypes columnType="double"/>
+<columnTypes columnType="long"/>
+<columnTypes columnType="double"/>
+<columnTypes columnType="long"/>
+<columnTypes columnType="long"/>
+</HadoopFileStructureModel>
+</InPutFieldList>
+</Operator>
+<Operator X="247" Y="220" name="Copy to Database" type="com.alpine.miner.gef.runoperator.hadoop.CopyToDBOperator" uuid="1422049237683">
+<Note/>
+<Parameter key="dbConnectionName" value="robot_automation"/>
+<Parameter key="schemaName" value="public"/>
+<Parameter key="copyToTableName" value="automation_copy_to"/>
+<Parameter key="ifDataExists" value="Drop"/>
+<Parameter key="copyMode" value="Simple"/>
+<Parameter key="numberOfCopyTasks" value="4"/>
+<Parameter key="userName" value="miner_demo"/>
+<Parameter key="url" value="jdbc:postgresql://10.0.0.58:5432/robot_automation"/>
+<Parameter key="password" value="bWluZXJfZGVtbw=="/>
+<Parameter key="system" value="Greenplum"/>
+<Parameter key="useSSL" value="false"/>
+<CopyToAdvancedParameterModel/>
+<InPutFieldList>
+<Parameter key="connName" value="cdh5_36"/>
+<Parameter key="hdfsHostname" value="10.10.2.36"/>
+<Parameter key="hdfsPort" value="8020"/>
+<Parameter key="hadoopVersion" value="Cloudera CDH5.3"/>
+<Parameter key="jobHostname" value="10.10.2.36"/>
+<Parameter key="jobPort" value="8032"/>
+<Parameter key="userName" value="hdfs"/>
+<Parameter key="groupName" value="supergroup"/>
+<Parameter key="useHA" value="false"/>
+<Parameter key="securityMode" value="simple"/>
+<Parameter key="hdfsPrincipal" value=""/>
+<Parameter key="hdfsKeyTab" value=""/>
+<Parameter key="mapredPrincipal" value=""/>
+<Parameter key="mapredKeyTab" value=""/>
+<Parameter key="hadoopFileFormat" value="Text File"/>
+<Parameter key="hadoopFileName" value="/automation_test_data/csv/credit.csv"/>
+<Parameter key="schedulerHost" value="cdh5-automation1.alpinenow.local"/>
+<Parameter key="schedulerPort" value="8030"/>
+<HadoopFileStructureModel delimiter="Comma" escapChar="\" includeHeader="true" other="" quoteChar="&quot;">
+<columnNames columnName="id"/>
+<columnNames columnName="times90dayslate"/>
+<columnNames columnName="revolving_util"/>
+<columnNames columnName="debt_ratio"/>
+<columnNames columnName="credit_lines"/>
+<columnNames columnName="monthly_income"/>
+<columnNames columnName="times30dayslate_2years"/>
+<columnNames columnName="srsdlqncy"/>
+<columnTypes columnType="long"/>
+<columnTypes columnType="long"/>
+<columnTypes columnType="double"/>
+<columnTypes columnType="double"/>
+<columnTypes columnType="long"/>
+<columnTypes columnType="double"/>
+<columnTypes columnType="long"/>
+<columnTypes columnType="long"/>
+</HadoopFileStructureModel>
+<Parameter key="ALP_HD_KVP[mapreduce.jobhistory.address]" value="0.0.0.0:10020"/>
+<Parameter key="ALP_HD_KVP[pig.tmpfilecompression]" value="true"/>
+<Parameter key="ALP_HD_KVP[mapreduce.jobhistory.webapp.address]" value="cdh5-automation1.alpinenow.local:19888"/>
+<Parameter key="ALP_HD_KVP[mapreduce.map.output.compress]" value="true"/>
+<Parameter key="ALP_HD_KVP[mapreduce.output.fileoutputformat.compress.codec]" value="org.apache.hadoop.io.compress.GzipCodec"/>
+<Parameter key="ALP_HD_KVP[yarn.resourcemanager.scheduler.address]" value="cdh5-automation1.alpinenow.local:8030"/>
+<Parameter key="ALP_HD_KVP[yarn.resourcemanager.admin.address]" value="cdh5-automation1.alpinenow.local:8033"/>
+<Parameter key="ALP_HD_KVP[mapreduce.map.output.compress.codec]" value="org.apache.hadoop.io.compress.GzipCodec"/>
+<Parameter key="ALP_HD_KVP[mapreduce.job.map.output.collector.class]" value="org.apache.hadoop.mapred.MapTask$MapOutputBuffer"/>
+<Parameter key="ALP_HD_KVP[pig.tmpfilecompression.codec]" value="org.apache.hadoop.io.compress.GzipCodec"/>
+<Parameter key="ALP_HD_KVP[mapred.output.compress]" value="true"/>
+<Parameter key="ALP_HD_KVP[yarn.resourcemanager.resource-tracker.address]" value="cdh5-automation1.alpinenow.local:8031"/>
+<Parameter key="ALP_HD_KVP[mapreduce.job.reduce.shuffle.consumer.plugin.class]" value="org.apache.hadoop.mapreduce.task.reduce.Shuffle"/>
+<Parameter key="ALP_HD_KVP[yarn.app.mapreduce.am.staging-dir]" value="/user"/>
+<Parameter key="ALP_HD_KVP[mapreduce.output.fileoutputformat.compress]" value="true"/>
+</InPutFieldList>
+</Operator>
+<Link source="credit.csv" target="Copy to Database"/>
+<VariableModel>
+<Variable>
+<Name>@flow_name</Name>
+<Value>@flow_name</Value>
+</Variable>
+<Variable>
+<Name>@user_name</Name>
+<Value>@user_name</Value>
+</Variable>
+<Variable>
+<Name>@user_id</Name>
+<Value>@user_id</Value>
+</Variable>
+<Variable>
+<Name>@flow_id</Name>
+<Value>@flow_id</Value>
+</Variable>
+<Variable>
+<Name>@default_schema</Name>
+<Value>public</Value>
+</Variable>
+<Variable>
+<Name>@default_prefix</Name>
+<Value>ch209</Value>
+</Variable>
+<Variable>
+<Name>@default_tempdir</Name>
+<Value>/tmp</Value>
+</Variable>
+<Variable>
+<Name>@default_delimiter</Name>
+<Value>,</Value>
+</Variable>
+<Variable>
+<Name>@pig_number_of_reducers</Name>
+<Value>-1</Value>
+</Variable>
+</VariableModel>
+</Process>

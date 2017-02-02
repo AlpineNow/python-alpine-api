@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Process Description="" UserName="40" Version="3.0">
+<Operator X="318" Y="227" name="golfnew" type="com.alpine.miner.gef.runoperator.datasource.DbTableOperator" uuid="1406658554243">
+<Note/>
+<Parameter key="dbConnectionName" value="robot_automation"/>
+<Parameter key="schemaName" value="auto_test_data"/>
+<Parameter key="tableName" value="golfnew"/>
+<Parameter key="userName" value="miner_demo"/>
+<Parameter key="url" value="jdbc:postgresql://10.0.0.58:5432/robot_automation"/>
+<Parameter key="password" value="bWluZXJfZGVtbw=="/>
+<Parameter key="system" value="Greenplum"/>
+<Parameter key="useSSL" value="false"/>
+</Operator>
+<Operator X="467" Y="198" name="Row Filter" type="com.alpine.miner.gef.runoperator.field.FilterOperator" uuid="1406658558341">
+<Note/>
+<Parameter key="outputType" value="TABLE"/>
+<Parameter key="outputSchema" value="@default_schema"/>
+<Parameter key="outputTable" value="@default_prefix_rowfil_0"/>
+<StorageParameters appendOnly="false" columnarStorage="false" compression="false" compressionLevel="1" isDistributedRandomly="true"/>
+<Parameter key="dropIfExist" value="Yes"/>
+<RowFilterConditionModel conditionValue="" sqlType="nosql" useAll="true">
+<RowFilterConditionItem columnName="play" condition="=" firstValue="'yes'" secondValue=""/>
+</RowFilterConditionModel>
+<InPutFieldList>
+<Parameter key="url" value="jdbc:postgresql://10.0.0.58:5432/robot_automation"/>
+<Parameter key="schema" value="auto_test_data"/>
+<Parameter key="table" value="golfnew"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="username" value="miner_demo"/>
+<Parameter key="useSSL" value="false"/>
+<Parameter key="useSID" value="false"/>
+<Parameter key="password" value="bWluZXJfZGVtbw=="/>
+<Parameter key="system" value="Greenplum"/>
+<Fields>
+<Field name="outlook" type="TEXT"/>
+<Field name="temperature" type="BIGINT"/>
+<Field name="humidity" type="BIGINT"/>
+<Field name="wind" type="TEXT"/>
+<Field name="play" type="TEXT"/>
+</Fields>
+</InPutFieldList>
+</Operator>
+<Link source="golfnew" target="Row Filter"/>
+<VariableModel>
+<Variable>
+<Name>@flow_name</Name>
+<Value>@flow_name</Value>
+</Variable>
+<Variable>
+<Name>@user_name</Name>
+<Value>@user_name</Value>
+</Variable>
+<Variable>
+<Name>@default_schema</Name>
+<Value>public</Value>
+</Variable>
+<Variable>
+<Name>@default_prefix</Name>
+<Value>ch40</Value>
+</Variable>
+<Variable>
+<Name>@default_tempdir</Name>
+<Value>/tmp</Value>
+</Variable>
+<Variable>
+<Name>@default_delimiter</Name>
+<Value>,</Value>
+</Variable>
+</VariableModel>
+</Process>
