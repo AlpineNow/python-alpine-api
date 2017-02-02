@@ -12,7 +12,7 @@ class User(AlpineObject):
     def __init__(self, base_url, session, token):
         super(User, self).__init__(base_url, session, token)
 
-    def create_user(self, username, password, first_name, last_name, email, title="", dept="",
+    def create(self, username, password, first_name, last_name, email, title="", dept="",
                     notes="Add Via API", admin_role="", app_role="analytics_developer", email_notification=False):
         # TODO: How to handle LDAP for password?
         """
@@ -68,41 +68,38 @@ class User(AlpineObject):
         except KeyError:
             return response.json()
 
-    def delete_user(self, user_name):
+    def delete(self, username):
         """
         Attempts to delete the given user. Will fail if the user does not exist.
 
-        :param str user_name: Username of account to be deleted.
+        :param str username: Username of account to be deleted.
         :return: None
         :rtype: NoneType
-        :exception UserNotFoundException: The user_name does not exist.
+        :exception UserNotFoundException: The username does not exist.
         """
 
         try:
-            pass
-        except UserNotFoundException:
-            self.logger.debug("User not found")
-            return UserNotFoundException
+            user_id = self.get_id(username)
+        except UserNotFoundException as err:
+            self.logger.debug("User not found, error {}".format(err))
+            raise
         else:
-            user_id = self.get_user_id(user_name)
             url = "{0}/users/{1}".format(self.base_url, user_id)
             url = self._add_token_to_url(url)
             self.session.headers.update({"Content-Type": "application/x-www-form-urlencoded"})
-            self.logger.debug("Deleting User {0} with id {1}".format(user_name, user_id))
+            self.logger.debug("Deleting User {0} with id {1}".format(username, user_id))
             response = self.session.delete(url)
             self.logger.debug("Received response code {0} with reason {1}"
                               .format(response.status_code, response.reason))
             print("User successfully deleted.")
             return None
 
-    def update_user(self, user_name, first_name=None, last_name=None, email=None, title=None,
+    def update(self, username, first_name=None, last_name=None, email=None, title=None,
                          dept=None, notes=None, admin_role=None, app_role=None, email_notification=None):
-        # TODO: Error checking!
-
         """
         Only included fields will be updated.
 
-        :param str user_name: A unique username.
+        :param str username: A unique username.
         :param str first_name: New first name of the user.
         :param str last_name: New last name of the user.
         :param str email: New email of the user.
@@ -116,15 +113,13 @@ class User(AlpineObject):
 
         :return: Updated user information.
         :rtype: dict
-        :exception UserNotFoundException: The user_name does not exist.
+        :exception UserNotFoundException: The username does not exist.
         """
 
-        user_id = self.get_user_id(user_name)
-        # if user_id is None: # IS this necessary?
-        #     raise UserNotFoundException("User {0} was not found".format(user_name))
+        user_id = self.get_id(username)
         url = "{0}/users/{1}".format(self.base_url, user_id)
         url = self._add_token_to_url(url)
-        payload = self.get_user_data(user_name)
+        payload = self.get_data(username)
 
         # get rid of fields that aren't required for PUT
         pop_fields = ['complete_json',
@@ -175,48 +170,47 @@ class User(AlpineObject):
         self.session.headers.pop("Content-Type")  # Remove header, as it affects other tests
         return response.json()['response']
 
-    def get_user_id(self, user_name):
+    def get_id(self, username):
         """
         Gets the ID number of the user. Will throw an exception if the user does not exist.
 
-        :param str user_name: Unique user name
+        :param str username: Unique user name
         :return: ID number of the user
         :rtype: int
-        :exception UserNotFoundException: The user_name does not exist.
+        :exception UserNotFoundException: The username does not exist.
         """
 
         try:
-            user_info = self.get_user_data(user_name)
+            user_info = self.get_data(username)
         except UserNotFoundException as err:
             self.logger.error(err)
             raise
         else:
             return int(user_info['id'])
 
-    def get_user_data(self, user_name):
+    def get_data(self, username):
         """
         Get one user's metadata
 
-        :param str user_name: A Unique user name.
+        :param str username: A Unique user name.
         :return: Single user's data
         :rtype: dict
-        :exception UserNotFoundException: The user_name does not exist.
+        :exception UserNotFoundException: The username does not exist.
         """
-        users_list = self.get_all_users_data()
+        users_list = self.get_all()
         for user_info in users_list:
-            if user_info['username'] == user_name:
+            if user_info['username'] == username:
                 return user_info
-        raise UserNotFoundException("User {0} not found".format(user_name))
+        raise UserNotFoundException("User {0} not found".format(username))
 
-    def get_all_users_data(self, per_page=100):
+    def get_all(self, per_page=100):
         """
         Get a list of all users' metadata.
 
         :param int per_page: How many users to return in each page.
-        :return: A list of all user's data (up to per_page).
+        :return: A list of all the user's data.
         :rtype: list of dict
         """
-        # TODO: what if there is more than 100 users
         url = "{0}/users".format(self.base_url)
         url = self._add_token_to_url(url)
         page_current = 0

@@ -8,8 +8,8 @@ from api.exception import *
 
 class Workfile(AlpineObject):
     """
-    A collection of api wrappers and helper methods to interact with Alpine workfiles, including running workflows \
-    with or without workflow variables,
+    A collection of API wrappers and helper methods to interact with Alpine workfiles, including running workflows \
+    with or without workflow variables, ...
     """
 
     def __init__(self, base_url, session, token):

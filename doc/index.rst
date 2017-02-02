@@ -25,11 +25,9 @@ Contents:
 
    Alpine
    Users
-   Workfiles
    Workspaces
-   Touchpoint
+   Workfiles
    Job
-   Datasource
    Alpineobject
 
 
