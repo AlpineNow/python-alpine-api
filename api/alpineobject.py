@@ -12,7 +12,7 @@ class AlpineObject(object):
     #
     # alpine api version string
     #
-    _alpine_api_version = "0.1"
+    _alpine_api_version = "1"
     _min_alpine_version = "6.2"
 
     def __init__(self, base_url=None, session=None, token=None):

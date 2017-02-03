@@ -165,7 +165,6 @@ class Workspace(AlpineObject):
         return workspace_list
 
     def update_name(self, workspace_name, new_workspace_name):
-        # TODO: Is this a repeat of update_settings?
         """
 
         :param workspace_name:
@@ -189,7 +188,7 @@ class Workspace(AlpineObject):
 
     def update_settings(self, workspace_name=None, is_public=None, is_active=None,
                                       summary=None, stage_id=None, owner_id=None):
-        # TODO: Combine with update_name
+        # TODO: Can we combine with update_name??
         """
 
         :param workspace_name:
@@ -274,6 +273,11 @@ class Workspace(AlpineObject):
         """
         return self.update_membership(workspace_name, username, role)
 
+    def remove_member(self, workspace_name, username):
+        # TODO: ???
+
+        return None
+
     def update_stage(self, workspace_name, stage):
         """
 
@@ -310,5 +314,5 @@ class Workspace(AlpineObject):
             response = self.session.delete(url)
             self.logger.debug("Received response code {0} with reason {1}"
                               .format(response.status_code, response.reason))
-            print("User successfully deleted")
+            print("Workspace successfully deleted")
             return None

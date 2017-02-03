@@ -108,6 +108,7 @@ class Workfile(AlpineObject):
         workflow_variables = '{{"meta": {{"version": 1}}, "variables": {0}}}'.format(variables).replace("\'", "\"")
 
         url = "{0}/workflows/{1}/run?saveResult=true".format(self.alpine_base_url, workflow_id)
+        print(url)
 
         self.session.headers.update({"x-token": self.token})
         self.session.headers.update({"Content-Type": "application/json"})
