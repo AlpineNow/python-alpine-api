@@ -81,10 +81,8 @@ class Alpine(AlpineObject):
         """
         # build the url string and body payload
         url = "{0}/sessions?session_id=NULL".format(self.base_url)
-        print(url)
         # url = self.base_url + "/sessions?session_id=NULL"
         body = {"username": username, "password": password}
-        print(body)
         #TODO login with cert.
         cert_path = os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "../host_deploy/resource/ssl/certificates/test.crt")
 

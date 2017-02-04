@@ -4,6 +4,7 @@ from urlparse import urljoin
 from urlparse import urlparse
 from api.alpineobject import AlpineObject
 from api.exception import *
+from .workspace import Workspace
 
 
 class Workfile(AlpineObject):
@@ -22,6 +23,7 @@ class Workfile(AlpineObject):
 
     @staticmethod
     def find_operator(name, operator_list):
+        # TODO: haven't looked at this one yet
         """
         Helper method to parse a downloaded workflow result to extract data for a single operator.
 
@@ -36,15 +38,20 @@ class Workfile(AlpineObject):
                 return operator
         return []
 
-    def get_workfiles_list(self, workspace_id, per_page=100):
+    def get_all(self, workspace_name, per_page=100):
         """
         Return all workfiles in a workspace.
 
-        :param string workspace_id:
-        :param int per_page:
-        :return:
-        :rtype:
+        :param str workspace_name: Name of workspace.
+        :param int per_page: Number of workfiles to get in each call.
+        :return: List of workfiles' metadata
+        :rtype: list of dict
+        :exception WorkspaceNotFoundException: The workspace does not exist.
         """
+
+        workspace_session = Workspace(self.base_url, self.session, self.token)
+        workspace_id = workspace_session.get_id(workspace_name)
+
         workfile_list = None
         url = "{0}/workspaces/{1}/workfiles".format(self.base_url, str(workspace_id))
         url = self._add_token_to_url(url)
@@ -69,53 +76,69 @@ class Workfile(AlpineObject):
                 break
         return workfile_list
 
-    def get_workfile_info(self, workfile_name, workspace_id):
+    def get_data(self, workfile_name, workspace_name):
+        """
+        Return metadata for one workfile in a workspace.
+
+        :param str workfile_name: Name of workfile.
+        :param workspace_name:  Name of workspace that contains the workfile.
+        :return: One workfile's metadata
+        :rtype: dict
+        :exception WorkspaceNotFoundException: The workspace does not exist.
+        :exception WorkfileNotFoundException: The workfile does not exist.
         """
 
-        :param string workfile_name:
-        :param string workspace_id:
-        :return:
-        :rtype:
-        """
-        workfile_list = self.get_workfiles_list(workspace_id)
+        workfile_list = self.get_all(workspace_name)
         for workfile in workfile_list:
             if workfile['file_name'] == workfile_name:
                 return workfile
-        raise WorkfileNotFoundException("The workfile with name <{0}> is not found in workspace id:{1}".format(
-            workfile_name, workspace_id
-        ))
+        raise WorkfileNotFoundException("The workfile with name <{0}> is not found in workspace id: {1}".format(
+            workfile_name, workspace_name))
 
-    def get_workfile_id(self, workfile_name, workspace_id):
+    def get_id(self, workfile_name, workspace_name):
         """
+        Return the ID number of a workfile in a workspace. Mostly used internally.
 
-        :param string workfile_name:
-        :param string workspace_id:
-        :return:
-        :rtype:
+        :param string workfile_name: Name of workfile.
+        :param string workspace_name: Name of workspace.
+        :return: ID number of workfile
+        :rtype: int
+        :exception WorkspaceNotFoundException: The workspace does not exist.
+        :exception WorkfileNotFoundException: The workfile does not exist.
         """
-        workfile_detail = self.get_workfile_info(workfile_name, workspace_id)
+        workfile_detail = self.get_data(workfile_name, workspace_name)
         return workfile_detail['id']
 
-    def run_workflow(self, workflow_id, variables=[]):
+    def run(self, workfile_name, workspace_name, variables=[]):
+        # TODO: is a list the best way to pass the wfv?
+        # TODO: still need to test the wfv (2/3) - TJB
+        # TODO: Does this work for workfiles only ...?
         """
         Run a workflow, optionally including a list of workflow variables.
 
-        :param string workflow_id:
-        :param string variables:
-        :return:
+        :param str workfile_name: Name of workfile.
+        :param str workspace_name: Name of workspace.
+        :param list variables: Workflow variables in the following format ...
+        :return: ID number for the workflow run process
         :rtype: str
+        :exception WorkspaceNotFoundException: The workspace does not exist.
+        :exception WorkfileNotFoundException: The workfile does not exist.
         """
-        workflow_variables = '{{"meta": {{"version": 1}}, "variables": {0}}}'.format(variables).replace("\'", "\"")
+
+        workflow_id = self.get_id(workfile_name, workspace_name)
+
+        # workflow_variables = '{{"meta": {{"version": 1}}, "variables": {0}}}'.format(variables).replace("\'", "\"")
 
         url = "{0}/workflows/{1}/run?saveResult=true".format(self.alpine_base_url, workflow_id)
-        print(url)
 
         self.session.headers.update({"x-token": self.token})
         self.session.headers.update({"Content-Type": "application/json"})
 
-        response = self.session.post(url, data=workflow_variables, timeout=30)
+        # response = self.session.post(url, data=workflow_variables, timeout=30)
+        response = self.session.post(url, timeout=30)
         self.session.headers.pop("Content-Type")
         self.logger.debug(response.content)
+
         if response.status_code == 200:
             process_id = response.json()['meta']['processId']
 
@@ -125,11 +148,14 @@ class Workfile(AlpineObject):
             raise RunFlowFailureException(
                 "Run Workflow {0} failed with status code {1}".format(workflow_id, response.status_code))
 
-    def query_workflow_status(self, process_id):
+    def query_status(self, process_id):
         """
+        Return the status of a running workflow.
 
-        :param process_id:
-        :return:
+        :param str process_id: ID number of a particular workflow run.
+        :return: State of workflow run. One of 'WORKING', 'FINISHED', or 'FAILED'.
+        :rtype: str
+        :exception RunFlowFailureException: Process ID not found.
         """
         url = "{0}/processes/{1}/query".format(self.alpine_base_url, process_id)
         self.session.headers.update({"Content-Type": "application/json"})
@@ -149,16 +175,24 @@ class Workfile(AlpineObject):
                 else:
                     return "FAILED"
         else:
-            raise RunFlowFailureException("Workflow failed with status {0}: {1}"
-                                          .format(response.status_code, response.reason))
+            raise RunFlowFailureException("Workflow process ID <{}> not found".format(process_id))
 
-    def download_workflow_results(self, workflow_id, process_id):
+    def download_results(self, workflow_name, workspace_name, process_id):
+        # TODO: add download path?
+        # TODO: change to name?
+        # TODO: why no custom exception here?
         """
+        Download a workflow run result locally.
 
-        :param workflow_id:
-        :param process_id:
+        :param str workflow_name: Name of workfile.
+        :param str workspace_name: Name of workspace.
+        :param ste process_id: ID number of a particular workflow run.
         :return: JSON object of workflow results.
+        :rtype: str
+        :exception ????
         """
+        workflow_id = self.get_id(workflow_name, workspace_name)
+
         url = "{0}/workflows/{1}/results/{2}".format(self.alpine_base_url, workflow_id, process_id)
         response = self.session.get(url)
         self.logger.debug(response.content)
@@ -173,63 +207,84 @@ class Workfile(AlpineObject):
             raise Exception("Download Workflow Results failed with status {0}: {1}"
                             .format(response.status_code, response.reason))
 
-    def stop_workflow(self, process_id):
+    def stop(self, process_id):
         """
+        Attempt to stop a running workflow.
 
-        :param process_id:
-        :return:
+        :param str process_id: Process ID of the workflow.
+        :return: Flow status. One of 'STOPPED' or 'STOP FAILED'.
+        :rtype: str
+        :exception StopFlowFailureException: Workflow run not found.
         """
         url = "{0}/processes/{1}/stop".format(self.alpine_base_url, process_id)
         response = self.session.post(url, timeout=60)
         self.logger.debug(response.text)
         if response.status_code == 200:
             if response.json()['status'] == "Flow stopped.\n":
-                return "FINISHED"
+                return "STOPPED"
             else:
-                return "FAILED"
+                return "STOP FAILED"
         else:
             raise StopFlowFailureException("Workflow failed with status {0}: {1}"
                                            .format(response.status_code, response.reason))
 
-    def wait_for_workflow_to_finish(self, process_id, verbose=False, query_time=10, timeout=3600):
+    def wait_until_finished(self, process_id, verbose=False, query_time=10, timeout=3600):
         """
-        Waits for a workflow
-        :param process_id: process ID of the workflow / worklet to monitor
-        :param verbose:
-        :param query_time:
-        :param timeout: amount of time in seconds to wait for workflow / worklet to finish
-        :return: True if success, otherwise, raise exception
+        Waits for a running workflow to finish.
+        
+        :param str process_id: Process ID of the workflow.
+        :param bool verbose: Optionally print approximate run time.
+        :param float query_time: Number of seconds between status queries.
+        :param float timeout: Amount of time in seconds to wait for workflow to finish. Will stop if exceeded.
+        :return: Workflow run status.
+        :rtype: str
+        :exception RunFlowTimeoutException: Workflow runtime has exceeded timeout.
+        :exception RunFlowFailureException: Status of FAILURE is detected.
         """
+
+        start = time.time()
         self.logger.debug("Waiting for process ID: {0} to complete...".format(process_id))
         wait_count = 0
-        workflow_status = self.query_workflow_status(process_id)
+
+        workflow_status = self.query_status(process_id)
         while workflow_status == "WORKING":  # loop while waiting for workflow to complete
+            wait_count += 1
+            wait_total = time.time() - start
+
             self.logger.debug(
-                "Workflow status: {0}, on retry {1} sleeping for 10 seconds".format(workflow_status, wait_count))
-            time.sleep(query_time)
-            wait_count += query_time
+                "Workflow status: {0}, on query {1} sleeping for {2} seconds".format(workflow_status,
+                                                                                     wait_count,
+                                                                                     wait_total))
 
-            if verbose == True:
-                print("\rWorkflow in progress for ~{} seconds.".format(wait_count)),
-
-            if wait_count >= timeout:
-                self.stop_workflow(process_id)
+            if wait_total >= timeout:
+                stop_status = self.stop(process_id)
                 raise RunFlowTimeoutException(
-                    "The Workflow with process ID: {0} has exceeded a runtime of {1} seconds".format(process_id,
-                                                                                                     timeout))
-            if workflow_status == "FAILED":  # we don't expect a failure...
-                raise RunFlowFailureException("The workflow with process id: {0} failed...".format(process_id))
-            workflow_status = self.query_workflow_status(process_id)
+                    "The Workflow with process ID: {0} has exceeded a runtime of {1} seconds. It now has status <{2}>."
+                        .format(process_id, timeout, stop_status))
+
+            if verbose:
+                print("\rWorkflow in progress for ~{0:.2f} seconds.".format(wait_total))
+
+            time.sleep(query_time)
+
+            if workflow_status == "FAILED":
+                raise RunFlowFailureException("The workflow with process id: {0} failed.".format(process_id))
+            workflow_status = self.query_status(process_id)
         return workflow_status
 
-    def delete_workfile(self, workfile_name, workspace_id):
+    def delete(self, workfile_name, workspace_name):
+        """
+        Delete a workfile from a workspace.
+
+        :param workfile_name: Name of workfile to delete.
+        :param workspace_name:  Name of workspace that contains the workfile.
+        :return: None
+        :rtype: NoneType
+        :exception WorkspaceNotFoundException: The workspace does not exist.
+        :exception WorkfileNotFoundException: The workfile does not exist.
         """
 
-        :param workfile_name:
-        :param workspace_id:
-        :return:
-        """
-        workfile_id = self.get_workfile_id(workfile_name, workspace_id)
+        workfile_id = self.get_id(workfile_name, workspace_name)
         self.logger.debug("We have found the workfile id of workfile {0} and id {1}".format(workfile_name, workfile_id))
 
         # Construct the URL
@@ -243,91 +298,85 @@ class Workfile(AlpineObject):
         self.logger.debug("Received response code {0} with reason {1}...".format(response.status_code, response.reason))
         return response
 
-    def delete_workfile_if_exists(self, workfile_name, workspace_id):
-        try:
-            self.delete_workfile(workfile_name, workspace_id)
-        except WorkfileNotFoundException:
-            self.logger.debug("Workspace {0} not found, don't need to delete the Workspace".format(workfile_name))
-
-    def upload_hdfs_afm(self, workspace_id, data_source_id, afm_file):
-        """
-
-        :param workspace_id:
-        :param data_source_id:
-        :param afm_file:
-        :return:
-        """
-        url = "{0}/workspaces/{1}/workfiles".format(self.base_url, workspace_id)
-        url = self._add_token_to_url(url)
-        try:
-            self.session.headers.pop("Content-Type")  # Remove header
-        except:
-            pass
-        # payload is made up of file / destination meta-data (see firebug POST trace for info)
-        payload = {"data_source": "{0}HdfsDataSource".format(data_source_id),
-                   "workfile[entity_subtype]": "alpine",
-                   "workfile[execution_locations][0][entity_type]": "hdfs_data_source",
-                   "workfile[execution_locations][0][id]": data_source_id}
-        # files is used to create a multipart upload content-type with requests, we send in a file object
-        files = {"workfile[versions_attributes][0][contents]": open(afm_file, 'rb')}
-        self.logger.debug("POSTing to: {0}\n With payload: {1}".format(url, payload))
-        response = self.session.post(url, files=files, data=payload, verify=False)
-        return response.json()['response']
-
-    def upload_db_afm(self, workspace_id, data_source_id, database_id, datasource_type, database_type,
-                      afm_file):
-        """
-        Uploads a DB afm file for execution
-        :param workspace_id:
-        :param data_source_id:
-        :param database_id:
-        :param datasource_type:
-        :param database_type:
-        :param afm_file:
-        :return:
-        """
-        url = "{0}/workspaces/{1}/workfiles".format(self.base_url, workspace_id)
-        url = self._add_token_to_url(url)
-        try:
-            self.session.headers.pop("Content-Type")  # Remove header
-        except:
-            pass
-        payload = {"data_source": str(data_source_id) + datasource_type,
-                   "database": database_id,
-                   "workfile[entity_subtype]": "alpine",
-                   "workfile[execution_locations][0][entity_type]": database_type,
-                   "workfile[execution_locations][0][id]": database_id}
-        # files is used to create a multipart upload content-type with requests, we send in a file object
-        files = {"workfile[versions_attributes][0][contents]": open(afm_file, 'rb')}
-        self.logger.debug("POSTing to: {0}\n With payload: {1}".format(url, payload))
-        response = self.session.post(url, files=files, data=payload, verify=False)
-        return response.json()['response']
-
-    # TODO
-    def upload_hdfs_and_db_afm(self, workspace_id, hdfs_datasource_id,
-                               db_datasource_id, db_datasource_type, database_id, database_type, afm_file):
-        """
-        Uploads an afm with both a hdfs and a db data source.
-        :param token: session_id
-        :param chorus_address: the root url
-        :param workspace_name: the workspace where the afm will be uploaded
-        :param hdfs_datasource_name: the hdfs data source
-        :param database_datasource_name: the db data source
-        :param database_name: the database within the the db data source
-        :param afm_file: work file name.
-        :return:
-        """
-        url = "{0}/workspaces/{1}/workfiles".format(self.base_url, workspace_id)
-        url = self._add_token_to_url(url)
-        payload = [("data_source", str(hdfs_datasource_id) + "HdfsDataSource"),
-                   ("database", ''),
-                   ("data_source", str(database_id) + db_datasource_type),
-                   ("database", database_id),
-                   ("workfile[entity_subtype]", "alpine"),
-                   ("workfile[execution_locations][0][entity_type]", 'hdfs_data_source'),
-                   ("workfile[execution_locations][0][id]", hdfs_datasource_id),
-                   ("workfile[execution_locations][1][entity_type]", database_type),
-                   ("workfile[execution_locations][1][id]", database_id )]
-        files = {"workfile[versions_attributes][0][contents]": open(afm_file, 'rb')}
-        response = self._post_afm(url, files, payload)
-        return response
+    # def upload_hdfs_afm(self, workspace_id, data_source_id, afm_file):
+    #     """
+    #
+    #     :param workspace_id:
+    #     :param data_source_id:
+    #     :param afm_file:
+    #     :return:
+    #     """
+    #     url = "{0}/workspaces/{1}/workfiles".format(self.base_url, workspace_id)
+    #     url = self._add_token_to_url(url)
+    #     try:
+    #         self.session.headers.pop("Content-Type")  # Remove header
+    #     except:
+    #         pass
+    #     # payload is made up of file / destination meta-data (see firebug POST trace for info)
+    #     payload = {"data_source": "{0}HdfsDataSource".format(data_source_id),
+    #                "workfile[entity_subtype]": "alpine",
+    #                "workfile[execution_locations][0][entity_type]": "hdfs_data_source",
+    #                "workfile[execution_locations][0][id]": data_source_id}
+    #     # files is used to create a multipart upload content-type with requests, we send in a file object
+    #     files = {"workfile[versions_attributes][0][contents]": open(afm_file, 'rb')}
+    #     self.logger.debug("POSTing to: {0}\n With payload: {1}".format(url, payload))
+    #     response = self.session.post(url, files=files, data=payload, verify=False)
+    #     return response.json()['response']
+    #
+    # def upload_db_afm(self, workspace_id, data_source_id, database_id, datasource_type, database_type,
+    #                   afm_file):
+    #     """
+    #     Uploads a DB afm file for execution
+    #     :param workspace_id:
+    #     :param data_source_id:
+    #     :param database_id:
+    #     :param datasource_type:
+    #     :param database_type:
+    #     :param afm_file:
+    #     :return:
+    #     """
+    #     url = "{0}/workspaces/{1}/workfiles".format(self.base_url, workspace_id)
+    #     url = self._add_token_to_url(url)
+    #     try:
+    #         self.session.headers.pop("Content-Type")  # Remove header
+    #     except:
+    #         pass
+    #     payload = {"data_source": str(data_source_id) + datasource_type,
+    #                "database": database_id,
+    #                "workfile[entity_subtype]": "alpine",
+    #                "workfile[execution_locations][0][entity_type]": database_type,
+    #                "workfile[execution_locations][0][id]": database_id}
+    #     # files is used to create a multipart upload content-type with requests, we send in a file object
+    #     files = {"workfile[versions_attributes][0][contents]": open(afm_file, 'rb')}
+    #     self.logger.debug("POSTing to: {0}\n With payload: {1}".format(url, payload))
+    #     response = self.session.post(url, files=files, data=payload, verify=False)
+    #     return response.json()['response']
+    #
+    # # TODO
+    # def upload_hdfs_and_db_afm(self, workspace_id, hdfs_datasource_id,
+    #                            db_datasource_id, db_datasource_type, database_id, database_type, afm_file):
+    #     """
+    #     Uploads an afm with both a hdfs and a db data source.
+    #     :param token: session_id
+    #     :param chorus_address: the root url
+    #     :param workspace_name: the workspace where the afm will be uploaded
+    #     :param hdfs_datasource_name: the hdfs data source
+    #     :param database_datasource_name: the db data source
+    #     :param database_name: the database within the the db data source
+    #     :param afm_file: work file name.
+    #     :return:
+    #     """
+    #     url = "{0}/workspaces/{1}/workfiles".format(self.base_url, workspace_id)
+    #     url = self._add_token_to_url(url)
+    #     payload = [("data_source", str(hdfs_datasource_id) + "HdfsDataSource"),
+    #                ("database", ''),
+    #                ("data_source", str(database_id) + db_datasource_type),
+    #                ("database", database_id),
+    #                ("workfile[entity_subtype]", "alpine"),
+    #                ("workfile[execution_locations][0][entity_type]", 'hdfs_data_source'),
+    #                ("workfile[execution_locations][0][id]", hdfs_datasource_id),
+    #                ("workfile[execution_locations][1][entity_type]", database_type),
+    #                ("workfile[execution_locations][1][id]", database_id )]
+    #     files = {"workfile[versions_attributes][0][contents]": open(afm_file, 'rb')}
+    #     response = self._post_afm(url, files, payload)
+    #     return response
