@@ -21,22 +21,68 @@ class Workfile(AlpineObject):
                                        "alpinedatalabs/api/{0}/json".format(self._alpine_api_version))
         self.logger.debug("alpine_base_url is: {0}".format(self.alpine_base_url))
 
+    # TODO: Add exceptions to these 4 class FlowResultsMalformedException(AlpineException):
+
+
     @staticmethod
-    def find_operator(name, operator_list):
-        # TODO: haven't looked at this one yet
+    def find_operator(operator_name, flow_results):
         """
         Helper method to parse a downloaded workflow result to extract data for a single operator.
 
-        :param str name: Operator name to extract. Must be an exact match to the name in the workflow.
-        :param list operator_list: A list of operators and associated results. \
-                              Get from download_workflow_results(...)['outputs']
+        :param str operator_name: Operator name to extract. Must be an exact match to the name in the workflow.
+        :param JSON flow_results: JSON object of Alpine flow results from download_results.
         :return: Single operator dictionary.
         :rtype: dict
         """
-        for operator in operator_list:
-            if operator['out_title'] == name:
+
+        for operator in flow_results['outputs']:
+            if operator['out_title'] == operator_name:
                 return operator
         return []
+
+    @staticmethod
+    def get_flow_metadata(flow_results):
+        """
+        Return the metadata for a particular workflow run including time, number of operators, \
+        user, and number of errors.
+
+        :param JSON flow_results: JSON object of Alpine flow results from download_results.
+        :return: Run metadata.
+        :rtype: dict
+        """
+        try:
+            return flow_results['flowMetaInfo']
+        except:
+            raise FlowResultsMalformedException()
+
+    @staticmethod
+    def get_start_time(flow_results):
+        """
+        Returns the start time of a particular workflow run.
+
+        :param JSON flow_results: JSON object of Alpine flow results from download_results.
+        :return: String version of a datatime object.
+        :rtype: string
+        """
+        try:
+            return flow_results['flowMetaInfo']['startTime']
+        except:
+            raise FlowResultsMalformedException()
+
+
+    @staticmethod
+    def get_end_time(flow_results):
+        """
+         Returns the end time of a particular workflow run.
+
+         :param JSON flow_results: JSON object of Alpine flow results from download_results.
+         :return: String version of a datatime object.
+         :rtype: string
+         """
+        try:
+            return flow_results['flowMetaInfo']['endTime']
+        except TypeError as err:
+            raise FlowResultsMalformedException()
 
     def get_all(self, workspace_name, per_page=100):
         """
@@ -92,7 +138,7 @@ class Workfile(AlpineObject):
         for workfile in workfile_list:
             if workfile['file_name'] == workfile_name:
                 return workfile
-        raise WorkfileNotFoundException("The workfile with name <{0}> is not found in workspace id: {1}".format(
+        raise WorkfileNotFoundException("The workfile with name <{0}> is not found in workspace <{1}>".format(
             workfile_name, workspace_name))
 
     def get_id(self, workfile_name, workspace_name):
@@ -114,7 +160,8 @@ class Workfile(AlpineObject):
         # TODO: still need to test the wfv (2/3) - TJB
         # TODO: Does this work for workfiles only ...?
         """
-        Run a workflow, optionally including a list of workflow variables.
+        Run a workflow, optionally including a list of workflow variables. Returns a process_id which is needed by \
+        other functions which query a run or download results.
 
         :param str workfile_name: Name of workfile.
         :param str workspace_name: Name of workspace.
@@ -178,8 +225,6 @@ class Workfile(AlpineObject):
             raise RunFlowFailureException("Workflow process ID <{}> not found".format(process_id))
 
     def download_results(self, workflow_name, workspace_name, process_id):
-        # TODO: add download path?
-        # TODO: change to name?
         # TODO: why no custom exception here?
         """
         Download a workflow run result locally.
@@ -188,8 +233,10 @@ class Workfile(AlpineObject):
         :param str workspace_name: Name of workspace.
         :param ste process_id: ID number of a particular workflow run.
         :return: JSON object of workflow results.
-        :rtype: str
-        :exception ????
+        :rtype: dict
+        :exception WorkspaceNotFoundException: The workspace does not exist.
+        :exception WorkfileNotFoundException: The workfile does not exist.
+        :exception ResultsNotFoundException: Results not found or does not match expected structure.
         """
         workflow_id = self.get_id(workflow_name, workspace_name)
 
@@ -198,13 +245,12 @@ class Workfile(AlpineObject):
         self.logger.debug(response.content)
         if response.status_code == 200:
             if response.content == "\"\"":
-                raise Exception("Results of flow {0} for process {1} are empty, "
-                                "please check whether there are results not cleared"
-                                .format(workflow_id, process_id))
+                raise ResultsNotFoundException("Could not find run results for process id <{}>"
+                                .format(process_id))
             else:
                 return json.loads(response.json())
         else:
-            raise Exception("Download Workflow Results failed with status {0}: {1}"
+            raise ResultsNotFoundException("Download results failed with status {0}: {1}"
                             .format(response.status_code, response.reason))
 
     def stop(self, process_id):
@@ -251,10 +297,10 @@ class Workfile(AlpineObject):
             wait_count += 1
             wait_total = time.time() - start
 
-            self.logger.debug(
-                "Workflow status: {0}, on query {1} sleeping for {2} seconds".format(workflow_status,
-                                                                                     wait_count,
-                                                                                     wait_total))
+            # self.logger.debug(
+            #     "Workflow status: {0}, on query {1} sleeping for {2} seconds".format(workflow_status,
+            #                                                                          wait_count,
+            #                                                                          wait_total))
 
             if wait_total >= timeout:
                 stop_status = self.stop(process_id)
@@ -263,7 +309,7 @@ class Workfile(AlpineObject):
                         .format(process_id, timeout, stop_status))
 
             if verbose:
-                print("\rWorkflow in progress for ~{0:.2f} seconds.".format(wait_total))
+                print("\rWorkflow in progress for ~{0:.2f} seconds.".format(wait_total)),
 
             time.sleep(query_time)
 
