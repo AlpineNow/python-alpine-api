@@ -6,6 +6,7 @@ from .user import User
 
 import json
 
+
 class Workspace(AlpineObject):
     """
     A collection of API wrappers and helper methods to interact with Alpine workspaces, including creating, updating, \
@@ -105,7 +106,6 @@ class Workspace(AlpineObject):
         return member_list
 
     def get_all(self, username=None, active=None, per_page=50):
-        # Note: active parameter doesn't work as described: https://alpine.atlassian.net/browse/IBX-4398
         """
         Get a list of metadata for each workspace. If username is provided, only workspaces that the user \
         is a member of will be returned.

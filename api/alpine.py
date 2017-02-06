@@ -116,10 +116,10 @@ class Alpine(AlpineObject):
 
     def logout(self):
         """
-        Logs out current user.
+        Attempts of logout current user.
 
-        :return: response of the logout session.
-        :rtype: ???
+        :return: None
+        :rtype: NoneType
         """
         # Is there a way to do this without explicitly including the token in the url?
         url = "{0}/sessions?session_id={1}".format(self.base_url, self.token)
@@ -133,17 +133,23 @@ class Alpine(AlpineObject):
         self.datasource = None
 
         # parse status codes here:
-
         status = logout_response.status_code
-
-        return logout_response
+        if logout_response.status_code == 200:
+            print("Logout successful.")
+            return None
+        elif logout_response.status_code == 401:
+            print("No user is logged-in.")
+            return None
+        else:
+            print("Unknown status code: {}".format(status))
+            return None
 
     def get_status(self):
         """
-        Return the current login status.
+        Returns information about the currently logged-in user. Or, if no user if logged-in, returns an empty dict.
 
         :return: Current login status.
-        :rtype: JSON
+        :rtype: dict
         """
         url = "{0}/sessions".format(self.base_url)
         self.logger.debug("Checking to see if the user is still logged in....")
@@ -153,14 +159,14 @@ class Alpine(AlpineObject):
         try:
             return response.json()
         except:
-            print("Not logged in")
+            print("Not logged in.")
             return {}
 
     def get_version(self):
         """
         Returns the Alpine version.
 
-        :return: Alpine version as a string.
+        :return: Alpine version.
         :rtype: str
         """
         url = "{0}/VERSION".format(self.base_url)
