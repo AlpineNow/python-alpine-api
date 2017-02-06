@@ -162,9 +162,7 @@ class Workfile(AlpineObject):
         workfile_detail = self.get_data(workfile_name, workspace_name)
         return workfile_detail['id']
 
-    def run(self, workfile_name, workspace_name, variables=[]):
-        # TODO: is a list the best way to pass the wfv?
-        # TODO: still need to test the wfv (2/3) - TJB
+    def run(self, workfile_name, workspace_name, variables=None):
         # TODO: Does this work for workfiles only ...?
         """
         Run a workflow, optionally including a list of workflow variables. Returns a process_id which is needed by \
@@ -173,7 +171,7 @@ class Workfile(AlpineObject):
         :param str workfile_name: Name of workfile.
         :param str workspace_name: Name of workspace.
         :param list variables: Workflow variables in the following format ...
-        :return: ID number for the workflow run process
+        :return: ID number for the workflow run process.
         :rtype: str
         :exception WorkspaceNotFoundException: The workspace does not exist.
         :exception WorkfileNotFoundException: The workfile does not exist.
@@ -181,15 +179,27 @@ class Workfile(AlpineObject):
 
         workflow_id = self.get_id(workfile_name, workspace_name)
 
-        # workflow_variables = '{{"meta": {{"version": 1}}, "variables": {0}}}'.format(variables).replace("\'", "\"")
-
         url = "{0}/workflows/{1}/run?saveResult=true".format(self.alpine_base_url, workflow_id)
-
         self.session.headers.update({"x-token": self.token})
         self.session.headers.update({"Content-Type": "application/json"})
 
-        # response = self.session.post(url, data=workflow_variables, timeout=30)
-        response = self.session.post(url, timeout=30)
+        # Handle WFV:
+        if variables is None:
+            workflow_variables = None
+        else:
+
+            for variable in variables:
+                if all(key in variable for key in ("name", "value")):
+                    pass
+                else:
+                    raise WorkflowVariableException("Workflow variable item <{}> doesn't contain the " \
+                                                    "expected keys 'name' and 'value'.".format(variable))
+
+            workflow_variables = '{{"meta": {{"version": 1}}, "variables": {0}}}'\
+                .format(variables)\
+                .replace("\'", "\"")
+
+        response = self.session.post(url, data=workflow_variables, timeout=30)
         self.session.headers.pop("Content-Type")
         self.logger.debug(response.content)
 
@@ -232,7 +242,6 @@ class Workfile(AlpineObject):
             raise RunFlowFailureException("Workflow process ID <{}> not found".format(process_id))
 
     def download_results(self, workflow_name, workspace_name, process_id):
-        # TODO: why no custom exception here?
         """
         Download a workflow run result locally.
 
@@ -253,7 +262,7 @@ class Workfile(AlpineObject):
         if response.status_code == 200:
             if response.content == "\"\"":
                 raise ResultsNotFoundException("Could not find run results for process id <{}>"
-                                .format(process_id))
+                                                .format(process_id))
             else:
                 return json.loads(response.json())
         else:

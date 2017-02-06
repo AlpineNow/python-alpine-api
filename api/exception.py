@@ -107,3 +107,9 @@ class FlowResultsMalformedException(AlpineException):
 
     """
     pass
+
+class WorkflowVariableException(AlpineException):
+    """
+
+    """
+    pass
