@@ -1,4 +1,6 @@
 import json
+from urlparse import urljoin
+from urlparse import urlparse
 from api.exception import *
 from api.alpineobject import AlpineObject
 
@@ -10,6 +12,44 @@ class Job(AlpineObject):
 
     def __init__(self, base_url, session, token):
         super(Job, self).__init__(base_url, session, token)
+        self.chorus_domain = '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(self.base_url))
+        self.logger.debug(self.chorus_domain)
+        self.alpine_base_url = urljoin(self.chorus_domain,
+                                       "alpinedatalabs/api/{0}/json".format(self._alpine_api_version))
+        self.logger.debug("alpine_base_url is: {0}".format(self.alpine_base_url))
+
+    def run_job(self, job_id):
+        """
+        Run a job.
+
+        :param string workflow_id:
+        :param string variables:
+        :return:
+        :rtype: str
+        """
+
+        url = "{0}/jobs/{1}/run?saveResult=true".format(self.base_url, job_id)
+        print(url)
+
+        self.session.headers.update({"x-token": self.token})
+        self.session.headers.update({"Content-Type": "application/json"})
+
+        response = self.session.post(url, timeout=30)
+
+        return response
+
+        # self.session.headers.pop("Content-Type")
+        # self.logger.debug(response.content)
+        # if response.status_code == 200:
+        #     process_id = response.json()['meta']['processId']
+        #
+        #     self.logger.debug("Workflow {0} started with process {1}".format(workflow_id, process_id))
+        #     return process_id
+        # else:
+        #     raise RunFlowFailureException(
+        #         "Run Workflow {0} failed with status code {1}".format(workflow_id, response.status_code))
+
+
 
     def add_job(self, workspace_id, job_name, interval_unit="on_demand", interval_value=0, next_run=""):
         """

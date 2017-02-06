@@ -138,7 +138,7 @@ class Alpine(AlpineObject):
 
         return logout_response
 
-    def get_login_status(self):
+    def get_status(self):
         """
         Return the current login status.
 
@@ -156,21 +156,23 @@ class Alpine(AlpineObject):
             print("Not logged in")
             return {}
 
-    def get_alpine_version(self):
+    def get_version(self):
         """
-        Returns the alpine version as a sting
+        Returns the Alpine version.
 
-        :return: Alpine version as a string
+        :return: Alpine version as a string.
+        :rtype: str
         """
         url = "{0}/VERSION".format(self.base_url)
         response = self.session.get(url)
         return response.content.strip()
 
-    def get_license_info(self):
+    def get_license(self):
         """
-        Get the License information of Alpine
+        Get the the current license information for Alpine.
 
-        :return: Summary of Alpine license information - expiration, user limits, add-ons
+        :return: Summary of Alpine license information - expiration, user limits, add-ons.
+        :rtype: dict
         """
         url = self.base_url + "/license"
         response = self.session.get(url)
