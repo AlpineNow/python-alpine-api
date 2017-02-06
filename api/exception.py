@@ -2,6 +2,7 @@
 Exception classes - Subclassing to check for specific errors
 """
 
+
 class AlpineException(Exception):
     """
     General Alpine Exception
@@ -36,6 +37,7 @@ class DataSourceNotFoundException(AlpineException):
 
     """
     pass
+
 
 class WorkspaceNotFoundException(AlpineException):
     """
@@ -87,6 +89,26 @@ class RunFlowTimeoutException(AlpineException):
 
 
 class StopFlowFailureException(AlpineException):
+    """
+
+    """
+    pass
+
+
+class ResultsNotFoundException(AlpineException):
+    """
+
+    """
+    pass
+
+
+class FlowResultsMalformedException(AlpineException):
+    """
+
+    """
+    pass
+
+class WorkflowVariableException(AlpineException):
     """
 
     """

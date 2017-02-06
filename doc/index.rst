@@ -10,8 +10,9 @@ A Python wrapper for the Alpine API. Here's a simple example to run an Alpine Wo
 
     import api as AlpineAPI
     session = AlpineAPI.Alpine(host, port, username, password)
-    process_id = session.workfile.run_workflow(workfile_id)
-    results = session.workfile.download_workflow_results(workfile_id, process_id)
+    process_id = session.workfile.run(workfile_id)
+    session.workfile.wait_until_finished(process_id)
+    results = session.workfile.download(workfile_id, process_id)
 
 Requirements:
 
@@ -25,11 +26,9 @@ Contents:
 
    Alpine
    Users
-   Workfiles
    Workspaces
-   Touchpoint
+   Workfiles
    Job
-   Datasource
    Alpineobject
 
 

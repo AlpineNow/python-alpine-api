@@ -12,7 +12,7 @@ class AlpineObject(object):
     #
     # alpine api version string
     #
-    _alpine_api_version = "0.1"
+    _alpine_api_version = "v1"
     _min_alpine_version = "6.2"
 
     def __init__(self, base_url=None, session=None, token=None):
@@ -34,10 +34,10 @@ class AlpineObject(object):
         """
         return unicode("{0}?session_id={1}".format(url, self.token))
 
-    def _setup_logging(self,
-                      default_configuration_setting_file='logging.json',
-                      default_level=logging.INFO,
-                      env_key='LOG_CFG'):
+    @staticmethod
+    def _setup_logging(default_configuration_setting_file='logging.json',
+                       default_level=logging.INFO,
+                       env_key='LOG_CFG'):
         """
         Sets internal values for logging through a file or an environmental variable
 
