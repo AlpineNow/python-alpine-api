@@ -21,24 +21,24 @@ class Workfile(AlpineObject):
                                        "alpinedatalabs/api/{0}/json".format(self._alpine_api_version))
         self.logger.debug("alpine_base_url is: {0}".format(self.alpine_base_url))
 
-    # TODO: Add exceptions to these 4 class FlowResultsMalformedException(AlpineException):
-
-
     @staticmethod
     def find_operator(operator_name, flow_results):
         """
         Helper method to parse a downloaded workflow result to extract data for a single operator.
 
         :param str operator_name: Operator name to extract. Must be an exact match to the name in the workflow.
-        :param JSON flow_results: JSON object of Alpine flow results from download_results.
+        :param dict flow_results: JSON object of Alpine flow results from download_results.
         :return: Single operator dictionary.
         :rtype: dict
+        :exception FlowResultsMalformedException: Workflow result does not contain the key ['outputs'].
         """
 
-        for operator in flow_results['outputs']:
-            if operator['out_title'] == operator_name:
-                return operator
-        return []
+        if 'outputs' in flow_results:
+            for operator in flow_results['outputs']:
+                if operator['out_title'] == operator_name:
+                    return operator
+        else:
+            raise FlowResultsMalformedException("Workflow result does not contain the key ['outputs']")
 
     @staticmethod
     def get_flow_metadata(flow_results):
@@ -46,43 +46,50 @@ class Workfile(AlpineObject):
         Return the metadata for a particular workflow run including time, number of operators, \
         user, and number of errors.
 
-        :param JSON flow_results: JSON object of Alpine flow results from download_results.
+        :param dict flow_results: JSON object of Alpine flow results from download_results.
         :return: Run metadata.
         :rtype: dict
+        :exception FlowResultsMalformedException: Workflow results does not contain the key ['flowMetaInfo'].
         """
+
         try:
             return flow_results['flowMetaInfo']
         except:
-            raise FlowResultsMalformedException()
+            raise FlowResultsMalformedException("Workflow result does not contain the key ['flowMetaInfo']")
 
     @staticmethod
     def get_start_time(flow_results):
         """
         Returns the start time of a particular workflow run.
 
-        :param JSON flow_results: JSON object of Alpine flow results from download_results.
+        :param dict flow_results: JSON object of Alpine flow results from download_results.
         :return: String version of a datatime object.
         :rtype: string
+        :exception FlowResultsMalformedException: Workflow results does not contain the start time.
         """
+
         try:
             return flow_results['flowMetaInfo']['startTime']
         except:
-            raise FlowResultsMalformedException()
-
+            raise FlowResultsMalformedException("Workflow result does not contain the key \
+                                                ['flowMetaInfo']['startTime']")
 
     @staticmethod
     def get_end_time(flow_results):
         """
          Returns the end time of a particular workflow run.
 
-         :param JSON flow_results: JSON object of Alpine flow results from download_results.
+         :param dict flow_results: JSON object of Alpine flow results from download_results.
          :return: String version of a datatime object.
          :rtype: string
+         :exception FlowResultsMalformedException: Workflow results does not contain the end time.
          """
+
         try:
             return flow_results['flowMetaInfo']['endTime']
-        except TypeError as err:
-            raise FlowResultsMalformedException()
+        except:
+            raise FlowResultsMalformedException("Workflow result does not contain the key \
+                                                ['flowMetaInfo']['endTime']")
 
     def get_all(self, workspace_name, per_page=100):
         """
@@ -306,7 +313,7 @@ class Workfile(AlpineObject):
                 stop_status = self.stop(process_id)
                 raise RunFlowTimeoutException(
                     "The Workflow with process ID: {0} has exceeded a runtime of {1} seconds. It now has status <{2}>."
-                        .format(process_id, timeout, stop_status))
+                    .format(process_id, timeout, stop_status))
 
             if verbose:
                 print("\rWorkflow in progress for ~{0:.2f} seconds.".format(wait_total)),
@@ -398,7 +405,6 @@ class Workfile(AlpineObject):
     #     response = self.session.post(url, files=files, data=payload, verify=False)
     #     return response.json()['response']
     #
-    # # TODO
     # def upload_hdfs_and_db_afm(self, workspace_id, hdfs_datasource_id,
     #                            db_datasource_id, db_datasource_type, database_id, database_type, afm_file):
     #     """
