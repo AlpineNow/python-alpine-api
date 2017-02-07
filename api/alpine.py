@@ -27,7 +27,7 @@ class Alpine(AlpineObject):
     def __init__(self, host=None, port=None, username=None, password=None,
                  is_secure=False, validate_certs=False, ca_certs=None,
                  token=None, logging_level='WARN'):
-        # TODO: Implement logging_level variable
+        # TODO: Implement logging_level variable?
         """
         Sets internal values for Alpine API session and performs login to check that parameters are set correctly
         while username and password are not null
@@ -48,7 +48,7 @@ class Alpine(AlpineObject):
 
         self.is_secure = is_secure
 
-        if (is_secure):
+        if is_secure:
             self.protocol = 'https'
         else:
             self.protocol = 'http'
@@ -66,7 +66,7 @@ class Alpine(AlpineObject):
 
         self.ca_certs = ca_certs
         self.validate_certs = validate_certs
-        self.user_id=None
+        self.user_id = None
         if username and password:
             self.login(username, password)
 
@@ -83,11 +83,11 @@ class Alpine(AlpineObject):
         url = "{0}/sessions?session_id=NULL".format(self.base_url)
         # url = self.base_url + "/sessions?session_id=NULL"
         body = {"username": username, "password": password}
-        #TODO login with cert.
+        # TODO login with cert.
         cert_path = os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "../host_deploy/resource/ssl/certificates/test.crt")
 
         key_path = os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])),
-                            "../host_deploy/resource/ssl/certificates/test.key")
+                                "../host_deploy/resource/ssl/certificates/test.key")
 
         self.session.headers.update({"Content-Type": "application/x-www-form-urlencoded"})
 
@@ -96,7 +96,7 @@ class Alpine(AlpineObject):
         else:
             login_response = self.session.post(url, data=body,
                                                verify=self.validate_certs, cert=(cert_path, key_path),
-                                               headers={'Connection':'close'})
+                                               headers={'Connection' : 'close'})
         if login_response.status_code == 201:
             response = login_response.json()
             self.token = response['response']['session_id']

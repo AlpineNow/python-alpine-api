@@ -219,7 +219,7 @@ class User(AlpineObject):
             self.session.headers.pop("Content-Type")
         while True:
             payload = {"per_page": per_page, "page": page_current + 1}
-            user_list_response = self.session.get(url, data=json.dumps(payload), verify=False).json()
+            user_list_response = self.session.get(url, params=payload, verify=False).json()
             page_total = user_list_response['pagination']['total']
             page_current = user_list_response['pagination']['page']
             if users_list:

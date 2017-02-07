@@ -17,20 +17,21 @@ A Python wrapper for the Alpine API. Here's a simple example to run an Alpine Wo
 Requirements:
 
 1. Python 2.7
-2. Requests ???
+2. Requests 2.12.4
 
 Contents:
 
 .. toctree::
    :maxdepth: 2
 
+   Introduction
+   Advanced Usage
    Alpine
    Users
    Workspaces
    Workfiles
    Job
    Alpineobject
-
 
 Indices and tables
 ==================

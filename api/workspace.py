@@ -279,6 +279,7 @@ class Workspace(AlpineObject):
         return None
 
     def update_stage(self, workspace_name, stage):
+        # TODO Doesn't seem to work.
         """
 
         :param workspace_name:
