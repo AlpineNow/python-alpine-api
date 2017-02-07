@@ -45,8 +45,15 @@ def fake_function(self, user_name, another_one):
 
 ## Creating the docs locally:
 
-The .gitignore is setup to not track the generated documentation files. To build it locally (and open it) you can run the following commands from the doc directory:
+The .gitignore is setup to not track the generated documentation files.
 
+If you need to install the doc packages:
+~~~
+pip install sphinx
+pip install nbsphinx
+~~~
+
+To build it locally (and open it) you can run the following commands from the doc directory:
 ~~~
 make clean
 make html
