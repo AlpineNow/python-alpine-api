@@ -12,8 +12,8 @@ class TestJob(AlpineTestCase):
         # Creating a Workspace for Job tests
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
-        alpine_session.workspace.delete_workspace_if_exists("Workspace for Job Tests")
-        workspace_info = alpine_session.workspace.create_new_workspace("Workspace for Job Tests")
+        alpine_session.workspace.delete("Workspace for Job Tests")
+        workspace_info = alpine_session.workspace.create("Workspace for Job Tests")
         workspace_id = workspace_info['id']
         job_info = alpine_session.job.add_job(workspace_id,"Job for Test")
         job_id = job_info['id']
@@ -23,7 +23,7 @@ class TestJob(AlpineTestCase):
         # Drop the datasources created in setup
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
-        alpine_session.workspace.delete_workspace_if_exists("Workspace for Job Tests")
+        alpine_session.workspace.delete("Workspace for Job Tests")
 
     def test_get_jobs_list(self):
         alpine_session = Alpine(self.host, self.port)

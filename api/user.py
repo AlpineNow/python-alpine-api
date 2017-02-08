@@ -82,7 +82,6 @@ class User(AlpineObject):
             user_id = self.get_id(username)
         except UserNotFoundException as err:
             self.logger.debug("User not found, error {}".format(err))
-            raise
         else:
             url = "{0}/users/{1}".format(self.base_url, user_id)
             url = self._add_token_to_url(url)
@@ -91,7 +90,11 @@ class User(AlpineObject):
             response = self.session.delete(url)
             self.logger.debug("Received response code {0} with reason {1}"
                               .format(response.status_code, response.reason))
-            print("User successfully deleted.")
+            if response.status_code == 200:
+                self.logger.debug("User successfully deleted.")
+            else:
+                raise InvalidResponseCodeException("Response Code Invalid, the expected Response Code is {0}, "
+                                                   "the actual Response Code is {1}".format(200, response.status_code))
             return None
 
     def update(self, username, first_name=None, last_name=None, email=None, title=None,
@@ -220,6 +223,7 @@ class User(AlpineObject):
         while True:
             payload = {"per_page": per_page, "page": page_current + 1}
             user_list_response = self.session.get(url, params=payload, verify=False).json()
+            # user_list_response = self.session.get(url, data=json.dumps(payload), verify=False).json()
             page_total = user_list_response['pagination']['total']
             page_current = user_list_response['pagination']['page']
             if users_list:

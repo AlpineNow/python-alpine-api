@@ -107,7 +107,7 @@ class Job(AlpineObject):
             else:
                 jobs_list = job_list_response['response']
             if page_total == page_current:
-                break;
+                break
         return jobs_list
 
     def get_job_info(self, workspace_id, job_name):

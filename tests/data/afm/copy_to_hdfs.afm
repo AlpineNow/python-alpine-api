@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Process Description="" UserName="209" Version="5.1.0.0">
+<Operator X="111" Y="184" name="golfnew" type="com.alpine.miner.gef.runoperator.datasource.DbTableOperator" uuid="1422400341893">
+<Note/>
+<Parameter key="dbConnectionName" value="robot_automation"/>
+<Parameter key="schemaName" value="auto_test_data"/>
+<Parameter key="tableName" value="golfnew"/>
+<Parameter key="userName" value="miner_demo"/>
+<Parameter key="url" value="jdbc:postgresql://10.0.0.58:5432/robot_automation"/>
+<Parameter key="password" value="bWluZXJfZGVtbw=="/>
+<Parameter key="system" value="Greenplum"/>
+<Parameter key="useSSL" value="false"/>
+</Operator>
+<Operator X="293" Y="97" name="Copy to Hadoop" type="com.alpine.miner.gef.runoperator.hadoop.CopytoHadoopOperator" uuid="1422400349113">
+<Note/>
+<Parameter key="connName" value="CDH4-devfive"/>
+<Parameter key="resultsLocation" value="/tmp/alpine_out/@user_name/@flow_name"/>
+<Parameter key="copyToFileName" value="automation_copy_to"/>
+<Parameter key="ifFileExists" value="Drop"/>
+<Parameter key="copyMode" value="Parallel"/>
+<Parameter key="numberOfCopyTasks" value="4"/>
+<Parameter key="divideUpWorkBy" value="temperature"/>
+<HadoopFileStructureModel delimiter="Comma" escapChar="\" includeHeader="false" other="" quoteChar="&quot;">
+<columnNames columnName="outlook"/>
+<columnNames columnName="temperature"/>
+<columnNames columnName="humidity"/>
+<columnNames columnName="wind"/>
+<columnNames columnName="play"/>
+<columnTypes columnType="chararray"/>
+<columnTypes columnType="long"/>
+<columnTypes columnType="long"/>
+<columnTypes columnType="chararray"/>
+<columnTypes columnType="chararray"/>
+</HadoopFileStructureModel>
+<Parameter key="hadoopFileName" value="/tmp/alpine_out/@user_name/@flow_name/automation_copy_to"/>
+<Parameter key="groupName" value="supergroup"/>
+<Parameter key="jobPort" value="8021"/>
+<Parameter key="schedulerPort" value=""/>
+<Parameter key="hdfsPort" value="8020"/>
+<Parameter key="hdfsHostname" value="10.0.0.50"/>
+<Parameter key="useHA" value="false"/>
+<Parameter key="schedulerHost" value=""/>
+<Parameter key="mapredPrincipal" value=""/>
+<Parameter key="jobHostname" value="10.0.0.50"/>
+<Parameter key="hadoopVersion" value="Cloudera CDH4"/>
+<Parameter key="userName" value="support"/>
+<Parameter key="securityMode" value="simple"/>
+<Parameter key="hdfsPrincipal" value=""/>
+<Parameter key="hdfsKeyTab" value=""/>
+<Parameter key="mapredKeyTab" value=""/>
+<CopyToAdvancedParameterModel/>
+<InPutFieldList id="1422400341893">
+<Parameter key="url" value="jdbc:postgresql://10.0.0.58:5432/robot_automation"/>
+<Parameter key="schema" value="auto_test_data"/>
+<Parameter key="table" value="golfnew"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="username" value="miner_demo"/>
+<Parameter key="useSSL" value="false"/>
+<Parameter key="useSID" value="false"/>
+<Parameter key="password" value="bWluZXJfZGVtbw=="/>
+<Parameter key="system" value="Greenplum"/>
+<Fields>
+<Field name="outlook" type="TEXT"/>
+<Field name="temperature" type="BIGINT"/>
+<Field name="humidity" type="BIGINT"/>
+<Field name="wind" type="TEXT"/>
+<Field name="play" type="TEXT"/>
+</Fields>
+</InPutFieldList>
+</Operator>
+<Operator X="319" Y="233" name="Copy to Hadoop-1" type="com.alpine.miner.gef.runoperator.hadoop.CopytoHadoopOperator" uuid="1422400409975">
+<Note/>
+<Parameter key="connName" value="CDH4-devfive"/>
+<Parameter key="resultsLocation" value="/tmp/alpine_out/@user_name/@flow_name"/>
+<Parameter key="copyToFileName" value="automation_copy_to_simple"/>
+<Parameter key="ifFileExists" value="Drop"/>
+<Parameter key="copyMode" value="Simple"/>
+<Parameter key="numberOfCopyTasks" value="4"/>
+<Parameter key="divideUpWorkBy" value=""/>
+<HadoopFileStructureModel delimiter="Comma" escapChar="\" includeHeader="false" other="" quoteChar="&quot;">
+<columnNames columnName="outlook"/>
+<columnNames columnName="temperature"/>
+<columnNames columnName="humidity"/>
+<columnNames columnName="wind"/>
+<columnNames columnName="play"/>
+<columnTypes columnType="chararray"/>
+<columnTypes columnType="long"/>
+<columnTypes columnType="long"/>
+<columnTypes columnType="chararray"/>
+<columnTypes columnType="chararray"/>
+</HadoopFileStructureModel>
+<Parameter key="hadoopFileName" value="/tmp/alpine_out/@user_name/@flow_name/automation_copy_to_simple"/>
+<Parameter key="groupName" value="supergroup"/>
+<Parameter key="jobPort" value="8021"/>
+<Parameter key="schedulerPort" value=""/>
+<Parameter key="hdfsPort" value="8020"/>
+<Parameter key="hdfsHostname" value="10.0.0.50"/>
+<Parameter key="useHA" value="false"/>
+<Parameter key="schedulerHost" value=""/>
+<Parameter key="mapredPrincipal" value=""/>
+<Parameter key="jobHostname" value="10.0.0.50"/>
+<Parameter key="hadoopVersion" value="Cloudera CDH4"/>
+<Parameter key="userName" value="support"/>
+<Parameter key="securityMode" value="simple"/>
+<Parameter key="hdfsPrincipal" value=""/>
+<Parameter key="hdfsKeyTab" value=""/>
+<Parameter key="mapredKeyTab" value=""/>
+<CopyToAdvancedParameterModel/>
+<InPutFieldList id="1422400341893">
+<Parameter key="url" value="jdbc:postgresql://10.0.0.58:5432/robot_automation"/>
+<Parameter key="schema" value="auto_test_data"/>
+<Parameter key="table" value="golfnew"/>
+<Parameter key="tableType" value="TABLE"/>
+<Parameter key="username" value="miner_demo"/>
+<Parameter key="useSSL" value="false"/>
+<Parameter key="useSID" value="false"/>
+<Parameter key="password" value="bWluZXJfZGVtbw=="/>
+<Parameter key="system" value="Greenplum"/>
+<Fields>
+<Field name="outlook" type="TEXT"/>
+<Field name="temperature" type="BIGINT"/>
+<Field name="humidity" type="BIGINT"/>
+<Field name="wind" type="TEXT"/>
+<Field name="play" type="TEXT"/>
+</Fields>
+</InPutFieldList>
+</Operator>
+<Link source="golfnew" target="Copy to Hadoop"/>
+<Link source="golfnew" target="Copy to Hadoop-1"/>
+<VariableModel>
+<Variable>
+<Name>@flow_name</Name>
+<Value>@flow_name</Value>
+</Variable>
+<Variable>
+<Name>@user_name</Name>
+<Value>@user_name</Value>
+</Variable>
+<Variable>
+<Name>@default_schema</Name>
+<Value>public</Value>
+</Variable>
+<Variable>
+<Name>@default_prefix</Name>
+<Value>ch209</Value>
+</Variable>
+<Variable>
+<Name>@default_tempdir</Name>
+<Value>/tmp</Value>
+</Variable>
+<Variable>
+<Name>@default_delimiter</Name>
+<Value>,</Value>
+</Variable>
+</VariableModel>
+</Process>

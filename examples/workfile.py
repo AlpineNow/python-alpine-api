@@ -146,30 +146,30 @@ def main(alpine_host, alpine_port, username, password):
 
     # Workspace Examples
     # Delete sample workspaces if exists
-    alpine_session.workspace.delete_workspace_if_exists(workspace_name=sample_workspace_name)
+    alpine_session.workspace.delete(workspace_name=sample_workspace_name)
     # Create a new sample workspace
-    workspace_info = alpine_session.workspace.create_new_workspace(workspace_name=sample_workspace_name, public=sample_workspace_public_state_true,
+    workspace_info = alpine_session.workspace.create(workspace_name=sample_workspace_name, public=sample_workspace_public_state_true,
                                            summary="")
     # User Examples
     # Create a new sample user with admin roles
-    alpine_session.user.delete_user_if_exists(sample_username)
-    user_info = alpine_session.user.create_user(sample_username, sample_password, sample_firstname, sample_lastname, sample_email,
-                                 sample_title, sample_deparment, admin=sample_admin_type, user_type=sample_user_type)
+    alpine_session.user.delete(sample_username)
+    user_info = alpine_session.user.create(sample_username, sample_password, sample_firstname, sample_lastname, sample_email,
+                                 sample_title, sample_deparment, admin_role=sample_admin_type, app_role=sample_user_type)
 
-    member_list = alpine_session.workspace.update_workspace_membership(sample_workspace_name, user_info['id'], sample_member_role)
+    member_list = alpine_session.workspace.update_membership(sample_workspace_name, user_info['id'], sample_member_role)
 
     # Workflow Examples
     afm_path = "afm/demo_hadoop_row_filter_regression.afm"
-    alpine_session.workfile.delete_workfile_if_exists("demo_hadoop_row_filter_regression", workspace_info['id'])
+    alpine_session.workfile.delete("demo_hadoop_row_filter_regression", workspace_info['name'])
     workfile_info = alpine_session.workfile.upload_hdfs_afm(workspace_info['id'], hadoop_data_source_id, afm_path)
     print "Uploaded Workfile Info: {0}".format(workfile_info)
 
     variables = [{"name": "@min_credit_line", "value": "7"}]
-    process_id = alpine_session.workfile.run_workflow(workfile_info['id'], variables)
+    process_id = alpine_session.workfile.run(workfile_info['file_name'], sample_workspace_name, variables)
     workfile_status = None
     max_waiting_seconds = 100
     for i in range(0, max_waiting_seconds):
-        workfile_status = alpine_session.workfile.query_workflow_status(process_id)
+        workfile_status = alpine_session.workfile.query_status(process_id)
         if workfile_status in ["WORKING"]:
             time.sleep(10)
         elif workfile_status == "FINISHED":

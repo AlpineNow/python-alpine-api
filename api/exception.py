@@ -113,3 +113,9 @@ class WorkflowVariableException(AlpineException):
 
     """
     pass
+
+class InvalidResponseCodeException(AlpineException):
+    """
+
+    """
+    pass
