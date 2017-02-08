@@ -314,5 +314,9 @@ class Workspace(AlpineObject):
             response = self.session.delete(url)
             self.logger.debug("Received response code {0} with reason {1}"
                               .format(response.status_code, response.reason))
-            print("Workspace successfully deleted")
+            if response.status_code == 200:
+                self.logger.debug("Workspace successfully deleted.")
+            else:
+                raise InvalidResponseCodeException("Response Code Invalid, the expected Response Code is {0}, "
+                                                   "the actual Response Code is {1}".format(200, response.status_code))
             return None

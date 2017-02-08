@@ -18,19 +18,19 @@ class TestAlpine(AlpineTestCase):
     def test_get_login_status(self):
         alpine_session = Alpine(self.host, self.port)
         login_info = alpine_session.login(self.username, self.password)
-        current_login_info = alpine_session.get_login_status()
+        current_login_info = alpine_session.get_status()
         self.assertEqual(login_info['response']['user'], current_login_info['response']['user'])
 
-    def test_get_alpine_version(self):
+    def test_get_version(self):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
-        chorus_version_string = alpine_session.get_alpine_version()
+        chorus_version_string = alpine_session.get_version()
         self.assertRegexpMatches(chorus_version_string, self.regex_alpine_version_string)
 
     def test_get_license_info(self):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
-        chorus_license_info = alpine_session.get_license_info()
+        chorus_license_info = alpine_session.get_license()
         self.assertEqual(chorus_license_info['response']['limit_api'], False)
         self.assertEqual(chorus_license_info['response']['is_enabled_api'], True)
         self.assertEqual(chorus_license_info['response']['expired'], False)
@@ -40,7 +40,7 @@ class TestAlpine(AlpineTestCase):
     def test_setup_logging(self):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
-        alpine_session.setup_logging()
+        alpine_session._setup_logging()
         alpine_session.logger.info("Info")
 
     def test__add_token_to_url(self):
