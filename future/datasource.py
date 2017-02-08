@@ -22,10 +22,11 @@ class DataSource(AlpineObject):
         page_current = 0
         while True:
             payload = {
+                "all": True,
                 "per_page": per_page,
                 "page": page_current + 1,
             }
-            datasource_list_response = self.session.get(url, data=json.dumps(payload), verify=False).json()
+            datasource_list_response = self.session.get(url, params=payload, verify=False).json()
             page_total = datasource_list_response['pagination']['total']
             page_current = datasource_list_response['pagination']['page']
             if datasource_list:

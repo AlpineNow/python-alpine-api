@@ -186,7 +186,7 @@ class User(AlpineObject):
         try:
             user_info = self.get_data(username)
         except UserNotFoundException as err:
-            self.logger.error(err)
+            self.logger.debug(err)
             raise
         else:
             return int(user_info['id'])
