@@ -18,14 +18,14 @@ from api.alpine import *
 
 if __name__ == '__main__':
     self = sys.modules['__main__']
-    host = raw_input(">>> Host: ")
-    port = raw_input(">>> Port: ")
-    username = raw_input(">>> Login User: ")
-    password = raw_input(">>> Password: ")
-    # host = "10.10.0.204"
-    # port = "8080"
-    # username = "demoadmin"
-    # password = "password"
+    #host = raw_input(">>> Host: ")
+    #port = raw_input(">>> Port: ")
+    #username = raw_input(">>> Login User: ")
+    #password = raw_input(">>> Password: ")
+    host = "10.10.0.204"
+    port = "8080"
+    username = "demoadmin"
+    password = "password"
     alpine = Alpine(host, port)
     alpine.login(username, password)
     # alpine = Alpine(host, port, username, password)
@@ -50,7 +50,8 @@ if __name__ == '__main__':
         elif input_option == '2':
             user_name = raw_input(">>> username: ")
             try:
-                user = alpine.user.get_data(user_name)
+                user_id = alpine.user.get_id(user_name)
+                user = alpine.user.get_data(user_id)
                 print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}".format("User_ID", "User Name", "Email","First Name",
                                                                       "Last Name", "App Role", "Department", "Title"))
                 print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}".format(user['id'], user['username'], user['email'],
@@ -66,8 +67,9 @@ if __name__ == '__main__':
                     continue
                 try:
                     delete_safe_flag = True
+                    user_id = alpine.user.get_id(user_name)
                     # Check whether there are any workspace owned by the user
-                    workspace_list = alpine.workspace.get_all(user_name)
+                    workspace_list = alpine.workspace.get_all(user_id)
                     if workspace_list:
                         for workspace in workspace_list:
                             workspace['owner']['username']
@@ -85,7 +87,7 @@ if __name__ == '__main__':
                                       "the data source to another person.".format(user_name, db_datasource['name'])
                     # Delete the user when it is safe to do so.
                     if delete_safe_flag:
-                        alpine.user.delete(user_name)
+                        alpine.user.delete(user_id)
                         print "User '{0}' successfully deleted".format(user_name)
                 except UserNotFoundException:
                     print "User '{0}' not found, please double check the username exists".format(user_name)

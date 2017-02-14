@@ -91,19 +91,16 @@ class Workfile(AlpineObject):
             raise FlowResultsMalformedException("Workflow result does not contain the key \
                                                 ['flowMetaInfo']['endTime']")
 
-    def get_all(self, workspace_name, per_page=100):
+    def get_all(self, workspace_id, per_page=100):
         """
         Return all workfiles in a workspace.
 
-        :param str workspace_name: Name of workspace.
+        :param int workspace_id: Id of workspace.
         :param int per_page: Number of workfiles to get in each call.
         :return: List of workfiles' metadata
         :rtype: list of dict
         :exception WorkspaceNotFoundException: The workspace does not exist.
         """
-
-        workspace_session = Workspace(self.base_url, self.session, self.token)
-        workspace_id = workspace_session.get_id(workspace_name)
 
         workfile_list = None
         url = "{0}/workspaces/{1}/workfiles".format(self.base_url, str(workspace_id))
@@ -129,47 +126,62 @@ class Workfile(AlpineObject):
                 break
         return workfile_list
 
-    def get_data(self, workfile_name, workspace_name):
+    def get_data(self, workfile_id):
         """
         Return metadata for one workfile in a workspace.
 
-        :param str workfile_name: Name of workfile.
-        :param workspace_name:  Name of workspace that contains the workfile.
+        :param str workfile_id: Id of workfile.
         :return: One workfile's metadata
         :rtype: dict
         :exception WorkspaceNotFoundException: The workspace does not exist.
         :exception WorkfileNotFoundException: The workfile does not exist.
         """
 
-        workfile_list = self.get_all(workspace_name)
-        for workfile in workfile_list:
-            if workfile['file_name'] == workfile_name:
-                return workfile
-        raise WorkfileNotFoundException("The workfile with name <{0}> is not found in workspace <{1}>".format(
-            workfile_name, workspace_name))
+        url = "{0}/workfiles/{1}".format(self.base_url, workfile_id)
+        url = self._add_token_to_url(url)
 
-    def get_id(self, workfile_name, workspace_name):
+        if self.session.headers.get("Content-Type") is not None:
+            self.session.headers.pop("Content-Type")
+
+        r = self.session.get(url, verify=False)
+        workfile_response = r.json()
+
+        try:
+            if workfile_response['response']:
+                self.logger.debug("Found workfile id: <{0}> in list...".format(workfile_id))
+                return workfile_response
+            else:
+                raise WorkfileNotFoundException("Workfile id: <{0}> not found".format(workfile_id))
+        except Exception:
+            raise WorkfileNotFoundException("Workfile id: <{0}> not found".format(workfile_id))
+
+    def get_id(self, workfile_name, workspace_id):
         """
         Return the ID number of a workfile in a workspace. Mostly used internally.
 
         :param string workfile_name: Name of workfile.
-        :param string workspace_name: Name of workspace.
+        :param string workspace_id: Id of workspace that contains the workfile.
         :return: ID number of workfile
         :rtype: int
         :exception WorkspaceNotFoundException: The workspace does not exist.
         :exception WorkfileNotFoundException: The workfile does not exist.
         """
-        workfile_detail = self.get_data(workfile_name, workspace_name)
-        return workfile_detail['id']
 
-    def run(self, workfile_name, workspace_name, variables=None):
+        workfile_list = self.get_all(workspace_id)
+        for workfile in workfile_list:
+            if workfile['file_name'] == workfile_name:
+                return workfile['id']
+        # return None
+        raise WorkfileNotFoundException("The workfile with name <{0}> is not found in workspace <{1}>"
+                                        .format(workfile_name, workspace_id))
+
+    def run(self, workfile_id, variables=None):
         # TODO: Does this work for workfiles only ...?
         """
         Run a workflow, optionally including a list of workflow variables. Returns a process_id which is needed by \
         other functions which query a run or download results.
 
-        :param str workfile_name: Name of workfile.
-        :param str workspace_name: Name of workspace.
+        :param str workfile_id: ID of workfile.
         :param list variables: Workflow variables in the following format ...
         :return: ID number for the workflow run process.
         :rtype: str
@@ -177,9 +189,7 @@ class Workfile(AlpineObject):
         :exception WorkfileNotFoundException: The workfile does not exist.
         """
 
-        workflow_id = self.get_id(workfile_name, workspace_name)
-
-        url = "{0}/workflows/{1}/run?saveResult=true".format(self.alpine_base_url, workflow_id)
+        url = "{0}/workflows/{1}/run?saveResult=true".format(self.alpine_base_url, workfile_id)
         self.session.headers.update({"x-token": self.token})
         self.session.headers.update({"Content-Type": "application/json"})
 
@@ -206,11 +216,11 @@ class Workfile(AlpineObject):
         if response.status_code == 200:
             process_id = response.json()['meta']['processId']
 
-            self.logger.debug("Workflow {0} started with process {1}".format(workflow_id, process_id))
+            self.logger.debug("Workflow {0} started with process {1}".format(workfile_id, process_id))
             return process_id
         else:
             raise RunFlowFailureException(
-                "Run Workflow {0} failed with status code {1}".format(workflow_id, response.status_code))
+                "Run Workflow {0} failed with status code {1}".format(workfile_id, response.status_code))
 
     def query_status(self, process_id):
         """
@@ -241,12 +251,11 @@ class Workfile(AlpineObject):
         else:
             raise RunFlowFailureException("Workflow process ID <{}> not found".format(process_id))
 
-    def download_results(self, workflow_name, workspace_name, process_id):
+    def download_results(self, workfile_id, process_id):
         """
         Download a workflow run result locally.
 
-        :param str workflow_name: Name of workfile.
-        :param str workspace_name: Name of workspace.
+        :param str workfile_id: Id of workfile.
         :param ste process_id: ID number of a particular workflow run.
         :return: JSON object of workflow results.
         :rtype: dict
@@ -254,9 +263,8 @@ class Workfile(AlpineObject):
         :exception WorkfileNotFoundException: The workfile does not exist.
         :exception ResultsNotFoundException: Results not found or does not match expected structure.
         """
-        workflow_id = self.get_id(workflow_name, workspace_name)
 
-        url = "{0}/workflows/{1}/results/{2}".format(self.alpine_base_url, workflow_id, process_id)
+        url = "{0}/workflows/{1}/results/{2}".format(self.alpine_base_url, workfile_id, process_id)
         response = self.session.get(url)
         self.logger.debug(response.content)
         if response.status_code == 200:
@@ -334,37 +342,37 @@ class Workfile(AlpineObject):
             workflow_status = self.query_status(process_id)
         return workflow_status
 
-    def delete(self, workfile_name, workspace_name):
+    def delete(self, workfile_id):
         """
         Delete a workfile from a workspace.
 
-        :param workfile_name: Name of workfile to delete.
-        :param workspace_name:  Name of workspace that contains the workfile.
+        :param workfile_id: Name of workfile to delete.
         :return: None
         :rtype: NoneType
         :exception WorkspaceNotFoundException: The workspace does not exist.
         :exception WorkfileNotFoundException: The workfile does not exist.
         """
         try:
-            workfile_id = self.get_id(workfile_name, workspace_name)
-        except WorkfileNotFoundException as err:
-            self.logger.debug("Workfile not found, error {}".format(err))
-        else:
+            self.get_data(workfile_id)
             # Construct the URL
             url = "{0}/workfiles/{1}".format(self.base_url, workfile_id)
             url = self._add_token_to_url(url)
             self.logger.debug("We have constructed the URL and the URL is {0}...".format(url))
 
             # POSTing a HTTP DELETE
-            self.logger.debug("Deleting the workfile with name {0} and id {1}".format(workfile_name, workfile_id))
+            self.logger.debug("Deleting the workfile with id: <{0}>".format(workfile_id))
             response = self.session.delete(url, verify=False)
-            self.logger.debug("Received response code {0} with reason {1}...".format(response.status_code, response.reason))
+            self.logger.debug(
+                "Received response code {0} with reason {1}...".format(response.status_code, response.reason))
             if response.status_code == 200:
                 self.logger.debug("Workfile successfully deleted.")
             else:
                 raise InvalidResponseCodeException("Response Code Invalid, the expected Response Code is {0}, "
                                                    "the actual Response Code is {1}".format(200, response.status_code))
             return None
+        except WorkfileNotFoundException as err:
+            self.logger.debug("Workfile not found, error {}".format(err))
+
 
     def upload_hdfs_afm(self, workspace_id, data_source_id, afm_file):
         """

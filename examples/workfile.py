@@ -146,26 +146,39 @@ def main(alpine_host, alpine_port, username, password):
 
     # Workspace Examples
     # Delete sample workspaces if exists
-    alpine_session.workspace.delete(workspace_name=sample_workspace_name)
+    try:
+        workspace_id = alpine_session.workspace.get_id(workspace_name=sample_workspace_name)
+        alpine_session.workspace.delete(workspace_id)
+    except WorkspaceNotFoundException:
+        pass
     # Create a new sample workspace
     workspace_info = alpine_session.workspace.create(workspace_name=sample_workspace_name, public=sample_workspace_public_state_true,
                                            summary="")
+    workspace_id = workspace_info['id']
     # User Examples
     # Create a new sample user with admin roles
-    alpine_session.user.delete(sample_username)
+    try:
+        user_id = alpine_session.user.get_id(sample_username)
+        alpine_session.user.delete(user_id)
+    except UserNotFoundException:
+        pass
     user_info = alpine_session.user.create(sample_username, sample_password, sample_firstname, sample_lastname, sample_email,
                                  sample_title, sample_deparment, admin_role=sample_admin_type, app_role=sample_user_type)
 
-    member_list = alpine_session.workspace.update_membership(sample_workspace_name, user_info['id'], sample_member_role)
+    member_list = alpine_session.workspace.update_membership(workspace_id, user_info['id'], sample_member_role)
 
     # Workflow Examples
     afm_path = "afm/demo_hadoop_row_filter_regression.afm"
-    alpine_session.workfile.delete("demo_hadoop_row_filter_regression", workspace_info['name'])
+    try:
+        workfile_id = alpine_session.workfile.get_id("demo_hadoop_row_filter_regression", workspace_id)
+        alpine_session.workfile.delete(workfile_id)
+    except WorkfileNotFoundException:
+        pass
     workfile_info = alpine_session.workfile.upload_hdfs_afm(workspace_info['id'], hadoop_data_source_id, afm_path)
     print "Uploaded Workfile Info: {0}".format(workfile_info)
 
     variables = [{"name": "@min_credit_line", "value": "7"}]
-    process_id = alpine_session.workfile.run(workfile_info['file_name'], sample_workspace_name, variables)
+    process_id = alpine_session.workfile.run(workfile_info['id'], variables)
     workfile_status = None
     max_waiting_seconds = 100
     for i in range(0, max_waiting_seconds):
