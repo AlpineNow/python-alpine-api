@@ -15,7 +15,7 @@
 # serve to show the default.
 
 # If extensions (or modules to document with autodoc) are in another directory,
-# create these directories to sys.path here. If the directory is relative to the
+# add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 # import os

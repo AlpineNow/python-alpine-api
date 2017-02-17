@@ -177,7 +177,7 @@ class Alpine(AlpineObject):
         """
         Get the the current license information for Alpine.
 
-        :return: Summary of Alpine license information - expiration, user limits, create-ons.
+        :return: Summary of Alpine license information - expiration, user limits, add-ons.
         :rtype: dict
         """
         url = self.base_url + "/license"
