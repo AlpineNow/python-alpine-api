@@ -79,7 +79,7 @@ class User(AlpineObject):
         """
 
         try:
-            self.get_data(user_id)
+            self.get(user_id)
             url = "{0}/users/{1}".format(self.base_url, user_id)
             url = self._add_token_to_url(url)
             self.session.headers.update({"Content-Type": "application/x-www-form-urlencoded"})
@@ -120,7 +120,7 @@ class User(AlpineObject):
 
         url = "{0}/users/{1}".format(self.base_url, user_id)
         url = self._add_token_to_url(url)
-        payload = self.get_data(user_id)
+        payload = self.get(user_id)
 
         # get rid of fields that aren't required for PUT
         pop_fields = ['complete_json',
@@ -181,14 +181,14 @@ class User(AlpineObject):
         :exception UserNotFoundException: The username does not exist.
         """
 
-        users_list = self.get_all()
+        users_list = self.get_list()
         for user_info in users_list:
             if user_info['username'] == username:
                 return user_info['id']
         # return None
         raise UserNotFoundException("User {0} not found".format(username))
 
-    def get_data(self, user_id):
+    def get(self, user_id):
         """
         Get one user's metadata
 
@@ -215,7 +215,7 @@ class User(AlpineObject):
         except Exception as err:
             raise UserNotFoundException("User id: <{0}> not found".format(user_id))
 
-    def get_all(self, per_page=100):
+    def get_list(self, per_page=100):
         """
         Get a list of all users' metadata.
 

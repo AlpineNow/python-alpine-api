@@ -165,7 +165,7 @@ def main(alpine_host, alpine_port, username, password):
     user_info = alpine_session.user.create(sample_username, sample_password, sample_firstname, sample_lastname, sample_email,
                                  sample_title, sample_deparment, admin_role=sample_admin_type, app_role=sample_user_type)
 
-    member_list = alpine_session.workspace.update_membership(workspace_id, user_info['id'], sample_member_role)
+    member_list = alpine_session.workspace.member.add(workspace_id, user_info['id'], sample_member_role)
 
     # Workflow Examples
     afm_path = "afm/demo_hadoop_row_filter_regression.afm"
@@ -178,11 +178,11 @@ def main(alpine_host, alpine_port, username, password):
     print "Uploaded Workfile Info: {0}".format(workfile_info)
 
     variables = [{"name": "@min_credit_line", "value": "7"}]
-    process_id = alpine_session.workfile.run(workfile_info['id'], variables)
+    process_id = alpine_session.workfile.process.run(workfile_info['id'], variables)
     workfile_status = None
     max_waiting_seconds = 100
     for i in range(0, max_waiting_seconds):
-        workfile_status = alpine_session.workfile.query_status(process_id)
+        workfile_status = alpine_session.workfile.process.query_status(process_id)
         if workfile_status in ["WORKING"]:
             time.sleep(10)
         elif workfile_status == "FINISHED":

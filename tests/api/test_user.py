@@ -1,5 +1,4 @@
 from api.alpine import Alpine
-from api.user import User
 from api.exception import *
 from alpineunittest import AlpineTestCase
 
@@ -37,7 +36,7 @@ class TestUser(AlpineTestCase):
         alpine_session.user.delete(user_info['id'])
         # Verify the User is successfully deleted
         try:
-            alpine_session.user.get_data(user_info['id'])
+            alpine_session.user.get(user_info['id'])
         except UserNotFoundException:
             pass
         else:
@@ -55,7 +54,7 @@ class TestUser(AlpineTestCase):
         user_info = alpine_session.user.create("apitest2", "password", "test2", "test2", "apitest2@alpinenow.com", "title", "dept")
         updated_user_info = alpine_session.user.update(user_info['id'],"test2_new", "test2_new", "apitest2new@alpinenow.com",
                                   "title_new", "dept_new", "notes_new", "admin", "data_analyst")
-        user_info_new = alpine_session.user.get_data(user_info['id'])
+        user_info_new = alpine_session.user.get(user_info['id'])
         alpine_session.user.delete(user_info['id'])
         self.assertNotEquals(user_info, user_info_new)
         self.assertEqual(updated_user_info, user_info_new)
@@ -78,15 +77,15 @@ class TestUser(AlpineTestCase):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
         user_id = alpine_session.user.get_id(self.username)
-        user_info = alpine_session.user.get_data(user_id)
+        user_info = alpine_session.user.get(user_id)
         self.assertIsNotNone(user_info)
         self.assertEqual(user_info['username'], self.username)
 
     def test_get_users_list(self):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
-        users_list1 = alpine_session.user.get_all(per_page=1)
-        users_list2 = alpine_session.user.get_all(per_page=10)
+        users_list1 = alpine_session.user.get_list(per_page=1)
+        users_list2 = alpine_session.user.get_list(per_page=10)
         self.assertIsNotNone(users_list1)
         self.assertEqual(users_list1, users_list2)
 

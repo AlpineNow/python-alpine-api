@@ -28,7 +28,7 @@ class TestWorkspace(AlpineTestCase):
         except WorkspaceNotFoundException:
             pass
         workspace_info_created = alpine_session.workspace.create(workspace_name="test_workspace2")
-        workspace_info = alpine_session.workspace.get_data(workspace_info_created['id'])
+        workspace_info = alpine_session.workspace.get(workspace_info_created['id'])
         self.assertEqual(workspace_info_created, workspace_info)
 
     def test_get_workspace_id(self):
@@ -52,7 +52,7 @@ class TestWorkspace(AlpineTestCase):
         except WorkspaceNotFoundException:
             pass
         workspace_info_created = alpine_session.workspace.create(workspace_name="test_workspace4")
-        member_list = alpine_session.workspace.get_members(workspace_info_created['id'])
+        member_list = alpine_session.workspace.member.get_list(workspace_info_created['id'])
         self.assertEqual(workspace_info_created["members_count"], member_list.__len__())
         fail = True
         for member in member_list:
@@ -66,16 +66,16 @@ class TestWorkspace(AlpineTestCase):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
         # user_id = alpine_session.user.get_id(self.username)
-        # workspace_list1 = alpine_session.workspace.get_all(active=True, user_id=user_id, per_page=10)
-        # workspace_list2 = alpine_session.workspace.get_all(active=True, user_id=user_id, per_page=100)
+        # workspace_list1 = alpine_session.workspace.get_list(active=True, user_id=user_id, per_page=10)
+        # workspace_list2 = alpine_session.workspace.get_list(active=True, user_id=user_id, per_page=100)
         user_id = alpine_session.user.get_id(self.username)
-        workspace_list1 = alpine_session.workspace.get_all(active=True, user_id=user_id, per_page=10)
-        workspace_list2 = alpine_session.workspace.get_all(active=True, user_id=user_id, per_page=100)
+        workspace_list1 = alpine_session.workspace.get_list(active=True, user_id=user_id, per_page=10)
+        workspace_list2 = alpine_session.workspace.get_list(active=True, user_id=user_id, per_page=100)
         self.assertEqual(workspace_list1, workspace_list2)
-        workspace_list_all = alpine_session.workspace.get_all(active=True, per_page=10)
+        workspace_list_all = alpine_session.workspace.get_list(active=True, per_page=10)
         workspace_number= 0
         for ws in workspace_list_all:
-            member_list = alpine_session.workspace.get_members(ws['id'])
+            member_list = alpine_session.workspace.member.get_list(ws['id'])
             contain_member = False
             for member in member_list:
                 if member['username'] == self.username:
@@ -106,9 +106,9 @@ class TestWorkspace(AlpineTestCase):
             pass
         workspace_info = alpine_session.workspace.create(workspace_name=test_workspace_name, public=test_workspace_is_public1,
                                        summary=test_workspace_summary1)
-        workspace_info = alpine_session.workspace.update_settings(workspace_info['id'], test_workspace_is_public2,
-                                                            is_active=True, summary=test_workspace_summary2,
-                                                            stage_id=test_workspace_stage2)
+        workspace_info = alpine_session.workspace.update(workspace_info['id'], test_workspace_is_public2,
+                                                         is_active=True, summary=test_workspace_summary2,
+                                                         stage_id=test_workspace_stage2)
         self.assertEqual(workspace_info['summary'], test_workspace_summary2)
         self.assertEqual(workspace_info['public'], test_workspace_is_public2)
         self.assertEqual(workspace_info['workspace_stage']['id'], test_workspace_stage2)
@@ -126,7 +126,7 @@ class TestWorkspace(AlpineTestCase):
         workspace_info = alpine_session.workspace.create(workspace_name=test_workspace_name, public=True,
                                        summary="Summary")
         user_id = alpine_session.user.get_id(self.username)
-        member_list = alpine_session.workspace.update_membership(workspace_info['id'], user_id, new_role)
+        member_list = alpine_session.workspace.member.update(workspace_info['id'], user_id, new_role)
         fail = True
         for member in member_list:
             if member['username'] == self.username:
@@ -158,7 +158,7 @@ class TestWorkspace(AlpineTestCase):
             pass
         workspace_info = alpine_session.workspace.create(workspace_name=test_workspace_name, public=True,
                                        summary="Summary")
-        member_list = alpine_session.workspace.update_membership(workspace_info['id'], user_info['id'], new_role)
+        member_list = alpine_session.workspace.member.add(workspace_info['id'], user_info['id'], new_role)
         fail = True
         for member in member_list:
             if member['username'] == "test_user1":
@@ -184,7 +184,7 @@ class TestWorkspace(AlpineTestCase):
         workspace_info = alpine_session.workspace.create(workspace_name=test_workspace_name, public=True,
                                        summary="Summary")
         for i in range(1, len(stages)):
-            workspace_info = alpine_session.workspace.update_settings(workspace_info['id'], stage_id=i)
+            workspace_info = alpine_session.workspace.update(workspace_info['id'], stage_id=i)
             self.assertEqual(workspace_info['workspace_stage']['name'], stages[i-1])
 
     def test_update_workspace_name(self):
@@ -204,7 +204,7 @@ class TestWorkspace(AlpineTestCase):
             pass
         workspace_info = alpine_session.workspace.create(workspace_name=test_workspace_name, public=True,
                                        summary="Summary")
-        workspace_info = alpine_session.workspace.update_name(workspace_info['id'], test_workspace_name_new)
+        workspace_info = alpine_session.workspace.update(workspace_info['id'], name=test_workspace_name_new)
         self.assertEqual(workspace_info['name'], test_workspace_name_new)
         alpine_session.workspace.delete(workspace_info['id'])
 
@@ -228,8 +228,8 @@ class TestWorkspace(AlpineTestCase):
             pass
         workspace_info = alpine_session.workspace.create(workspace_name=test_workspace_name, public=True,
                                        summary="Summary")
-        alpine_session.workspace.add_member(workspace_info['id'], new_user_info['id'], "Data Engineer")
-        workspace_info = alpine_session.workspace.update_settings(workspace_info['id'], owner_id=new_user_info['id'])
+        alpine_session.workspace.member.add(workspace_info['id'], new_user_info['id'], "Data Engineer")
+        workspace_info = alpine_session.workspace.update(workspace_info['id'], owner_id=new_user_info['id'])
         self.assertEqual(workspace_info['owner'], new_user_info)
         alpine_session.workspace.delete(workspace_info['id'])
         alpine_session.user.delete(new_user_info['id'])
@@ -248,7 +248,7 @@ class TestWorkspace(AlpineTestCase):
         alpine_session.workspace.delete(workspace_info['id'])
         # Verify the alpine_session.workspace is successfully deleted
         try:
-            alpine_session.workspace.get_data(workspace_info['id'])
+            alpine_session.workspace.get(workspace_info['id'])
         except WorkspaceNotFoundException:
             pass
         else:
