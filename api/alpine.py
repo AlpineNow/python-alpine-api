@@ -24,9 +24,8 @@ class Alpine(AlpineObject):
     job = None
     touchpoint = None
 
-    def __init__(self, host=None, port=None, username=None, password=None,
-                 is_secure=False, validate_certs=False, ca_certs=None,
-                 token=None, logging_level='WARN'):
+    def __init__(self, host=None, port=None, username=None, password=None, is_secure=False, validate_certs=False,
+                 ca_certs=None, token=None, logging_level='WARN'):
         # TODO: Implement logging_level variable?
         """
         Sets internal values for Alpine API session and performs login to check that parameters are set correctly
@@ -45,7 +44,7 @@ class Alpine(AlpineObject):
         """
 
         super(Alpine, self).__init__(token=token)
-
+        self._setup_logging(default_level= logging_level)
         self.is_secure = is_secure
 
         if is_secure:

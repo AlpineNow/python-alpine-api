@@ -40,7 +40,7 @@ if __name__ == '__main__':
         if input_option == 'q':
             break
         if input_option == '1':
-            user_list = alpine.user.get_all()
+            user_list = alpine.user.get_list()
             print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}".format("User_ID", "User Name", "Email","First Name",
                                                                   "Last Name", "App Role", "Department", "Title"))
             for user in sorted(user_list, key=lambda x: x['id'], reverse=True):
@@ -51,7 +51,7 @@ if __name__ == '__main__':
             user_name = raw_input(">>> username: ")
             try:
                 user_id = alpine.user.get_id(user_name)
-                user = alpine.user.get_data(user_id)
+                user = alpine.user.get(user_id)
                 print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}".format("User_ID", "User Name", "Email","First Name",
                                                                       "Last Name", "App Role", "Department", "Title"))
                 print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}".format(user['id'], user['username'], user['email'],
@@ -69,7 +69,7 @@ if __name__ == '__main__':
                     delete_safe_flag = True
                     user_id = alpine.user.get_id(user_name)
                     # Check whether there are any workspace owned by the user
-                    workspace_list = alpine.workspace.get_all(user_id)
+                    workspace_list = alpine.workspace.get_list(user_id)
                     if workspace_list:
                         for workspace in workspace_list:
                             workspace['owner']['username']

@@ -2,20 +2,21 @@ from __future__ import absolute_import
 
 from api.exception import *
 from api.alpineobject import AlpineObject
-from .user import User
+from .workspacemember import WorkspaceMember
 
 import json
 
 
 class Workspace(AlpineObject):
     """
-    A collection of API wrappers and helper methods to interact with Alpine workspaces, including creating, updating, \
-    deleting,  and adding members.
+    A collection of API wrappers and helper methods to interact with Alpine workspaces.
 
     """
+    member = None
 
     def __init__(self, base_url, session, token):
         super(Workspace, self).__init__(base_url, session, token)
+        self.member = WorkspaceMember(base_url, session, token)
 
     def create(self, workspace_name, public=False, summary=None):
         """
@@ -43,93 +44,35 @@ class Workspace(AlpineObject):
         except:
             return response.json()
 
-    def get_data(self, workspace_id):
+    def delete(self, workspace_id):
         """
-        Get the one workspace's metadata.
+        Attempts to delete the given workspace. Will fail if the workspace does not exist.
 
-        :param str workspace_id: Unique workspace name.
-        :return: Single workspace's data
-        :rtype: dict
+        :param str workspace_name: Workspace to be deleted.
+        :return: None
+        :rtype: NoneType
         :exception WorkspaceNotFoundException: The workspace does not exist.
         """
 
-        url = "{0}/workspaces/{1}".format(self.base_url, workspace_id)
-        url = self._add_token_to_url(url)
-
-        if self.session.headers.get("Content-Type") is not None:
-            self.session.headers.pop("Content-Type")
-
-        r = self.session.get(url, verify=False)
-        workspace_response = r.json()
         try:
-            if workspace_response['response']:
-                self.logger.debug("Found workspace id: <{0}> in list...".format(workspace_id))
-                return workspace_response['response']
+            self.get(workspace_id)
+            url = "{0}/workspaces/{1}".format(self.base_url, workspace_id)
+            url = self._add_token_to_url(url)
+
+            self.logger.debug("Deleting workspace with id {0}".format(workspace_id))
+            response = self.session.delete(url)
+            self.logger.debug("Received response code {0} with reason {1}"
+                              .format(response.status_code, response.reason))
+            if response.status_code == 200:
+                self.logger.debug("Workspace successfully deleted.")
             else:
-                raise WorkspaceNotFoundException("Workspace id: <{0}> not found".format(workspace_id))
-        except Exception as err:
-            raise WorkspaceNotFoundException("Workspace id: <{0}> not found".format(workspace_id))
+                raise InvalidResponseCodeException("Response Code Invalid, the expected Response Code is {0}, "
+                                                   "the actual Response Code is {1}".format(200, response.status_code))
+            return None
+        except WorkspaceNotFoundException as err:
+            self.logger.debug("Workspace not found, error {}".format(err))
 
-    def get_id(self, workspace_name, user_id=None):
-        """
-        Get the ID number of the workspace. Will throw an exception if the workspace doens't exist.
-
-        :param str workspace_name: Unique workspace name.
-        :return: ID number of the workspace.
-        :rtype: int
-        :exception WorkspaceNotFoundException: The workspace does not exist.
-        """
-        workspace_list = self.get_all(user_id)
-        for workspace in workspace_list:
-            if workspace['name'] == workspace_name:
-                return workspace['id']
-        # return None
-        raise WorkspaceNotFoundException("The workspace with name <{0}> is not found for user <{1}>".format(
-            workspace_name, user_id))
-
-    def get_name(self, workspace_id):
-        """
-        Get the Name of the workspace. Will throw an exception if the workspace doens't exist.
-
-        :param int workspace_id: Unique workspace id.
-        :return: Name of the workspace.
-        :rtype: str
-        :exception WorkspaceNotFoundException: The workspace does not exist.
-        """
-        workspace_info = self.get_data(workspace_id)
-        return workspace_info['name']
-
-    def get_members(self, workspace_id, per_page=100):
-        """
-        Gets metadata about all the users who are members of the workspace.
-
-        :param str workspace_id:
-        :param int int per_page:
-        :return: A list of user data
-        :rtype: list of dict
-        :exception WorkspaceNotFoundException: The workspace does not exist.
-        """
-
-        url = "{0}/workspaces/{1}/members".format(self.base_url, workspace_id)
-        url = self._add_token_to_url(url)
-        member_list = None
-        page_current = 0
-        while True:
-            payload = {"per_page": per_page,
-                       "page": page_current + 1,
-                       }
-            member_list_response = self.session.get(url, data=json.dumps(payload), verify=False).json()
-            page_total = member_list_response['pagination']['total']
-            page_current = member_list_response['pagination']['page']
-            if member_list:
-                member_list.extend(member_list_response['response'])
-            else:
-                member_list = member_list_response['response']
-            if page_total == page_current:
-                break
-        return member_list
-
-    def get_all(self, user_id=None, active=None, per_page=50):
+    def get_list(self, user_id=None, active=None, per_page=50):
         """
         Get a list of metadata for each workspace. If username is provided, only workspaces that the user \
         is a member of will be returned.
@@ -181,35 +124,59 @@ class Workspace(AlpineObject):
 
         return workspace_list
 
-    def update_name(self, workspace_id, new_workspace_name):
+    def get(self, workspace_id):
+        """
+        Get the one workspace's metadata.
+
+        :param str workspace_id: Unique workspace name.
+        :return: Single workspace's data
+        :rtype: dict
+        :exception WorkspaceNotFoundException: The workspace does not exist.
         """
 
-        :param int workspace_id:
-        :param new_workspace_name:
-        :return:
-        """
-        if workspace_id is None:
-            raise WorkspaceNotFoundException("Workspace id: <{0}> was not found".format(workspace_id))
         url = "{0}/workspaces/{1}".format(self.base_url, workspace_id)
         url = self._add_token_to_url(url)
-        payload = self.get_data(workspace_id)
 
-        # replace fields with updated ones from kwargs
-        payload["name"] = new_workspace_name
-        self.session.headers.update({"Content-Type": "application/json"})  # Set special header for this post
-        response = self.session.put(url, data=json.dumps(payload), verify=False)
-        self.logger.debug("Received response code {0} with reason {1}...".format(response.status_code, response.reason))
-        self.session.headers.pop("Content-Type")  # Remove header, as it affects other tests
-        return response.json()['response']
+        if self.session.headers.get("Content-Type") is not None:
+            self.session.headers.pop("Content-Type")
 
-    def update_settings(self, workspace_id, is_public=None, is_active=None,
-                                      summary=None, stage_id=None, owner_id=None):
+        r = self.session.get(url, verify=False)
+        workspace_response = r.json()
+        try:
+            if workspace_response['response']:
+                self.logger.debug("Found workspace id: <{0}> in list...".format(workspace_id))
+                return workspace_response['response']
+            else:
+                raise WorkspaceNotFoundException("Workspace id: <{0}> not found".format(workspace_id))
+        except Exception as err:
+            raise WorkspaceNotFoundException("Workspace id: <{0}> not found".format(workspace_id))
+
+    def get_id(self, workspace_name, user_id=None):
+        """
+        Get the ID number of the workspace. Will throw an exception if the workspace doens't exist.
+
+        :param str workspace_name: Unique workspace name.
+        :return: ID number of the workspace.
+        :rtype: int
+        :exception WorkspaceNotFoundException: The workspace does not exist.
+        """
+        workspace_list = self.get_list(user_id)
+        for workspace in workspace_list:
+            if workspace['name'] == workspace_name:
+                return workspace['id']
+        # return None
+        raise WorkspaceNotFoundException("The workspace with name <{0}> is not found for user <{1}>".format(
+            workspace_name, user_id))
+
+    def update(self, workspace_id, is_public=None, is_active=None, name=None,
+               summary=None, stage_id=None, owner_id=None):
         # TODO: Can we combine with update_name??
         """
 
         :param workspace_id:
         :param is_public:
         :param is_active:
+        :param name:
         :param summary:
         :param stage_id:
         :param owner_id:
@@ -218,7 +185,7 @@ class Workspace(AlpineObject):
 
         url = "{0}/workspaces/{1}".format(self.base_url, workspace_id)
         url = self._add_token_to_url(url)
-        payload = self.get_data(workspace_id)
+        payload = self.get(workspace_id)
 
         # get rid of fields that aren't required for PUT to reduce request size.
         pop_fields = ['complete_json',
@@ -228,109 +195,26 @@ class Workspace(AlpineObject):
                       'is_deleted',
                       'workspace_stage'
                       ]
-        for field in pop_fields:
-            payload.pop(field)
 
         # replace fields with updated ones from kwargs
         if is_public:
             payload["public"] = is_public
         if is_active:
             payload["archived"] = not is_active
+        if name:
+            payload["name"] = name
         if summary:
             payload["summary"] = summary
         if stage_id:
             payload["workspace_stage_id"] = stage_id
         if owner_id:
             payload["owner_id"] = owner_id
+
+        for field in pop_fields:
+            payload.pop(field)
+
         self.session.headers.update({"Content-Type": "application/json"})  # Set special header for this post
         response = self.session.put(url, data=json.dumps(payload), verify=False)
         self.logger.debug("Received response code {0} with reason {1}...".format(response.status_code, response.reason))
         self.session.headers.pop("Content-Type")  # Remove header, as it affects other tests
         return response.json()['response']
-
-    def update_membership(self, workspace_id, user_id, role):
-        # TODO: Can this be used to delete members?
-        """
-
-        :param workspace_id:
-        :param user_id:
-        :param role:
-        :return:
-        """
-
-        url = "{0}/workspaces/{1}/members".format(self.base_url, workspace_id)
-        url = self._add_token_to_url(url)
-        # Build payload with user ids and role
-        members = []
-        member_list = self.get_members(workspace_id)
-        # If the user is not an member, create the user,
-        # if the user is already a member of the workspace, update the user role
-        for member in member_list:
-            if member['id'] == user_id:
-                continue
-            else:
-                members.append({"user_id": member['id'], "role": member['role']})
-        members.append({"user_id": user_id, "role": role})
-        payload = {"collection": {}, "members": members}
-        self.session.headers.update({"Content-Type": "application/json"})
-        response = self.session.post(url, data=json.dumps(payload), verify=False)
-        self.session.headers.pop("Content-Type")
-        self.logger.debug("Received response code {0} with reason {1}...".format(response.status_code, response.reason))
-        return response.json()['response']
-
-    def add_member(self, workspace_id, user_id, role):
-        """
-        :param workspace_id:
-        :param user_id:
-        :param role:
-        :return:
-        """
-        return self.update_membership(workspace_id, user_id, role)
-
-    def remove_member(self, workspace_id, user_id):
-        # TODO: ???
-
-        return None
-
-    def update_stage(self, workspace_id, stage):
-        # TODO Doesn't seem to work.
-        """
-
-        :param workspace_id:
-        :param stage: Define, Transform, Model, Deploy, Act
-        :return:
-        """
-        url = "{0}/workspaces/{1}".format(self.base_url, workspace_id)
-        url = self._add_token_to_url(url)
-        payload = {"stage": stage}
-        response = self.session.put(url, data=payload, verify=False)
-        return response.json()['response']
-
-    def delete(self, workspace_id):
-        """
-        Attempts to delete the given workspace. Will fail if the workspace does not exist.
-
-        :param str workspace_name: Workspace to be deleted.
-        :return: None
-        :rtype: NoneType
-        :exception WorkspaceNotFoundException: The workspace does not exist.
-        """
-
-        try:
-            self.get_data(workspace_id)
-            url = "{0}/workspaces/{1}".format(self.base_url, workspace_id)
-            url = self._add_token_to_url(url)
-
-            self.logger.debug("Deleting workspace with id {0}".format(workspace_id))
-            response = self.session.delete(url)
-            self.logger.debug("Received response code {0} with reason {1}"
-                              .format(response.status_code, response.reason))
-            if response.status_code == 200:
-                self.logger.debug("Workspace successfully deleted.")
-            else:
-                raise InvalidResponseCodeException("Response Code Invalid, the expected Response Code is {0}, "
-                                                   "the actual Response Code is {1}".format(200, response.status_code))
-            return None
-        except WorkspaceNotFoundException as err:
-            self.logger.debug("Workspace not found, error {}".format(err))
-
