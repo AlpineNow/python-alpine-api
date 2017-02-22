@@ -234,7 +234,6 @@ class Job(AlpineObject):
             :param job_name:
             :return:
             """
-
             self.logger.debug("Getting the Job id of Job: {0}".format(job_id))
             self.logger.debug("Retrieved the Job id of the job: {0} to be: {1}".format(job_id, job_id))
 
@@ -283,6 +282,3 @@ class Job(AlpineObject):
                     return int(task['id'])
             return None
             # raise TaskNotFoundException("The Task with name: {0} doesn't exits".format(task_name))
-
-
-

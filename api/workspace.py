@@ -2,8 +2,6 @@ from __future__ import absolute_import
 
 from api.exception import *
 from api.alpineobject import AlpineObject
-#from .workspacemember import WorkspaceMember
-
 from .user import User
 
 import json
