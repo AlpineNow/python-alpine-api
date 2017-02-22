@@ -1,5 +1,4 @@
 from api.alpine import Alpine
-from api.job import Job
 from api.exception import *
 from alpineunittest import AlpineTestCase
 
@@ -26,7 +25,7 @@ class TestJob(AlpineTestCase):
         workspace_id = workspace_info['id']
         job_info = alpine_session.job.create(workspace_id, "Job for Test")
         job_id = job_info['id']
-        task_info = alpine_session.job.add_workflow_task(workspace_id, job_id, workflow_id)
+        task_info = alpine_session.job.task.create(workspace_id, job_id, workflow_id)
         task_id = task_info['id']
         alpine_session.logout
 
@@ -39,13 +38,13 @@ class TestJob(AlpineTestCase):
     def test_get_jobs_list(self):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
-        jobs_list = alpine_session.job.get_all(workspace_id)
+        jobs_list = alpine_session.job.get_list(workspace_id)
         self.assertIsNotNone(jobs_list)
 
     def test_get_job_detail(self):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
-        job_detail = alpine_session.job.get_data(workspace_id, job_id)
+        job_detail = alpine_session.job.get(workspace_id, job_id)
         self.assertEqual(job_detail['name'], "Job for Test")
 
     def test_get_job_id(self):
@@ -87,7 +86,7 @@ class TestJob(AlpineTestCase):
         self.assertEqual(response.status_code, 200)
         # Verify the Job is successfully deleted
         try:
-            alpine_session.job.get_data(workspace_id, job_info['id'])
+            alpine_session.job.get(workspace_id, job_info['id'])
         except JobNotFoundException:
             pass
         else:
@@ -96,13 +95,9 @@ class TestJob(AlpineTestCase):
     def test_get_tasks_on_a_job(self):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
-        tasks_list = alpine_session.job.get_tasks(workspace_id, job_id)
+        tasks_list = alpine_session.job.task.get_list(workspace_id, job_id)
         self.assertNotEqual(0, len(tasks_list))
         self.assertEqual(tasks_list[0]['id'], task_id)
-
-
-    def test_add_workfile_task(self):
-        self.fail()
 
     def test_add_workflow_task(self):
         alpine_session = Alpine(self.host, self.port)
@@ -114,37 +109,34 @@ class TestJob(AlpineTestCase):
         except JobNotFoundException:
             pass
         job_info = alpine_session.job.create(workspace_id, job_name, "on_demand")
-        task_info = alpine_session.job.add_workflow_task(workspace_id, job_info['id'], workflow_id)
+        task_info = alpine_session.job.task.create(workspace_id, job_info['id'], workflow_id)
         self.assertIsNotNone(task_info)
-
-    def test_add_sqlworkfile_task(self):
-        self.fail()
 
     def test_get_task_info(self):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
-        task_info = alpine_session.job.get_task_data(workspace_id, job_id, task_id)
+        task_info = alpine_session.job.task.get(workspace_id, job_id, task_id)
         self.assertEqual(task_info['id'], task_id)
 
     def test_get_task_id(self):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
-        task_name = alpine_session.job.get_task_data(workspace_id, job_id, task_id)['name']
-        task_id_get = alpine_session.job.get_task_id(workspace_id, job_id, task_name)
+        task_name = alpine_session.job.task.get(workspace_id, job_id, task_id)['name']
+        task_id_get = alpine_session.job.task.get_id(workspace_id, job_id, task_name)
         self.assertEqual(task_id,task_id_get)
 
     def test_delete_task(self):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
         job_info = alpine_session.job.create(workspace_id, "Job for Test Delete Tasks")
-        task_info = alpine_session.job.add_workflow_task(workspace_id, job_info['id'], workflow_id)
-        tasks = alpine_session.job.get_tasks(workspace_id, job_info['id'])
+        task_info = alpine_session.job.task.create(workspace_id, job_info['id'], workflow_id)
+        tasks = alpine_session.job.task.get_list(workspace_id, job_info['id'])
         self.assertEqual(1, len(tasks))
-        alpine_session.job.delete_task(workspace_id, job_info['id'], task_info['id'])
-        new_tasks = alpine_session.job.get_tasks(workspace_id, job_info['id'])
+        alpine_session.job.task.delete(workspace_id, job_info['id'], task_info['id'])
+        new_tasks = alpine_session.job.task.get_list(workspace_id, job_info['id'])
         self.assertEqual(0, len(new_tasks))
         try:
-            alpine_session.job.get_task_data(workspace_id, job_info['id'], task_info['id'])
+            alpine_session.job.task.get(workspace_id, job_info['id'], task_info['id'])
         except TaskNotFoundException:
             pass
         else:

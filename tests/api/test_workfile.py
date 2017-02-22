@@ -3,7 +3,6 @@ import time
 
 from api.alpine import Alpine
 from api.exception import *
-from api.workfile import Workfile
 
 from alpineunittest import AlpineTestCase
 
@@ -80,7 +79,7 @@ class TestWorkfile(AlpineTestCase):
     def test_get_workfiles_list(self):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
-        workfile_list = alpine_session.workfile.get_all(workspace_id)
+        workfile_list = alpine_session.workfile.get_list(workspace_id)
         self.assertIsNotNone(workfile_list)
         self.assertEqual(workfile_list.__len__(), 1)
 
@@ -88,7 +87,7 @@ class TestWorkfile(AlpineTestCase):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
         workfile_id = alpine_session.workfile.get_id("db_row_fil_with_variable", workspace_id)
-        workfile_info = alpine_session.workfile.get_data(workfile_id)
+        workfile_info = alpine_session.workfile.get(workfile_id)
         self.assertIsNotNone(workfile_info)
 
     def test_get_workfile_id(self):
@@ -103,8 +102,8 @@ class TestWorkfile(AlpineTestCase):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
         workfile_id = alpine_session.workfile.get_id(workfile_name, workspace_id)
-        process_id = alpine_session.workfile.run(workfile_id, variables)
-        alpine_session.workfile.wait_until_finished(process_id)
+        process_id = alpine_session.workfile.process.run(workfile_id, variables)
+        alpine_session.workfile.process.wait_until_finished(process_id)
 
     def test_query_workflow_status(self):
         valid_workfile_status = ["WORKING", "FINISHED"]
@@ -112,9 +111,9 @@ class TestWorkfile(AlpineTestCase):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
         workfile_id = alpine_session.workfile.get_id(workfile_name, workspace_id)
-        process_id = alpine_session.workfile.run(workfile_id, variables)
+        process_id = alpine_session.workfile.process.run(workfile_id, variables)
         for i in range(0, 100):
-            workfile_status = alpine_session.workfile.query_status(process_id)
+            workfile_status = alpine_session.workfile.process.query_status(process_id)
             if workfile_status in valid_workfile_status:
                 if workfile_status == "FINISHED":
                     break
@@ -129,20 +128,20 @@ class TestWorkfile(AlpineTestCase):
         alpine_session.login(self.username, self.password)
         workfile_id = alpine_session.workfile.get_id(workfile_name, workspace_id)
 
-        process_id = alpine_session.workfile.run(workfile_id, variables)
-        workfile_status = alpine_session.workfile.query_status(process_id)
+        process_id = alpine_session.workfile.process.run(workfile_id, variables)
+        workfile_status = alpine_session.workfile.process.query_status(process_id)
         while workfile_status != "FINISHED":
             time.sleep(1)
-            workfile_status = alpine_session.workfile.query_status(process_id)
-        response = alpine_session.workfile.download_results(workfile_id, process_id)
+            workfile_status = alpine_session.workfile.process.query_status(process_id)
+        response = alpine_session.workfile.process.download_results(workfile_id, process_id)
 
     def test_stop_workflow(self):
         variables = [{"name": "@min_credit_line", "value": "7"}]
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
         workfile_id = alpine_session.workfile.get_id(workfile_name, workspace_id)
-        process_id = alpine_session.workfile.run(workfile_id, variables)
-        finish_state = alpine_session.workfile.stop(process_id)
+        process_id = alpine_session.workfile.process.run(workfile_id, variables)
+        finish_state = alpine_session.workfile.process.stop(process_id)
         self.assertEqual(finish_state, "STOPPED")
 
     def test_upload_hdfs_afm(self):
