@@ -16,7 +16,9 @@ class Workspace(AlpineObject):
 
     def __init__(self, base_url, session, token):
         super(Workspace, self).__init__(base_url, session, token)
-        self.member = WorkspaceMember(base_url, session, token)
+        self.member = self.WorkspaceMember(base_url, session, token)
+        self.WorkspaceStage = self.WorkspaceStage()
+        self.WorkspaceMemberRole = self.WorkspaceMemberRole()
 
     def create(self, workspace_name, public=False, summary=None):
         """
@@ -169,7 +171,7 @@ class Workspace(AlpineObject):
             workspace_name, user_id))
 
     def update(self, workspace_id, is_public=None, is_active=None, name=None,
-               summary=None, stage_id=None, owner_id=None):
+               summary=None, stage=None, owner_id=None):
         # TODO: Can we combine with update_name??
         """
 
@@ -178,7 +180,7 @@ class Workspace(AlpineObject):
         :param is_active:
         :param name:
         :param summary:
-        :param stage_id:
+        :param stage:
         :param owner_id:
         :return:
         """
@@ -205,8 +207,8 @@ class Workspace(AlpineObject):
             payload["name"] = name
         if summary:
             payload["summary"] = summary
-        if stage_id:
-            payload["workspace_stage_id"] = stage_id
+        if stage:
+            payload["workspace_stage_id"] = stage
         if owner_id:
             payload["owner_id"] = owner_id
 
@@ -218,3 +220,123 @@ class Workspace(AlpineObject):
         self.logger.debug("Received response code {0} with reason {1}...".format(response.status_code, response.reason))
         self.session.headers.pop("Content-Type")  # Remove header, as it affects other tests
         return response.json()['response']
+
+    class WorkspaceMember(AlpineObject):
+        """
+        A collection of API wrappers and helper methods to interact workspace members.
+
+        """
+
+        def __init__(self, base_url, session, token):
+            super(WorkspaceMember, self).__init__(base_url, session, token)
+
+        def get_list(self, workspace_id, per_page=100):
+            """
+            Gets metadata about all the users who are members of the workspace.
+
+            :param str workspace_id:
+            :param int int per_page:
+            :return: A list of user data
+            :rtype: list of dict
+            :exception WorkspaceNotFoundException: The workspace does not exist.
+            """
+
+            url = "{0}/workspaces/{1}/members".format(self.base_url, workspace_id)
+            url = self._add_token_to_url(url)
+            member_list = None
+            page_current = 0
+            while True:
+                payload = {"per_page": per_page,
+                           "page": page_current + 1,
+                           }
+                member_list_response = self.session.get(url, data=json.dumps(payload), verify=False).json()
+                page_total = member_list_response['pagination']['total']
+                page_current = member_list_response['pagination']['page']
+                if member_list:
+                    member_list.extend(member_list_response['response'])
+                else:
+                    member_list = member_list_response['response']
+                if page_total == page_current:
+                    break
+            return member_list
+
+        def add(self, workspace_id, user_id, role):
+            """
+            :param workspace_id:
+            :param user_id:
+            :param role:
+            :return:
+            """
+            members = self.get_list(workspace_id)
+            user_info = User(self.base_url, self.session, self.token).get(user_id)
+            members.append(user_info)
+            member_list = []
+            for member in members:
+                if member['id'] == user_id:
+                    continue
+                else:
+                    member_list.append({"user_id": member['id'], "role": member['role']})
+            member_list.append({"user_id": user_id, "role": role})
+
+            return self.__update(workspace_id, member_list)
+
+        def remove(self, workspace_id, user_id):
+            members = self.get_list(workspace_id)
+            for member in members:
+                if member['id'] == user_id:
+                    self.logger.info(
+                        "Remove The user with id: <{0}> from workspace with id <{1}>".format(user_id, workspace_id))
+                    continue
+                else:
+                    members.append({"user_id": member['id'], "role": member['role']})
+            return self.__update(workspace_id, members)
+
+        def update(self, workspace_id, user_id, new_role):
+            """
+            :param workspace_id:
+            :param user_id:
+            :param role:
+            :return:
+            """
+            members = self.get_list(workspace_id)
+            user_info = User(self.base_url, self.session, self.token).get(user_id)
+            members.append(user_info)
+            member_list = []
+            for member in members:
+                if member['id'] == user_id:
+                    continue
+                else:
+                    member_list.append({"user_id": member['id'], "role": member['role']})
+            member_list.append({"user_id": user_id, "role": new_role})
+
+            return self.__update(workspace_id, member_list)
+
+        def __update(self, workspace_id, members):
+            url = "{0}/workspaces/{1}/members".format(self.base_url, workspace_id)
+            url = self._add_token_to_url(url)
+            payload = {"collection": {}, "members": members}
+            self.session.headers.update({"Content-Type": "application/json"})
+            response = self.session.post(url, data=json.dumps(payload), verify=False)
+            self.session.headers.pop("Content-Type")
+            self.logger.debug(
+                "Received response code {0} with reason {1}...".format(response.status_code, response.reason))
+            return response.json()['response']
+
+    class WorkspaceStage(object):
+        def __init__(self):
+            self.Define = 1
+            self.Transform = 2
+            self.Model = 3
+            self.Deploy = 4
+            self.Act = 5
+
+    class WorkspaceMemberRole(object):
+        def __init__(self):
+            self.ProjectMember = "Project Member"
+            self.BusinessOwner = "Business Owner"
+            self.BusinessAnalyst = "Business Analyst"
+            self.DataScienceManager = "Data Science Manager"
+            self.DataScientist = "Data Scientist"
+            self.DataEngineer = "Data Engineer"
+            self.ApplicationEngineer = "Application Engineer"
+            self.ProjectManager = "Project Manager"
