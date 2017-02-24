@@ -221,7 +221,6 @@ class Workspace(AlpineObject):
         self.session.headers.pop("Content-Type")  # Remove header, as it affects other tests
         return response.json()['response']
 
-
     class Member(AlpineObject):
         """
         A collection of API wrappers and helper methods to interact workspace members.

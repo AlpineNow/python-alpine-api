@@ -169,7 +169,6 @@ class Job(AlpineObject):
         #     raise RunFlowFailureException(
         #         "Run Workflow {0} failed with status code {1}".format(workflow_id, response.status_code))
 
-
     class Task(AlpineObject):
         """
         Setup job tasks
