@@ -19,7 +19,6 @@ Example request to run an Alpine workflow::
     session.workfile.wait_until_finished(process_id)
     results = session.workfile.download(workfile_id, process_id)
 
-
 Contents
 
 .. toctree::
