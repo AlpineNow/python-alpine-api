@@ -2,8 +2,6 @@ from __future__ import absolute_import
 
 from api.exception import *
 from api.alpineobject import AlpineObject
-#from .workspacemember import WorkspaceMember
-
 from .user import User
 
 import json
@@ -19,6 +17,8 @@ class Workspace(AlpineObject):
     def __init__(self, base_url, session, token):
         super(Workspace, self).__init__(base_url, session, token)
         self.member = self.Member(base_url, session, token)
+        self.WorkspaceStage = self.WorkspaceStage()
+        self.WorkspaceMemberRole = self.WorkspaceMemberRole()
 
     def create(self, workspace_name, public=False, summary=None):
         """
@@ -171,7 +171,7 @@ class Workspace(AlpineObject):
             workspace_name, user_id))
 
     def update(self, workspace_id, is_public=None, is_active=None, name=None,
-               summary=None, stage_id=None, owner_id=None):
+               summary=None, stage=None, owner_id=None):
         # TODO: Can we combine with update_name??
         """
 
@@ -180,7 +180,7 @@ class Workspace(AlpineObject):
         :param is_active:
         :param name:
         :param summary:
-        :param stage_id:
+        :param stage:
         :param owner_id:
         :return:
         """
@@ -207,8 +207,8 @@ class Workspace(AlpineObject):
             payload["name"] = name
         if summary:
             payload["summary"] = summary
-        if stage_id:
-            payload["workspace_stage_id"] = stage_id
+        if stage:
+            payload["workspace_stage_id"] = stage
         if owner_id:
             payload["owner_id"] = owner_id
 
@@ -220,7 +220,6 @@ class Workspace(AlpineObject):
         self.logger.debug("Received response code {0} with reason {1}...".format(response.status_code, response.reason))
         self.session.headers.pop("Content-Type")  # Remove header, as it affects other tests
         return response.json()['response']
-
 
     class Member(AlpineObject):
         """
@@ -333,3 +332,22 @@ class Workspace(AlpineObject):
             self.session.headers.pop("Content-Type")
             self.logger.debug("Received response code {0} with reason {1}...".format(response.status_code, response.reason))
             return response.json()['response']
+
+    class WorkspaceStage(object):
+        def __init__(self):
+            self.Define = 1
+            self.Transform = 2
+            self.Model = 3
+            self.Deploy = 4
+            self.Act = 5
+
+    class WorkspaceMemberRole(object):
+        def __init__(self):
+            self.ProjectMember = "Project Member"
+            self.BusinessOwner = "Business Owner"
+            self.BusinessAnalyst = "Business Analyst"
+            self.DataScienceManager = "Data Science Manager"
+            self.DataScientist = "Data Scientist"
+            self.DataEngineer = "Data Engineer"
+            self.ApplicationEngineer = "Application Engineer"
+            self.ProjectManager = "Project Manager"

@@ -108,7 +108,7 @@ class TestWorkspace(AlpineTestCase):
                                        summary=test_workspace_summary1)
         workspace_info = alpine_session.workspace.update(workspace_info['id'], test_workspace_is_public2,
                                                          is_active=True, summary=test_workspace_summary2,
-                                                         stage_id=test_workspace_stage2)
+                                                         stage=test_workspace_stage2)
         self.assertEqual(workspace_info['summary'], test_workspace_summary2)
         self.assertEqual(workspace_info['public'], test_workspace_is_public2)
         self.assertEqual(workspace_info['workspace_stage']['id'], test_workspace_stage2)
@@ -184,7 +184,7 @@ class TestWorkspace(AlpineTestCase):
         workspace_info = alpine_session.workspace.create(workspace_name=test_workspace_name, public=True,
                                        summary="Summary")
         for i in range(1, len(stages)):
-            workspace_info = alpine_session.workspace.update(workspace_info['id'], stage_id=i)
+            workspace_info = alpine_session.workspace.update(workspace_info['id'], stage=i)
             self.assertEqual(workspace_info['workspace_stage']['name'], stages[i-1])
 
     def test_update_workspace_name(self):

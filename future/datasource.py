@@ -297,3 +297,26 @@ class DataSource(AlpineObject):
             return self.delete_hadoop_data_source(name)
         except DataSourceNotFoundException:
             self.logger.debug("Data source {0} not found, we don't need to delete it".format(name))
+
+    def get_database_list(self, data_source_id, per_page=100):
+        database_list = None
+        url = "{0}/data_sources/{1}/databases".format(self.base_url, data_source_id)
+        url = self._add_token_to_url(url)
+        self.logger.debug("Getting list of Database from {0}".format(url))
+        page_current = 0
+        while True:
+            payload = {
+                "all": True,
+                "per_page": per_page,
+                "page": page_current + 1,
+            }
+            database_list_response = self.session.get(url, params=payload, verify=False).json()
+            page_total = database_list_response['pagination']['total']
+            page_current = database_list_response['pagination']['page']
+            if database_list:
+                database_list.extend(database_list_response['response'])
+            else:
+                database_list = database_list_response['response']
+            if page_total == page_current:
+                break
+        return database_list

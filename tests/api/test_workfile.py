@@ -14,6 +14,7 @@ class TestWorkfile(AlpineTestCase):
         global workspace_name
         global workspace_id
         global data_source_id
+        global database_id
         global workfile_name
         global workfile_id
 
@@ -63,8 +64,14 @@ class TestWorkfile(AlpineTestCase):
             alpine_session.workfile.delete(workfile_id)
         except WorkfileNotFoundException:
             pass
-
-        workfile_info = alpine_session.workfile.upload_db_afm(workspace_id, data_source_id, 1, "GpdbDataSource", "gpdb_database", afm_path)
+        database_list = alpine_session.datasource.get_database_list(data_source_id)
+        for database in database_list:
+            if database['name'] == "robot_automation":
+                database_id = database['id']
+        datasource_info = [
+            {"data_source_type": "GpdbDataSource", "data_source_id": data_source_id, "database_type": "gpdb_database", "database_id": database_id}]
+        #workfile_info = alpine_session.workfile.upload_db_afm(workspace_id, data_source_id, 1, "GpdbDataSource", "gpdb_database", afm_path)
+        workfile_info = alpine_session.workfile.upload(workspace_id, afm_path, datasource_info)
         workfile_id = workfile_info['id']
         workfile_name = workfile_info['file_name']
 
@@ -170,5 +177,14 @@ class TestWorkfile(AlpineTestCase):
         except WorkfileNotFoundException:
             pass
 
-        workfile_info = alpine_session.workfile.upload_db_afm(workspace_id, data_source_id, 1, "GpdbDataSource", "gpdb_database", afm_path)
+        #workfile_info = alpine_session.workfile.upload_db_afm(workspace_id, data_source_id, 1, "GpdbDataSource", "gpdb_database", afm_path)
+        # datasource_info = [{"data_source_type": "HdfsDataSource", "data_source_id": "1", "database_type": "hdfs_data_source",
+        #                     "database_id":""},
+        #                    {"data_source_type": "JdbcDataSource", "data_source_id": "421", "database_type": "jdbc_data_source",
+        #                     "database_id": ""},
+        #                    {"data_source_type": "GpdbDataSource", "data_source_id": "1", "database_type": "gpdb_database",
+        #                     "database_id": "42"}]
+        datasource_info = [{"data_source_type": "GpdbDataSource", "data_source_id": data_source_id, "database_type": "gpdb_database",
+             "database_id": database_id}]
+        workfile_info = alpine_session.workfile.upload(workspace_id, afm_path, datasource_info)
         self.assertEqual(workfile_info['file_name'], "db_bat_row_fil")
