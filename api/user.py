@@ -11,6 +11,8 @@ class User(AlpineObject):
 
     def __init__(self, base_url, session, token):
         super(User, self).__init__(base_url, session, token)
+        self.ApplicationRole = self.ApplicationRole()
+        self.AdminRole = self.AdminRole()
 
     def create(self, username, password, first_name, last_name, email, title="", dept="",
                     notes="Add Via API", admin_role="", app_role="analytics_developer", email_notification=False):
@@ -242,3 +244,21 @@ class User(AlpineObject):
             if page_total == page_current:
                 break
         return users_list
+
+    class ApplicationRole(object):
+        def __init__(self):
+            #self.AnalyticsDeveloper = "analytics_developer"
+            self.DataAnalyst = "data_analyst"
+            self.Collaborator = 3
+            self.BusinessUser = 4
+
+        @property
+        def AnalyticsDeveloper(self):
+            return "analytics_developer"
+
+    class AdminRole(object):
+        def __init__(self):
+            self.ApplicationAdministrator = "admin"
+            self.DataAdministrator = 2
+            self.NonAdmin = 3
+

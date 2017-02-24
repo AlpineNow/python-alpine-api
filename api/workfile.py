@@ -139,90 +139,49 @@ class Workfile(AlpineObject):
         except WorkfileNotFoundException as err:
             self.logger.debug("Workfile not found, error {}".format(err))
 
-    def upload(self, workspace_id, afm_file, data_source_id):
-        pass
+    def upload(self, workspace_id, afm_file, data_sources_list):
+        """
+        Uploads an afm file with list of data source information.
 
-    def upload_hdfs_afm(self, workspace_id, data_source_id, afm_file):
+        :param workspace_id: Id of workspace
+        :param afm_file: Path of the afm file
+        :param data_sources_list: A list of data source information as the following format
+         datasource_info = [{"data_source_type": "HdfsDataSource", "data_source_id": "1", "database_type": "hdfs_data_source",
+                            "database_id":""},
+                           {"data_source_type": "JdbcDataSource", "data_source_id": "421", "database_type": "jdbc_data_source",
+                            "database_id": ""},
+                           {"data_source_type": "GpdbDataSource", "data_source_id": "1", "database_type": "gpdb_database",
+                            "database_id": "42"}]
+        :return: One workfile's metadata
+        :rtype: dict
         """
 
-        :param workspace_id:
-        :param data_source_id:
-        :param afm_file:
-        :return:
-        """
         url = "{0}/workspaces/{1}/workfiles".format(self.base_url, workspace_id)
         url = self._add_token_to_url(url)
-        try:
-            self.session.headers.pop("Content-Type")  # Remove header
-        except:
-            pass
         # payload is made up of file / destination meta-data (see firebug POST trace for info)
-        payload = {"data_source": "{0}HdfsDataSource".format(data_source_id),
-                   "workfile[entity_subtype]": "alpine",
-                   "workfile[execution_locations][0][entity_type]": "hdfs_data_source",
-                   "workfile[execution_locations][0][id]": data_source_id}
+        payload = []
+        payload.append(("workfile[entity_subtype]", "alpine"))
+        for i in range(0, len(data_sources_list)):
+            data_source = data_sources_list[i]
+            if data_source['data_source_type'] == "GpdbDataSource":
+                payload.append(("data_source",
+                               "{0}{1}".format(data_source['data_source_id'], data_source['data_source_type'])))
+                payload.append(("database","{0}".format(data_source['database_id'])))
+                payload.append(("workfile[execution_locations][{0}][entity_type]".format(i),
+                               data_source['database_type']))
+                payload.append(("workfile[execution_locations][{0}][id]".format(i), data_source['database_id']))
+            else:
+                payload.append(("data_source",
+                               "{0}{1}".format(data_source['data_source_id'], data_source['data_source_type'])))
+                payload.append(("database", "{0}".format(data_source['data_source_id'])))
+                payload.append(("workfile[execution_locations][{0}][entity_type]".format(i),
+                               data_source['database_type']))
+                payload.append(("workfile[execution_locations][{0}][id]".format(i), data_source['data_source_id']))
         # files is used to create a multipart upload content-type with requests, we send in a file object
         files = {"workfile[versions_attributes][0][contents]": open(afm_file, 'rb')}
         self.logger.debug("POSTing to: {0}\n With payload: {1}".format(url, payload))
         response = self.session.post(url, files=files, data=payload, verify=False)
         return response.json()['response']
-
-    def upload_db_afm(self, workspace_id, data_source_id, database_id, datasource_type, database_type,
-                      afm_file):
-        """
-        Uploads a DB afm file for execution
-        :param workspace_id:
-        :param data_source_id:
-        :param database_id:
-        :param datasource_type:
-        :param database_type:
-        :param afm_file:
-        :return:
-        """
-        url = "{0}/workspaces/{1}/workfiles".format(self.base_url, workspace_id)
-        url = self._add_token_to_url(url)
-        try:
-            self.session.headers.pop("Content-Type")  # Remove header
-        except:
-            pass
-        payload = {"data_source": str(data_source_id) + datasource_type,
-                   "database": database_id,
-                   "workfile[entity_subtype]": "alpine",
-                   "workfile[execution_locations][0][entity_type]": database_type,
-                   "workfile[execution_locations][0][id]": database_id}
-        # files is used to create a multipart upload content-type with requests, we send in a file object
-        files = {"workfile[versions_attributes][0][contents]": open(afm_file, 'rb')}
-        self.logger.debug("POSTing to: {0}\n With payload: {1}".format(url, payload))
-        response = self.session.post(url, files=files, data=payload, verify=False)
-        return response.json()['response']
-
-    def upload_hdfs_and_db_afm(self, workspace_id, hdfs_datasource_id,
-                               db_datasource_id, db_datasource_type, database_id, database_type, afm_file):
-        """
-        Uploads an afm with both a hdfs and a db data source.
-        :param token: session_id
-        :param chorus_address: the root url
-        :param workspace_name: the workspace where the afm will be uploaded
-        :param hdfs_datasource_name: the hdfs data source
-        :param database_datasource_name: the db data source
-        :param database_name: the database within the the db data source
-        :param afm_file: work file name.
-        :return:
-        """
-        url = "{0}/workspaces/{1}/workfiles".format(self.base_url, workspace_id)
-        url = self._add_token_to_url(url)
-        payload = [("data_source", str(hdfs_datasource_id) + "HdfsDataSource"),
-                   ("database", ''),
-                   ("data_source", str(database_id) + db_datasource_type),
-                   ("database", database_id),
-                   ("workfile[entity_subtype]", "alpine"),
-                   ("workfile[execution_locations][0][entity_type]", 'hdfs_data_source'),
-                   ("workfile[execution_locations][0][id]", hdfs_datasource_id),
-                   ("workfile[execution_locations][1][entity_type]", database_type),
-                   ("workfile[execution_locations][1][id]", database_id )]
-        files = {"workfile[versions_attributes][0][contents]": open(afm_file, 'rb')}
-        response = self._post_afm(url, files, payload)
-        return response
 
     class Process(AlpineObject):
         """

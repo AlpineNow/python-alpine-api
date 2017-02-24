@@ -69,7 +69,7 @@ class TestUser(AlpineTestCase):
             pass
 
         user_info = alpine_session.user.create("apitest1", "password", "test1", "test", "apitest1@alpinenow.com", "title",
-                                             "dept", admin_role="admin", app_role="analytics_developer")
+                                             "dept", admin_role="admin", app_role=alpine_session.user.ApplicationRole.AnalyticsDeveloper)
         user_id = alpine_session.user.get_id("apitest1")
         self.assertEqual(user_id, user_info['id'])
 
