@@ -6,7 +6,12 @@
 API Reference
 =============
 
-A Python wrapper for the Alpine API. Here's a simple example to run an Alpine Workflow.::
+Welcome to the official Python library for the Alpine API. In this first release we've focused on a subset of the full
+API that we feel users will most frequently use.
+
+This library can be used to automate, add or simplify functionality of Alpine.
+
+Example request to run an Alpine workflow::
 
     import api as AlpineAPI
     session = AlpineAPI.Alpine(host, port, username, password)
@@ -14,24 +19,19 @@ A Python wrapper for the Alpine API. Here's a simple example to run an Alpine Wo
     session.workfile.wait_until_finished(process_id)
     results = session.workfile.download(workfile_id, process_id)
 
-Requirements:
-
-1. Python 2.7
-2. Requests 2.12.4
-
-Contents:
+Contents
 
 .. toctree::
    :maxdepth: 2
 
+   APIReference
    Introduction
    Advanced Usage
-   Alpine
-   Users
-   Workspaces
-   Workfiles
-   Job
-   Alpineobject
+
+Requirements:
+
+1. Python 2.7
+2. Requests 2.12.4
 
 Indices and tables
 ==================
