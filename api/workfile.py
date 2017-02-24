@@ -189,7 +189,7 @@ class Workfile(AlpineObject):
         """
 
         def __init__(self, base_url, session, token):
-            super(WorkflowProcess, self).__init__(base_url, session, token)
+            super(Workfile.WorkflowProcess, self).__init__(base_url, session, token)
             self.chorus_domain = '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(self.base_url))
             self.logger.debug(self.chorus_domain)
             self.alpine_base_url = urljoin(self.chorus_domain,
