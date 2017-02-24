@@ -184,7 +184,6 @@ class Workfile(AlpineObject):
         return response.json()['response']
 
     class Process(AlpineObject):
-    class WorkflowProcess(AlpineObject):
         """
         A collection of API wrappers and helper methods to interact with Alpine Workflows, including running workflows \
         with or without workflow variables, ...
