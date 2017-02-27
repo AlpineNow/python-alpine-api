@@ -9,7 +9,8 @@ import json
 
 class Workspace(AlpineObject):
     """
-    A collection of API wrappers and helper methods to interact with Alpine workspaces.
+    A class for interacting with workspaces. Top-level methods deals with workspace properties. The subclass
+    Members can be used to interact with member lists.
 
     """
     member = None
@@ -22,13 +23,18 @@ class Workspace(AlpineObject):
 
     def create(self, workspace_name, public=False, summary=None):
         """
-        Will create a workspace. Will fail if the workspace_name is not unique.
+        Creates a workspace. Will fail if the workspace_name already exists.
 
         :param str workspace_name: Unique workspace name.
-        :param bool public: Optionally allow the workspace to be viewable by non-members and non-admins.
+        :param bool public: Allow the workspace to be viewable by non-members and non-admins.
         :param str summary: Description of new workspace.
         :return: Created workspace information or error message.
         :rtype: dict
+
+        Example::
+
+            >>> session.workspace.create(workspace_name = "Public Data ETL", public = True)
+
         """
         url = "{0}/workspaces".format(self.base_url)
         url = self._add_token_to_url(url)
@@ -54,6 +60,11 @@ class Workspace(AlpineObject):
         :return: None
         :rtype: NoneType
         :exception WorkspaceNotFoundException: The workspace does not exist.
+
+        Example::
+
+            >>> session.workspace.delete(workspace_id = 1671)
+
         """
 
         try:
@@ -86,10 +97,15 @@ class Workspace(AlpineObject):
         :return: List of workspace metadata.
         :rtype: list of dict
         :exception UserNotFoundException: The username does not exist.
+
+        Example::
+
+            >>> my_workspaces = session.workspace.get_list(user_id = my_user_id)
+            >>> len(my_workspaces)
+            8
+
         """
 
-        # Parse the active parameter:
-        # Work-around for https://alpine.atlassian.net/browse/IBX-4398
         if active is True:
             active_state = "true"
         else:
@@ -128,12 +144,17 @@ class Workspace(AlpineObject):
 
     def get(self, workspace_id):
         """
-        Get the one workspace's metadata.
+        Get one workspace's metadata.
 
         :param str workspace_id: Unique workspace name.
         :return: Single workspace's data
         :rtype: dict
         :exception WorkspaceNotFoundException: The workspace does not exist.
+
+        Example::
+
+            >>> session.workspace.get(workspace_id=1761)
+
         """
 
         url = "{0}/workspaces/{1}".format(self.base_url, workspace_id)
@@ -161,6 +182,12 @@ class Workspace(AlpineObject):
         :return: ID number of the workspace.
         :rtype: int
         :exception WorkspaceNotFoundException: The workspace does not exist.
+
+        Example::
+
+            >>> session.workspace.get_id("Public Data ETL")
+            1672
+
         """
         workspace_list = self.get_list(user_id)
         for workspace in workspace_list:
@@ -172,19 +199,25 @@ class Workspace(AlpineObject):
 
     def update(self, workspace_id, is_public=None, is_active=None, name=None,
                summary=None, stage=None, owner_id=None):
-        # TODO: Can we combine with update_name??
+        #TODO: Some fields don't seem to work: is_public, is_active, owner_id???
         """
+        Update a workspace's metadata. Only included fields will be changed.
 
-        :param workspace_id:
-        :param is_public:
-        :param is_active:
-        :param name:
-        :param summary:
-        :param stage:
-        :param owner_id:
-        :return:
+        :param int workspace_id: ID number of the workspace.
+        :param bool is_public: Allow the workspace to be viewable by non-members and non-admins.
+        :param bool is_active: Sets active vs. archived status.
+        :param str name: New name for the workspace.
+        :param str summary: New description of the workspace.
+        :param str stage: Stage ID
+        :param int owner_id: ID number of the workspace owner.
+        :return: Updated workspace metadata
+        :rtype: dict
+
+        Example::
+
+            >>> session.workspace.update(workspace_id = 1672, summary = "New focus of project is ML!")
+
         """
-
         url = "{0}/workspaces/{1}".format(self.base_url, workspace_id)
         url = self._add_token_to_url(url)
         payload = self.get(workspace_id)
@@ -223,7 +256,7 @@ class Workspace(AlpineObject):
 
     class Member(AlpineObject):
         """
-        A collection of API wrappers and helper methods to interact workspace members.
+        A class for interacting with workspace membership.
         """
 
         def __init__(self, base_url, session, token):
@@ -233,12 +266,20 @@ class Workspace(AlpineObject):
             """
             Gets metadata about all the users who are members of the workspace.
 
-            :param str workspace_id:
-            :param int int per_page:
+            :param str workspace_id: ID number of the workspace.
+            :param int int per_page: Maximum number to fetch with each API call.
             :return: A list of user data
             :rtype: list of dict
-            :exception WorkspaceNotFoundException: The workspace does not exist.
+            :exception WorkspaceNotFoundException: The workspace id does not exist.
+
+            Example::
+
+                >>> session.workspace.member.get_list(workspace_id = 1672)
+
             """
+
+            # Check that workspace exists.
+            Workspace(self.base_url, self.session, self.token).get(workspace_id)
 
             url = "{0}/workspaces/{1}/members".format(self.base_url, workspace_id)
             url = self._add_token_to_url(url)
@@ -261,10 +302,20 @@ class Workspace(AlpineObject):
 
         def add(self, workspace_id, user_id, role):
             """
-            :param workspace_id:
-            :param user_id:
-            :param role:
-            :return:
+            Add a new user to the workspace member list.
+
+            :param workspace_id: ID number of the workspace.
+            :param user_id: ID number of member to add to the workspace.
+            :param role: Role for the user.
+            :return: Updated member list
+            :rtype: list of dict
+            :exception WorkspaceNotFoundException: The workspace id does not exist.
+            :exception UserNotFoundException: The user id  does not exist.
+
+            Example::
+
+                >>> session.workspace.member.add(workspace_id = 1672, user_id = 7, role = 'Project Manager')
+
             """
             members = self.get_list(workspace_id)
             user_info = User(self.base_url, self.session, self.token).get(user_id)
@@ -277,52 +328,79 @@ class Workspace(AlpineObject):
                     member_list.append({"user_id": member['id'], "role": member['role']})
             member_list.append({"user_id": user_id, "role": role})
 
+            print(member_list)
+
             return self.__update(workspace_id, member_list)
 
         def remove(self, workspace_id, user_id):
             """
-            Placeholder
+            Remove a user from the workspace member list.
 
-            :param workspace_id:
-            :param user_id:
-            :return:
+            :param workspace_id: ID number of the workspace.
+            :param user_id: ID number of member to add to the workspace.
+            :return: Updated member list
+            :rtype: list of dict
+            :exception WorkspaceNotFoundException: The workspace id does not exist.
+            :exception UserNotFoundException: The user id  does not exist.
+
+            Example::
+
+                >>> session.workspace.member.remove(workspace_id = 1672, user_id = 7)
+
             """
+            # Check that user exists.
+            User(self.base_url, self.session, self.token).get(user_id)
+
             members = self.get_list(workspace_id)
+            new_members = []
             for member in members:
                 if member['id'] == user_id:
-                    self.logger.info(
-                        "Remove The user with id: <{0}> from workspace with id <{1}>".format(user_id, workspace_id))
+                    self.logger.debug(
+                        "Remove the user with id: <{0}> from workspace with id <{1}>".format(user_id, workspace_id)
+                    )
                     continue
                 else:
-                    members.append({"user_id": member['id'], "role": member['role']})
-            return self.__update(workspace_id, members)
+                    new_members.append({"user_id": member['id'], "role": member['role']})
+            return self.__update(workspace_id, new_members)
 
-        def update(self, workspace_id, user_id, new_role):
+        def update_role(self, workspace_id, user_id, new_role):
             """
-            :param workspace_id:
-            :param user_id:
-            :param role:
-            :return:
+            Update a user's role in a workspace. If the user is not a member of the workspace then no change will be
+            made.
+
+            :param workspace_id: ID number of the workspace.
+            :param user_id: ID number of member to update.
+            :param str new_role: New role of the user.
+            :return: Updated member list
+            :rtype: list of dict
+            :exception WorkspaceNotFoundException: The workspace id does not exist.
+
+            Example::
+
+                >>> session.workspace.member.update(workspace_id = 1672, user_id = 7, new_role = 'Data Scientist')
+
             """
             members = self.get_list(workspace_id)
-            user_info = User(self.base_url, self.session, self.token).get(user_id)
-            members.append(user_info)
-            member_list =[]
+            updated_members = []
+
+            # Update the membership list
             for member in members:
                 if member['id'] == user_id:
-                    continue
+                    updated_members.append({"user_id": member['id'], "role": new_role})
                 else:
-                    member_list.append({"user_id": member['id'], "role": member['role']})
-            member_list.append({"user_id": user_id, "role": new_role})
+                    updated_members.append({"user_id": member['id'], "role": member["role"]})
 
-            return self.__update(workspace_id, member_list)
+            print updated_members
+
+            return self.__update(workspace_id, updated_members)
 
         def __update(self, workspace_id, members):
             """
-            Internal
-            :param workspace_id:
-            :param members:
-            :return:
+            General update member method. Mostly for internal use. Used by add, remove, and update.
+
+            :param int workspace_id: ID number of the workspace.
+            :param list members: A formatted member list.
+            :return: member list or error.
             """
             url = "{0}/workspaces/{1}/members".format(self.base_url, workspace_id)
             url = self._add_token_to_url(url)
@@ -331,7 +409,11 @@ class Workspace(AlpineObject):
             response = self.session.post(url, data=json.dumps(payload), verify=False)
             self.session.headers.pop("Content-Type")
             self.logger.debug("Received response code {0} with reason {1}...".format(response.status_code, response.reason))
-            return response.json()['response']
+
+            try:
+                return response.json()['response']
+            except:
+                return response.json()
 
     class WorkspaceStage(object):
         def __init__(self):

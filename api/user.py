@@ -6,7 +6,7 @@ from api.alpineobject import AlpineObject
 
 class User(AlpineObject):
     """
-    A collection of functions to create, delete, query and update user accounts.
+    A class for interacting with user accounts.
     """
 
     def __init__(self, base_url, session, token):
@@ -16,9 +16,8 @@ class User(AlpineObject):
 
     def create(self, username, password, first_name, last_name, email, title="", dept="",
                     notes="Add Via API", admin_role="", app_role="analytics_developer", email_notification=False):
-        # TODO: How to handle LDAP for password?
         """
-        Create a user account with specified parameters.
+        Create a user account with the specified parameters.
 
         :param str username: A unique name.
         :param str password: Password of the user being created.
@@ -35,6 +34,14 @@ class User(AlpineObject):
 
         :return: Created user information or error message.
         :rtype: dict
+
+        Example::
+
+            >>> user_info = session.create(username = 'demo_user', password = 'temp_password',
+            >>>                            first_name = 'Demo', last_name = 'User',
+            >>>                            email = 'demouser@alpinenow.com', title = 'Data Scientist',
+            >>>                            dept = 'Product')
+
         """
         # Get correct values for admin and roles for url call:
         admin = False
@@ -78,6 +85,10 @@ class User(AlpineObject):
         :return: None
         :rtype: NoneType
         :exception UserNotFoundException: The username does not exist.
+
+        Example::
+
+            >>> session.user.delete(user_id = 51)
         """
 
         try:
@@ -118,6 +129,11 @@ class User(AlpineObject):
         :return: Updated user information.
         :rtype: dict
         :exception UserNotFoundException: The username does not exist.
+
+        Example::
+
+            >>> updated_info = session.user.update(user_id = 51, title = "Senior Data Scientist")
+
         """
 
         url = "{0}/users/{1}".format(self.base_url, user_id)
@@ -181,6 +197,13 @@ class User(AlpineObject):
         :return: ID number of the user
         :rtype: int
         :exception UserNotFoundException: The username does not exist.
+
+        Example
+
+            >>> user_id = session.user.get_id(username = 'demo_user')
+            >>> print(user_id)
+            51
+
         """
 
         users_list = self.get_list()
@@ -192,12 +215,16 @@ class User(AlpineObject):
 
     def get(self, user_id):
         """
-        Get one user's metadata
+        Get one user's metadata.
 
         :param str user_id: A Unique user name.
         :return: Single user's data
         :rtype: dict
         :exception UserNotFoundException: The username does not exist.
+
+        Example::
+
+            >>> session.user.get(user_id = 51)
         """
         url = "{0}/users/{1}".format(self.base_url, user_id)
         url = self._add_token_to_url(url)
@@ -224,6 +251,12 @@ class User(AlpineObject):
         :param int per_page: How many users to return in each page.
         :return: A list of all the user's data.
         :rtype: list of dict
+
+        Example::
+
+            >>> all_users = session.user.get_list()
+            >>> len(all_users)
+            99
         """
         url = "{0}/users".format(self.base_url)
         url = self._add_token_to_url(url)

@@ -10,11 +10,19 @@ from api.workfile import Workfile
 from api.workspace import Workspace
 from future.datasource import DataSource
 from future.touchpoint import TouchPoint
+from api.exception import *
 
 
 class Alpine(AlpineObject):
     """
-    The main entry point for the Alpine API. Most of the API calls require a logged-in user.
+    The main entry point for the Alpine API. Most of the functions require a logged-in user. Begin a session by
+    creating an instance of the :class:`Alpine` class.
+
+    Example::
+
+        >>> import api as AlpineAPI
+        >>> session = AlpineAPI.Alpine(host, port, username, password)
+
     """
 
     user = None
@@ -26,10 +34,9 @@ class Alpine(AlpineObject):
 
     def __init__(self, host=None, port=None, username=None, password=None, is_secure=False, validate_certs=False,
                  ca_certs=None, token=None, logging_level='WARN'):
-        # TODO: Implement logging_level variable?
         """
-        Sets internal values for Alpine API session and performs login to check that parameters are set correctly
-        while username and password are not null
+        Sets internal values for Alpine API session. If username and password are supplied then a login is
+        attempted. This is useful to check Alpine url and user login parameters.
 
         :param string host: hostname or ip address of the Alpine server
         :param string port: port number for Alpine
@@ -39,12 +46,13 @@ class Alpine(AlpineObject):
         :param bool validate_certs:
         :param ??? ca_certs:
         :param string token: Alpine API authentication token
-        :param string logging_level: https://docs.python.org/2/howto/logging.html#logging-levels (Not implemented!)
+        :param string logging_level: Use to set a logging
+        level. See https://docs.python.org/2/howto/logging.html#logging-levels.
         :return: None
         """
 
         super(Alpine, self).__init__(token=token)
-        self._setup_logging(default_level= logging_level)
+        self._setup_logging(default_level=logging_level)
         self.is_secure = is_secure
 
         if is_secure:
@@ -71,19 +79,26 @@ class Alpine(AlpineObject):
 
     def login(self, username, password):
         """
-        Logs into Alpine with provided username and password.
+        Attempts a login to Alpine with provided username and password. Typically login is handled at
+        session-creation time.
 
         :param string username: username to login with
         :param string password: password to login with
         :return: returns a Alpine API authentication token to be used for other actions
         :rtype: string
+
+        Example::
+
+            >>> user_info = session.login(username, password)
+
         """
         # build the url string and body payload
         url = "{0}/sessions?session_id=NULL".format(self.base_url)
         # url = self.base_url + "/sessions?session_id=NULL"
         body = {"username": username, "password": password}
         # TODO login with cert.
-        cert_path = os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])), "../host_deploy/resource/ssl/certificates/test.crt")
+        cert_path = os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])),
+                                 "../host_deploy/resource/ssl/certificates/test.crt")
 
         key_path = os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])),
                                 "../host_deploy/resource/ssl/certificates/test.key")
@@ -95,7 +110,7 @@ class Alpine(AlpineObject):
         else:
             login_response = self.session.post(url, data=body,
                                                verify=self.validate_certs, cert=(cert_path, key_path),
-                                               headers={'Connection' : 'close'})
+                                               headers={'Connection': 'close'})
         if login_response.status_code == 201:
             response = login_response.json()
             self.token = response['response']['session_id']
@@ -108,22 +123,28 @@ class Alpine(AlpineObject):
             self.workfile = Workfile(self.base_url, self.session, self.token)
             self.job = Job(self.base_url, self.session, self.token)
             self.touchpoint = TouchPoint(self.base_url, self.session, self.token)
-        else:
-            raise Exception("Login failed with status code: <{0}>".format(login_response.status_code))
+            return login_response.json()['response']['user']
 
-        return login_response.json()
+        else:
+            raise LoginFailureException("Login failed with status code: <{0}>.".format(login_response.status_code))
 
     def logout(self):
         """
-        Attempts of logout current user.
+        Attempts logout current user.
 
-        :return: None
-        :rtype: NoneType
+        :return: Request response.
+        :rtype: requests.models.Response
+
+        Example::
+
+            >>> session.logout()
+            <Response [200]>
+
         """
-        # Is there a way to do this without explicitly including the token in the url?
         url = "{0}/sessions?session_id={1}".format(self.base_url, self.token)
         logout_response = self.session.delete(url)
-        self.logger.debug("Received response code {0} with reason {1}".format(logout_response.status_code, logout_response.reason))
+        self.logger.debug("Received response code {0} with reason {1}".format(logout_response.status_code,
+                                                                              logout_response.reason))
         self.user = None
         self.datasource = None
         self.workspace = None
@@ -134,14 +155,14 @@ class Alpine(AlpineObject):
         # parse status codes here:
         status = logout_response.status_code
         if logout_response.status_code == 200:
-            print("Logout successful.")
-            return None
+            self.logger.debug("Successfully logged-out.")
+            return logout_response
         elif logout_response.status_code == 401:
-            print("No user is logged-in.")
-            return None
+            self.logger.debug("No user is logged-in.")
+            return logout_response
         else:
-            print("Unknown status code: {}".format(status))
-            return None
+            self.logger.debug("Failure with status code: {}".format(status))
+            return logout_response
 
     def get_status(self):
         """
@@ -149,6 +170,33 @@ class Alpine(AlpineObject):
 
         :return: Current login status.
         :rtype: dict
+
+        Example::
+
+            >>> session.get_status()
+            {u'admin': True,
+             u'auth_method': u'internal',
+             u'dept': u'Development',
+             u'email': u'demoadmin@alpinenow.com',
+             u'entity_type': u'user',
+             u'first_name': u'Demo',
+             u'id': 665,
+             u'image': {u'complete_json': True,
+              u'entity_type': u'image',
+              u'icon': u'/users/665/image?style=icon&1483606634',
+              u'original': u'/users/665/image?style=original&1483606634'},
+             u'is_deleted': None,
+             u'last_name': u'Admin',
+             u'ldap_group_id': None,
+             u'notes': u'',
+             u'roles': [u'admin'],
+             u'subscribed_to_emails': True,
+             u'tags': [],
+             u'title': u'Assistant to the Regional Manager',
+             u'user_type': u'analytics_developer',
+             u'username': u'demoadmin',
+             u'using_default_image': True}
+
         """
         url = "{0}/sessions".format(self.base_url)
         self.logger.debug("Checking to see if the user is still logged in....")
@@ -156,9 +204,8 @@ class Alpine(AlpineObject):
         self.logger.debug("Received response code {0} with reason {1}".format(response.status_code, response.reason))
 
         try:
-            return response.json()
+            return response.json()['response']['user']
         except:
-            print("Not logged in.")
             return {}
 
     def get_version(self):
@@ -167,18 +214,29 @@ class Alpine(AlpineObject):
 
         :return: Alpine version.
         :rtype: str
+
+        Example::
+
+            >>> session.get_version()
+            '6.2.0.0.1-b8c02ca46'
+
         """
         url = "{0}/VERSION".format(self.base_url)
         response = self.session.get(url)
         return response.content.strip()
 
     def get_license(self):
-        """
-        Get the the current license information for Alpine.
-
-        :return: Summary of Alpine license information - expiration, user limits, add-ons.
-        :rtype: dict
-        """
+        # """
+        # Get the the current license information for Alpine.
+        #
+        # :return: Summary of Alpine license information - expiration, user limits, add-ons.
+        # :rtype: dict
+        #
+        # Example::
+        #
+        #     >>> license_info = session.get_license()
+        #
+        # """
         url = self.base_url + "/license"
         response = self.session.get(url)
         return response.json()

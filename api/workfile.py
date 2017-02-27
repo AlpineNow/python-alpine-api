@@ -9,8 +9,7 @@ from .workspace import Workspace
 
 class Workfile(AlpineObject):
     """
-    A collection of API wrappers and helper methods to interact with Alpine workfiles, including running workflows \
-    with or without workflow variables, ...
+    A class for interacting with workfiles. Top-level methods deal with workfile management. The subclass Process can be used to interact with individual workfiles, including running workflows with workflow variables.
     """
 
     process = None
@@ -33,8 +32,12 @@ class Workfile(AlpineObject):
         :return: List of workfiles' metadata
         :rtype: list of dict
         :exception WorkspaceNotFoundException: The workspace does not exist.
-        """
 
+        Example::
+
+            >>> session.workfile.get_list(workspace_id = 1672)
+
+        """
         workfile_list = None
         url = "{0}/workspaces/{1}/workfiles".format(self.base_url, str(workspace_id))
         url = self._add_token_to_url(url)
@@ -61,15 +64,19 @@ class Workfile(AlpineObject):
 
     def get(self, workfile_id):
         """
-        Return metadata for one workfile in a workspace.
+        Return metadata for one workfile.
 
         :param str workfile_id: Id of workfile.
         :return: One workfile's metadata
         :rtype: dict
         :exception WorkspaceNotFoundException: The workspace does not exist.
         :exception WorkfileNotFoundException: The workfile does not exist.
-        """
 
+        Example::
+
+            >>> session.workfile.get(workflow_id = 375)
+
+        """
         url = "{0}/workfiles/{1}".format(self.base_url, workfile_id)
         url = self._add_token_to_url(url)
 
@@ -90,21 +97,25 @@ class Workfile(AlpineObject):
 
     def get_id(self, workfile_name, workspace_id):
         """
-        Return the ID number of a workfile in a workspace. Mostly used internally.
+        Return the ID number of a workfile in a workspace.
 
         :param string workfile_name: Name of workfile.
-        :param string workspace_id: Id of workspace that contains the workfile.
+        :param int workspace_id: Id of workspace that contains the workfile.
         :return: ID number of workfile
         :rtype: int
         :exception WorkspaceNotFoundException: The workspace does not exist.
         :exception WorkfileNotFoundException: The workfile does not exist.
+
+        Example::
+
+            >>> session.workspace.get_id(workfile_name = "WineData", workspace_id = "APITests")
+
         """
 
         workfile_list = self.get_list(workspace_id)
         for workfile in workfile_list:
             if workfile['file_name'] == workfile_name:
                 return workfile['id']
-        # return None
         raise WorkfileNotFoundException("The workfile with name <{0}> is not found in workspace <{1}>"
                                         .format(workfile_name, workspace_id))
 
@@ -117,6 +128,10 @@ class Workfile(AlpineObject):
         :rtype: NoneType
         :exception WorkspaceNotFoundException: The workspace does not exist.
         :exception WorkfileNotFoundException: The workfile does not exist.
+
+        Example::
+
+            >>> session.workfile.delete(workflow_id = 375)
         """
         try:
             self.get(workfile_id)
@@ -139,7 +154,7 @@ class Workfile(AlpineObject):
         except WorkfileNotFoundException as err:
             self.logger.debug("Workfile not found, error {}".format(err))
 
-    def upload(self, workspace_id, afm_file, data_sources_list):
+    def upload_hdfs_afm(self, workspace_id, data_source_id, afm_file):
         """
         Uploads an afm file with list of data source information.
 
@@ -185,8 +200,7 @@ class Workfile(AlpineObject):
 
     class Process(AlpineObject):
         """
-        A collection of API wrappers and helper methods to interact with Alpine Workflows, including running workflows \
-        with or without workflow variables, ...
+        A class for running workfiles.
         """
 
         def __init__(self, base_url, session, token):
@@ -207,6 +221,11 @@ class Workfile(AlpineObject):
             :return: Single operator dictionary.
             :rtype: dict
             :exception FlowResultsMalformedException: Workflow result does not contain the key ['outputs'].
+
+            Example::
+
+                >>> operator_data = session.workfile.process.find_operator('Row Filter', flow_results)
+
             """
 
             if 'outputs' in flow_results:
@@ -220,12 +239,17 @@ class Workfile(AlpineObject):
         def get_metadata(flow_results):
             """
             Return the metadata for a particular workflow run including time, number of operators, \
-            user, and number of errors.
+            user, and number of runtime errors.
 
             :param dict flow_results: JSON object of Alpine flow results from download_results.
             :return: Run metadata.
             :rtype: dict
             :exception FlowResultsMalformedException: Workflow results does not contain the key ['flowMetaInfo'].
+
+            Example::
+
+                >>> session.workfile.process.get_metadata(flow_results)
+
             """
 
             try:
@@ -234,7 +258,6 @@ class Workfile(AlpineObject):
                 raise FlowResultsMalformedException("Workflow result does not contain the key ['flowMetaInfo']")
 
         def run(self, workflow_id, variables=None):
-            # TODO: Does this work for workfiles only ...?
             """
             Run a workflow, optionally including a list of workflow variables. Returns a process_id which is needed by \
             other functions which query a run or download results.
@@ -245,6 +268,12 @@ class Workfile(AlpineObject):
             :rtype: str
             :exception WorkspaceNotFoundException: The workspace does not exist.
             :exception WorkfileNotFoundException: The workfile does not exist.
+
+            Example::
+
+                >>> work_flow_variables = [{"name": "@row_filter", "value": "13"}]
+                >>> process_id = session.workfile.process.run(workflow_id = 375, variables = work_flow_variables)
+
             """
 
             url = "{0}/workflows/{1}/run?saveResult=true".format(self.alpine_base_url, workflow_id)
@@ -288,6 +317,11 @@ class Workfile(AlpineObject):
             :return: State of workflow run. One of 'WORKING', 'FINISHED', or 'FAILED'.
             :rtype: str
             :exception RunFlowFailureException: Process ID not found.
+
+            Example::
+
+                >>> session.workfile.process.query_status(process_id = process_id)
+
             """
             url = "{0}/processes/{1}/query".format(self.alpine_base_url, process_id)
             self.session.headers.update({"Content-Type": "application/json"})
@@ -309,19 +343,23 @@ class Workfile(AlpineObject):
             else:
                 raise RunFlowFailureException("Workflow process ID <{}> not found".format(process_id))
 
-        def download_results(self, workflow_id, process_id, operator_name=None):
+        def download_results(self, workflow_id, process_id):
             """
-            Download a workflow run result locally for the whole workflow or a particular operator.
+            Download and store locally a workflow run result.
 
             :param str workflow_id: Id of workflow.
             :param ste process_id: ID number of a particular workflow run.
-            :param ste operator_name: The name of the operator that would return in results.
-
             :return: JSON object of workflow results.
             :rtype: dict
             :exception WorkspaceNotFoundException: The workspace does not exist.
             :exception WorkfileNotFoundException: The workflow does not exist.
             :exception ResultsNotFoundException: Results not found or does not match expected structure.
+
+            Example::
+
+                >>> flow_results = session.workfile.process.download_results(workflow_id = 375, process_id =
+                >>> process_id)
+
             """
 
             url = "{0}/workflows/{1}/results/{2}".format(self.alpine_base_url, workflow_id, process_id)
@@ -336,11 +374,6 @@ class Workfile(AlpineObject):
                                                .format(response.status_code, response.reason))
             results = json.loads(response.json())
 
-            if operator_name:
-                return self.find_operator(operator_name, results)
-            else:
-                return results
-
         def stop(self, process_id):
             """
             Attempt to stop a running workflow.
@@ -349,6 +382,11 @@ class Workfile(AlpineObject):
             :return: Flow status. One of 'STOPPED' or 'STOP FAILED'.
             :rtype: str
             :exception StopFlowFailureException: Workflow run not found.
+
+            Example::
+
+                >>> session.workfile.process.stop(process_id = process_id)
+
             """
             url = "{0}/processes/{1}/stop".format(self.alpine_base_url, process_id)
             response = self.session.post(url, timeout=60)
@@ -374,6 +412,11 @@ class Workfile(AlpineObject):
             :rtype: str
             :exception RunFlowTimeoutException: Workflow runtime has exceeded timeout.
             :exception RunFlowFailureException: Status of FAILURE is detected.
+
+            Example::
+
+                >>> session.workfile.process.wait_until_finished(process_id = process_id)
+
             """
 
             start = time.time()
@@ -393,8 +436,8 @@ class Workfile(AlpineObject):
                 if wait_total >= timeout:
                     stop_status = self.stop(process_id)
                     raise RunFlowTimeoutException(
-                        "The Workflow with process ID: {0} has exceeded a runtime of {1} seconds. It now has status <{2}>."
-                            .format(process_id, timeout, stop_status))
+                        "The Workflow with process ID: {0} has exceeded a runtime of {1} seconds."
+                        " It now has status <{2}>.".format(process_id, timeout, stop_status))
 
                 if verbose:
                     print("\rWorkflow in progress for ~{0:.2f} seconds.".format(wait_total)),
