@@ -39,6 +39,13 @@ class DataSourceNotFoundException(AlpineException):
     pass
 
 
+class DataSourceTypeNotFoundException(AlpineException):
+    """
+
+    """
+    pass
+
+
 class WorkspaceNotFoundException(AlpineException):
     """
 

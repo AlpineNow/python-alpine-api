@@ -215,10 +215,10 @@ class User(AlpineObject):
         """
         Get one user's metadata.
 
-        :param str user_id: A Unique user name.
+        :param str user_id: A Unique user id.
         :return: Single user's data
         :rtype: dict
-        :exception UserNotFoundException: The username does not exist.
+        :exception UserNotFoundException: The User does not exist.
 
         Example::
 

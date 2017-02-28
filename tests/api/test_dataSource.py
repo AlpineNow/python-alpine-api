@@ -1,7 +1,8 @@
 from alpineunittest import AlpineTestCase
 from api.alpine import Alpine
 from api.exception import *
-
+from future.datasource import *
+import time
 
 class TestDataSource(AlpineTestCase):
 
@@ -12,12 +13,14 @@ class TestDataSource(AlpineTestCase):
         # Creating a Database Datasource for test get/update functions
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
-        alpine_session.datasource.delete_db_data_source_if_exists("Test_GP")
-        datasource = alpine_session.datasource.add_greenplum_data_source("Test_GP", "Test Greenplum", "10.10.0.151", 5432,
+        ds = DataSource(alpine_session.base_url, alpine_session.session, alpine_session.token)
+
+        ds.delete_db_data_source_if_exists("Test_GP")
+        datasource = ds.add_greenplum_data_source("Test_GP", "Test Greenplum", "10.10.0.151", 5432,
                                                                   "miner_demo", "miner_demo", "miner_demo")
         db_datasource_id = datasource['id']
         # Creating a Hadoop Datasource for test get/update functions
-        alpine_session.datasource.delete_hadoop_data_source_if_exists("Test_Cloudera")
+        ds.delete_hadoop_data_source_if_exists("Test_Cloudera")
         additional_parameters = [
             {"key": "mapreduce.jobhistory.address", "value": "awscdh57singlenode.alpinenow.local:10020"},
             {"key": "mapreduce.jobhistory.webapp.address", "value": "awscdh57singlenode.alpinenow.local:19888"},
@@ -27,26 +30,31 @@ class TestDataSource(AlpineTestCase):
              "value": "awscdh57singlenode.alpinenow.local:8031"},
             {"key": "yarn.resourcemanager.scheduler.address", "value": "awscdh57singlenode.alpinenow.local:8030"}
         ]
-        datasource_hadoop = alpine_session.datasource.add_hadoop_data_source("Cloudera CDH5.4-5.7", "Test_Cloudera", "Test Cloudera",
+        datasource_hadoop = ds.add_hadoop_data_source("Cloudera CDH5.4-5.7", "Test_Cloudera", "Test Cloudera",
                                               "awscdh57singlenode.alpinenow.local", 8020,
                                               "awscdh57singlenode.alpinenow.local", 8032,
                                               "yarn", "hadoop", additional_parameters
                                               )
 
         hadoop_datasource_id = datasource_hadoop['id']
+        hadoop_datasource_id = alpine_session.datasource.get_id("Test_Cloudera")
 
     def tearDown(self):
         # Drop the datasources created in setup
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
-        alpine_session.datasource.delete_db_data_source_if_exists("Test_GP")
-        alpine_session.datasource.delete_db_data_source_if_exists("Test_Cloudera")
+        ds = DataSource(alpine_session.base_url, alpine_session.session, alpine_session.token)
+
+        ds.delete_db_data_source_if_exists("Test_GP")
+        ds.delete_db_data_source_if_exists("Test_Cloudera")
 
     def test_add_greenplum_data_source(self):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
-        alpine_session.datasource.delete_db_data_source_if_exists("Test_GP_add")
-        datasource = alpine_session.datasource.add_greenplum_data_source("Test_GP_add", "Test Greenplum", "10.10.0.151", 5432,
+        ds = DataSource(alpine_session.base_url, alpine_session.session, alpine_session.token)
+
+        ds.delete_db_data_source_if_exists("Test_GP_add")
+        datasource = ds.add_greenplum_data_source("Test_GP_add", "Test Greenplum", "10.10.0.151", 5432,
                                                                   "miner_demo","miner_demo", "miner_demo")
         self.assertEqual(datasource['name'], "Test_GP_add")
 
@@ -68,7 +76,9 @@ class TestDataSource(AlpineTestCase):
     def test_add_hadoop_data_source(self):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
-        alpine_session.datasource.delete_hadoop_data_source_if_exists("Test_Cloudera_add")
+        ds = DataSource(alpine_session.base_url, alpine_session.session, alpine_session.token)
+
+        ds.delete_hadoop_data_source_if_exists("Test_Cloudera_add")
         additional_parameters = [
             {"key": "mapreduce.jobhistory.address", "value": "awscdh57singlenode.alpinenow.local:10020"},
             {"key": "mapreduce.jobhistory.webapp.address", "value": "awscdh57singlenode.alpinenow.local:19888"},
@@ -77,7 +87,7 @@ class TestDataSource(AlpineTestCase):
             {"key": "yarn.resourcemanager.resource-tracker.address", "value": "awscdh57singlenode.alpinenow.local:8031"},
             {"key": "yarn.resourcemanager.scheduler.address", "value": "awscdh57singlenode.alpinenow.local:8030"}
         ]
-        datasource = alpine_session.datasource.add_hadoop_data_source("Cloudera CDH5.4-5.7", "Test_Cloudera_add","Test Cloudera",
+        datasource = ds.add_hadoop_data_source("Cloudera CDH5.4-5.7", "Test_Cloudera_add","Test Cloudera",
                                                                "awscdh57singlenode.alpinenow.local", 8020,
                                                                "awscdh57singlenode.alpinenow.local", 8032,
                                                                "yarn", "hadoop",additional_parameters
@@ -90,14 +100,14 @@ class TestDataSource(AlpineTestCase):
     def test_get_db_data_source_list(self):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
-        datasource_list = alpine_session.datasource.get_db_data_source_list()
+        datasource_list = alpine_session.datasource.get_list("Database")
         self.assertIsNotNone(datasource_list)
 
     def test_get_db_data_source_info(self):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
-        datasource_info = alpine_session.datasource.get_db_data_source_info("Test_GP")
-        self.assertEqual(datasource_info['name'], "Test_GP")
+        datasource_info = alpine_session.datasource.get("Database", 1)
+        self.assertEqual(datasource_info['id'], 1)
 
     def test_get_db_data_source_id(self):
         alpine_session = Alpine(self.host, self.port)
@@ -123,7 +133,7 @@ class TestDataSource(AlpineTestCase):
     def test_get_hadoop_data_source_list(self):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
-        datasource_list = alpine_session.datasource.get_hadoop_data_source_list()
+        datasource_list = alpine_session.datasource.get_list("Hadoop")
         self.assertIsNotNone(datasource_list)
 
     def test_get_hadoop_data_source_info(self):

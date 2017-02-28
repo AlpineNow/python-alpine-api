@@ -264,6 +264,7 @@ class DataSource(AlpineObject):
                    "public": public,
                    "uses_kerberos": use_kerberos,
                    "disable_kerberos_impersonation": disable_kerberos_impersonation,
+                   "third_party_security_enabled": False, #TODO
                    "ssl": ssl
                    }
         self.logger.debug("POSTING payload:...{0}...to {1}".format(payload, url))
