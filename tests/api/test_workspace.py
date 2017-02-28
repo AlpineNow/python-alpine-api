@@ -126,7 +126,7 @@ class TestWorkspace(AlpineTestCase):
         workspace_info = alpine_session.workspace.create(workspace_name=test_workspace_name, public=True,
                                        summary="Summary")
         user_id = alpine_session.user.get_id(self.username)
-        member_list = alpine_session.workspace.member.update(workspace_info['id'], user_id, new_role)
+        member_list = alpine_session.workspace.member.update_role(workspace_info['id'], user_id, new_role)
         fail = True
         for member in member_list:
             if member['username'] == self.username:
@@ -140,9 +140,9 @@ class TestWorkspace(AlpineTestCase):
 
     def test_add_workspace_member(self):
         test_workspace_name = "test_workspace0"
-        new_role = "Business Analyst"
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
+        new_role = alpine_session.workspace.memberRole.BusinessOwner
         try:
             user_id = alpine_session.user.get_id("test_user1")
             alpine_session.user.delete(user_id)
@@ -158,7 +158,7 @@ class TestWorkspace(AlpineTestCase):
             pass
         workspace_info = alpine_session.workspace.create(workspace_name=test_workspace_name, public=True,
                                        summary="Summary")
-        member_list = alpine_session.workspace.member.add(workspace_info['id'], user_info['id'], new_role)
+        member_list = alpine_session.workspace.member.add(workspace_info['id'], user_info['id'], alpine_session.workspace.memberRole.BusinessOwner)
         fail = True
         for member in member_list:
             if member['username'] == "test_user1":
@@ -172,9 +172,11 @@ class TestWorkspace(AlpineTestCase):
 
     def test_update_workspace_stage(self):
         test_workspace_name = "test_workspace1"
-        stages = ["Define", "Transform", "Model", "Deploy", "Act"]
+        # stages = ["Define", "Transform", "Model", "Deploy", "Act"]
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
+        stages = alpine_session.workspace.stage
+
         try:
             workspace_id = alpine_session.workspace.get_id(test_workspace_name)
             alpine_session.workspace.delete(workspace_id)
@@ -183,9 +185,9 @@ class TestWorkspace(AlpineTestCase):
 
         workspace_info = alpine_session.workspace.create(workspace_name=test_workspace_name, public=True,
                                        summary="Summary")
-        for i in range(1, len(stages)):
-            workspace_info = alpine_session.workspace.update(workspace_info['id'], stage=i)
-            self.assertEqual(workspace_info['workspace_stage']['name'], stages[i-1])
+        for stage in stages:
+            workspace_info = alpine_session.workspace.update(workspace_info['id'], stage=stage)
+            self.assertEqual(workspace_info['workspace_stage']['id'], stage)
 
     def test_update_workspace_name(self):
         test_workspace_name = "test_workspace1"
@@ -233,6 +235,41 @@ class TestWorkspace(AlpineTestCase):
         self.assertEqual(workspace_info['owner'], new_user_info)
         alpine_session.workspace.delete(workspace_info['id'])
         alpine_session.user.delete(new_user_info['id'])
+
+    def test_update_workspace_privacy(self):
+        test_workspace_name = "test_workspace1"
+        alpine_session = Alpine(self.host, self.port)
+        alpine_session.login(self.username, self.password)
+        try:
+            workspace_id = alpine_session.workspace.get_id(test_workspace_name)
+            alpine_session.workspace.delete(workspace_id)
+        except WorkspaceNotFoundException:
+            pass
+
+        workspace_info = alpine_session.workspace.create(workspace_name=test_workspace_name, public=True,
+                                       summary="Summary")
+        self.assertEqual(workspace_info['public'], True)
+        for public in [False, True]:
+            workspace_info = alpine_session.workspace.update(workspace_info['id'], is_public=public)
+            self.assertEqual(workspace_info['public'], public)
+
+    def test_update_workspace_status(self):
+        test_workspace_name = "test_workspace1"
+        alpine_session = Alpine(self.host, self.port)
+        alpine_session.login(self.username, self.password)
+        try:
+            workspace_id = alpine_session.workspace.get_id(test_workspace_name)
+            alpine_session.workspace.delete(workspace_id)
+        except WorkspaceNotFoundException:
+            pass
+
+        workspace_info = alpine_session.workspace.create(workspace_name=test_workspace_name, public=True,
+                                       summary="Summary")
+        self.assertEqual(workspace_info['archived'], False)
+
+        for is_active in [True, False]:
+            workspace_info = alpine_session.workspace.update(workspace_info['id'], is_active = is_active)
+            self.assertEqual(workspace_info['archived'], not is_active)
 
     def test_delete_workspace(self):
         test_workspace_name = "test_workspace0"

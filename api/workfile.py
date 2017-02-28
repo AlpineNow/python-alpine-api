@@ -4,7 +4,7 @@ from urlparse import urljoin
 from urlparse import urlparse
 from api.alpineobject import AlpineObject
 from api.exception import *
-from .workspace import Workspace
+from api.datasource import *
 
 
 class Workfile(AlpineObject):
@@ -17,6 +17,7 @@ class Workfile(AlpineObject):
     def __init__(self, base_url, session, token):
         super(Workfile, self).__init__(base_url, session, token)
         self.chorus_domain = '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(self.base_url))
+        # self.chorus_domain = '{uri.scheme}://{uri.hostname}:'.format(uri=urlparse(self.base_url)) + "9090"
         self.logger.debug(self.chorus_domain)
         self.alpine_base_url = urljoin(self.chorus_domain,
                                        "alpinedatalabs/api/{0}/json".format(self._alpine_api_version))
@@ -155,15 +156,24 @@ class Workfile(AlpineObject):
             self.logger.debug("Workfile not found, error {}".format(err))
 
     def upload(self, workspace_id, afm_file, data_sources_list):
-        # TODO Example
         """
         Uploads an afm file with list of data source information.
 
         :param workspace_id: Id of workspace
         :param afm_file: Path of the afm file
-        :param data_sources_list: A list of data source information as the following format: datasource_info = [{"data_source_type": "HdfsDataSource", "data_source_id": "1", "database_type": "hdfs_data_source", "database_id":""}, {"data_source_type": "JdbcDataSource", "data_source_id": "421", "database_type": "jdbc_data_source", "database_id": ""}, {"data_source_type": "GpdbDataSource", "data_source_id": "1", "database_type": "gpdb_database", "database_id": "42"}]
+        :param data_sources_list: A list of data source information as the following format:
+        datasource_info = [{"data_source_type": DataSource.dsType.HadoopCluster, "data_source_id": "1", "database_id":""},{"data_source_type": DataSource.dsType.JDBCDataSource, "data_source_id": "421", "database_id": ""},{"data_source_type": DataSource.dsType.GreenplumDatabase, "data_source_id": "1", "database_id": "42"}]
         :return: One workfile's metadata
         :rtype: dict
+
+        Example::
+
+            >>> base_dir = os.getcwd()
+            >>> afm_path = "{0}/afm/test.afm".format(base_dir)
+            >>> datasource_info = [{"data_source_type": session.datasource.dsType.GreenplumDatabase,
+            >>>                     "data_source_id": 1,
+            >>>                     "database_id": 42}]
+            >>> workfile_info = session.workfile.upload(workspace_id, afm_path, datasource_info)
         """
 
         url = "{0}/workspaces/{1}/workfiles".format(self.base_url, workspace_id)
@@ -173,20 +183,48 @@ class Workfile(AlpineObject):
         payload.append(("workfile[entity_subtype]", "alpine"))
         for i in range(0, len(data_sources_list)):
             data_source = data_sources_list[i]
-            if data_source['data_source_type'] == "GpdbDataSource":
-                payload.append(("data_source",
-                               "{0}{1}".format(data_source['data_source_id'], data_source['data_source_type'])))
-                payload.append(("database","{0}".format(data_source['database_id'])))
-                payload.append(("workfile[execution_locations][{0}][entity_type]".format(i),
-                               data_source['database_type']))
-                payload.append(("workfile[execution_locations][{0}][id]".format(i), data_source['database_id']))
+            ds = DataSource(self.base_url, self.session, self.token)
+
+            if data_source['data_source_type'] == ds.dsType.GreenplumDatabase:
+                data_source_string = "{0}{1}".format(data_source['data_source_id'], "GpdbDataSource")
+                database_type = "gpdb_database"
+                database_id = data_source['database_id']
+            elif data_source['data_source_type'] == ds.dsType.PostgreSQLDatabase:
+                data_source_string = "{0}{1}".format(data_source['data_source_id'], "PgDataSource")
+                database_type = "pg_database"
+                database_id = data_source['database_id']
+            elif data_source['data_source_type'] == ds.dsType.HAWQ:
+                data_source_string = "{0}{1}".format(data_source['data_source_id'], "GpdbDataSource")   # TODO
+                database_type = "gpdb_database"
+                database_id = data_source['database_id']
+            elif data_source['data_source_type'] == ds.dsType.OracleDatabase:
+                data_source_string = "{0}{1}".format(data_source['data_source_id'], "OracleDataSource")
+                database_type = "oracle_data_source"
+                database_id = data_source['database_id']
+            elif data_source['data_source_type'] == ds.dsType.JDBCDataSource:
+                data_source_string = "{0}{1}".format(data_source['data_source_id'], "JdbcDataSource")
+                database_type = "jdbc_data_source"
+                database_id = data_source['database_id']
+            elif data_source['data_source_type'] == ds.dsType.JDBCHiveDataSource:
+                data_source_string = "{0}{1}".format(data_source['data_source_id'], "JdbcHiveDataSource")
+                database_type = "jdbc_hive_data_sources"
+                database_id = data_source['database_id']
+            elif data_source['data_source_type'] == ds.dsType.HadoopCluster:
+                data_source_string = "{0}{1}".format(data_source['data_source_id'], "HdfsDataSource")
+                database_type = "hdfs_data_source"
+                database_id = data_source['data_source_id']
+            elif data_source['data_source_type'] == ds.dsType.HadoopHive:
+                data_source_string = "{0}{1}".format(data_source['data_source_id'], "HdfsDataSource")
+                database_type = "hdfs_data_source"
+                database_id = data_source['data_source_id']
             else:
-                payload.append(("data_source",
-                               "{0}{1}".format(data_source['data_source_id'], data_source['data_source_type'])))
-                payload.append(("database", "{0}".format(data_source['data_source_id'])))
-                payload.append(("workfile[execution_locations][{0}][entity_type]".format(i),
-                               data_source['database_type']))
-                payload.append(("workfile[execution_locations][{0}][id]".format(i), data_source['data_source_id']))
+                raise DataSourceTypeNotFoundException
+
+            payload.append(("data_source", data_source_string))
+            payload.append(("database","{0}".format(database_id)))
+            payload.append(("workfile[execution_locations][{0}][entity_type]".format(i), database_type))
+            payload.append(("workfile[execution_locations][{0}][id]".format(i), database_id))
+
         # files is used to create a multipart upload content-type with requests, we send in a file object
         files = {"workfile[versions_attributes][0][contents]": open(afm_file, 'rb')}
         self.logger.debug("POSTing to: {0}\n With payload: {1}".format(url, payload))
@@ -271,10 +309,10 @@ class Workfile(AlpineObject):
 
             """
 
-            url = "{0}/workflows/{1}/run?saveResult=true".format(self.alpine_base_url, workflow_id)
+            url = "{0}/workflows/{1}/run".format(self.alpine_base_url, workflow_id)
             self.session.headers.update({"x-token": self.token})
             self.session.headers.update({"Content-Type": "application/json"})
-
+            querystring = {"saveResult": "true"}
             # Handle WFV:
             if variables is None:
                 workflow_variables = None
@@ -291,7 +329,8 @@ class Workfile(AlpineObject):
                     .format(variables) \
                     .replace("\'", "\"")
 
-            response = self.session.post(url, data=workflow_variables, timeout=30)
+            response = self.session.post(url, data=workflow_variables, params=querystring, timeout=30)
+
             self.session.headers.pop("Content-Type")
             self.logger.debug(response.content)
 

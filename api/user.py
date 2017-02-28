@@ -11,8 +11,8 @@ class User(AlpineObject):
 
     def __init__(self, base_url, session, token):
         super(User, self).__init__(base_url, session, token)
-        self.ApplicationRole = self.ApplicationRole()
-        self.AdminRole = self.AdminRole()
+        self.applicationRole = self.ApplicationRole()
+        self.adminRole = self.AdminRole()
 
     def create(self, username, password, first_name, last_name, email, title="", dept="",
                     notes="Add Via API", admin_role="", app_role="analytics_developer", email_notification=False):
@@ -44,12 +44,10 @@ class User(AlpineObject):
 
         """
         # Get correct values for admin and roles for url call:
-        admin = False
-        roles = ""
-        if admin_role == "app_admin":
+        if admin_role == self.adminRole.ApplicationAdministrator:
             admin = True
-        elif admin_role == "data_admin":
-            roles = "data_admin"
+        else:
+            admin = False
 
         self.session.headers.update({"Content-Type": "application/json"})  # Set special header for this post
         url = "{0}/users".format(self.base_url)
@@ -63,7 +61,7 @@ class User(AlpineObject):
                    "notes": notes,
                    "dept": dept,
                    "admin": admin,
-                   "roles": roles,
+                   "roles": admin_role,
                    "user_type": app_role,
                    "subscribed_to_emails": email_notification
                    }
@@ -217,10 +215,10 @@ class User(AlpineObject):
         """
         Get one user's metadata.
 
-        :param str user_id: A Unique user name.
+        :param str user_id: A Unique user id.
         :return: Single user's data
         :rtype: dict
-        :exception UserNotFoundException: The username does not exist.
+        :exception UserNotFoundException: The User does not exist.
 
         Example::
 
@@ -280,18 +278,14 @@ class User(AlpineObject):
 
     class ApplicationRole(object):
         def __init__(self):
-            #self.AnalyticsDeveloper = "analytics_developer"
+            self.AnalyticsDeveloper = "analytics_developer"
             self.DataAnalyst = "data_analyst"
-            self.Collaborator = 3
-            self.BusinessUser = 4
-
-        @property
-        def AnalyticsDeveloper(self):
-            return "analytics_developer"
+            self.Collaborator = "collaborator"
+            self.BusinessUser = "business_user"
 
     class AdminRole(object):
         def __init__(self):
-            self.ApplicationAdministrator = "admin"
-            self.DataAdministrator = 2
-            self.NonAdmin = 3
+            self.ApplicationAdministrator = "admin", True
+            self.DataAdministrator = "data_admin", False
+            self.NonAdmin = "", False
 

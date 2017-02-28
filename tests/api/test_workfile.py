@@ -5,6 +5,7 @@ from api.alpine import Alpine
 from api.exception import *
 
 from alpineunittest import AlpineTestCase
+from future.datasource import DataSource
 
 
 class TestWorkfile(AlpineTestCase):
@@ -28,8 +29,9 @@ class TestWorkfile(AlpineTestCase):
         except WorkspaceNotFoundException:
             pass
         workspace_info = alpine_session.workspace.create("Workspace for Workfile Tests")
-        alpine_session.datasource.delete_db_data_source_if_exists("GP_For_Workfile_Test")
-        datasource = alpine_session.datasource.add_greenplum_data_source("GP_For_Workfile_Test", "Test Greenplum", "10.10.0.151",
+        ds = DataSource(alpine_session.base_url, alpine_session.session, alpine_session.token)
+        ds.delete_db_data_source_if_exists("GP_For_Workfile_Test")
+        datasource = ds.add_greenplum_data_source("GP_For_Workfile_Test", "Test Greenplum", "10.10.0.151",
                                                                          5432,
                                                                          "miner_demo", "miner_demo", "miner_demo")
         workspace_id = workspace_info['id']
@@ -37,7 +39,7 @@ class TestWorkfile(AlpineTestCase):
 
         data_source_id = datasource['id']
         # Creating a Hadoop Datasource for test get/update functions
-        alpine_session.datasource.delete_hadoop_data_source_if_exists("Test_Cloudera")
+        ds.delete_hadoop_data_source_if_exists("Test_Cloudera")
         additional_parameters = [
             {"key": "mapreduce.jobhistory.address", "value": "awscdh57singlenode.alpinenow.local:10020"},
             {"key": "mapreduce.jobhistory.webapp.address", "value": "awscdh57singlenode.alpinenow.local:19888"},
@@ -47,14 +49,13 @@ class TestWorkfile(AlpineTestCase):
              "value": "awscdh57singlenode.alpinenow.local:8031"},
             {"key": "yarn.resourcemanager.scheduler.address", "value": "awscdh57singlenode.alpinenow.local:8030"}
         ]
-        datasource_hadoop = alpine_session.datasource.add_hadoop_data_source("Cloudera CDH5.4-5.7", "Test_Cloudera",
+        datasource_hadoop = ds.add_hadoop_data_source("Cloudera CDH5.4-5.7", "Test_Cloudera",
                                                                              "Test Cloudera",
                                                                              "awscdh57singlenode.alpinenow.local", 8020,
                                                                              "awscdh57singlenode.alpinenow.local", 8032,
                                                                              "yarn", "hadoop", additional_parameters
                                                                              )
-
-        hadoop_datasource_id = datasource_hadoop['id']
+        hadoop_datasource_id = ds.get_hadoop_data_source_id("Test_Cloudera")
 
         base_dir = os.getcwd()
         afm_path = "{0}/../data/afm/db_row_fil_with_variable.afm".format(base_dir)
@@ -66,10 +67,10 @@ class TestWorkfile(AlpineTestCase):
             pass
         database_list = alpine_session.datasource.get_database_list(data_source_id)
         for database in database_list:
-            if database['name'] == "robot_automation":
+            if database['name'] == "miner_demo":
                 database_id = database['id']
         datasource_info = [
-            {"data_source_type": "GpdbDataSource", "data_source_id": data_source_id, "database_type": "gpdb_database", "database_id": database_id}]
+            {"data_source_type": "gpdb_data_source", "data_source_id": alpine_session.datasource.dsType.GreenplumDatabase, "database_id": database_id}]
         #workfile_info = alpine_session.workfile.upload_db_afm(workspace_id, data_source_id, 1, "GpdbDataSource", "gpdb_database", afm_path)
         workfile_info = alpine_session.workfile.upload(workspace_id, afm_path, datasource_info)
         workfile_id = workfile_info['id']
@@ -162,7 +163,10 @@ class TestWorkfile(AlpineTestCase):
             alpine_session.workfile.delete(workfile_id)
         except WorkfileNotFoundException:
             pass
-        workfile_info = alpine_session.workfile.upload_hdfs_afm(workspace_id, hadoop_datasource_id, afm_path)
+        datasource_info = [{"data_source_type": alpine_session.datasource.dsType.HadoopCluster,
+                            "data_source_id": hadoop_datasource_id
+                            }]
+        workfile_info = alpine_session.workfile.upload(workspace_id, afm_path, datasource_info)
         self.assertEqual(workfile_info['file_name'], "demo_hadoop_row_filter_regression")
 
     def test_upload_db_afm(self):
@@ -184,7 +188,8 @@ class TestWorkfile(AlpineTestCase):
         #                     "database_id": ""},
         #                    {"data_source_type": "GpdbDataSource", "data_source_id": "1", "database_type": "gpdb_database",
         #                     "database_id": "42"}]
-        datasource_info = [{"data_source_type": "GpdbDataSource", "data_source_id": data_source_id, "database_type": "gpdb_database",
-             "database_id": database_id}]
+        datasource_info = [{"data_source_type": alpine_session.datasource.dsType.GreenplumDatabase,
+                            "data_source_id": data_source_id,
+                            "database_id": database_id}]
         workfile_info = alpine_session.workfile.upload(workspace_id, afm_path, datasource_info)
         self.assertEqual(workfile_info['file_name'], "db_bat_row_fil")

@@ -8,8 +8,7 @@ from api.job import Job
 from api.user import User
 from api.workfile import Workfile
 from api.workspace import Workspace
-from future.datasource import DataSource
-from future.touchpoint import TouchPoint
+from api.datasource import DataSource
 from api.exception import *
 
 
@@ -30,7 +29,6 @@ class Alpine(AlpineObject):
     workspace = None
     workfile = None
     job = None
-    touchpoint = None
 
     def __init__(self, host=None, port=None, username=None, password=None, is_secure=False, validate_certs=False,
                  ca_certs=None, token=None, logging_level='WARN'):
@@ -122,7 +120,6 @@ class Alpine(AlpineObject):
             self.workspace = Workspace(self.base_url, self.session, self.token)
             self.workfile = Workfile(self.base_url, self.session, self.token)
             self.job = Job(self.base_url, self.session, self.token)
-            self.touchpoint = TouchPoint(self.base_url, self.session, self.token)
             return login_response.json()['response']['user']
 
         else:
@@ -239,4 +236,7 @@ class Alpine(AlpineObject):
         # """
         url = self.base_url + "/license"
         response = self.session.get(url)
-        return response.json()
+        try:
+            return response.json()['response']
+        except:
+            return {}
