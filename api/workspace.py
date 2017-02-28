@@ -18,8 +18,8 @@ class Workspace(AlpineObject):
     def __init__(self, base_url, session, token):
         super(Workspace, self).__init__(base_url, session, token)
         self.member = self.Member(base_url, session, token)
-        self.stage = self.WorkspaceStage()
-        self.memberrole = self.WorkspaceMemberRole()
+        self.stage = self.Stage()
+        self.memberRole = self.MemberRole()
 
     def create(self, workspace_name, public=False, summary=None):
         """
@@ -418,7 +418,7 @@ class Workspace(AlpineObject):
             except:
                 return response.json()
 
-    class WorkspaceStage(object):
+    class Stage(object):
         def __init__(self):
             self.Define = 1
             self.Transform = 2
@@ -426,7 +426,7 @@ class Workspace(AlpineObject):
             self.Deploy = 4
             self.Act = 5
 
-    class WorkspaceMemberRole(object):
+    class MemberRole(object):
         def __init__(self):
             self.ProjectMember = "Project Member"
             self.BusinessOwner = "Business Owner"
