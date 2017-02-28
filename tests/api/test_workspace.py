@@ -140,9 +140,9 @@ class TestWorkspace(AlpineTestCase):
 
     def test_add_workspace_member(self):
         test_workspace_name = "test_workspace0"
-        new_role = "Business Analyst"
         alpine_session = Alpine(self.host, self.port)
         alpine_session.login(self.username, self.password)
+        new_role = alpine_session.workspace.MemberRole.BusinessOwner
         try:
             user_id = alpine_session.user.get_id("test_user1")
             alpine_session.user.delete(user_id)
@@ -158,7 +158,7 @@ class TestWorkspace(AlpineTestCase):
             pass
         workspace_info = alpine_session.workspace.create(workspace_name=test_workspace_name, public=True,
                                        summary="Summary")
-        member_list = alpine_session.workspace.member.add(workspace_info['id'], user_info['id'], new_role)
+        member_list = alpine_session.workspace.member.add(workspace_info['id'], user_info['id'], alpine_session.workspace.MemberRole.BusinessOwner)
         fail = True
         for member in member_list:
             if member['username'] == "test_user1":
