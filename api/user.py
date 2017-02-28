@@ -44,12 +44,10 @@ class User(AlpineObject):
 
         """
         # Get correct values for admin and roles for url call:
-        admin = False
-        roles = ""
-        if admin_role == "app_admin":
+        if admin_role == self.AdminRole.ApplicationAdministrator:
             admin = True
-        elif admin_role == "data_admin":
-            roles = "data_admin"
+        else:
+            admin = False
 
         self.session.headers.update({"Content-Type": "application/json"})  # Set special header for this post
         url = "{0}/users".format(self.base_url)
@@ -63,7 +61,7 @@ class User(AlpineObject):
                    "notes": notes,
                    "dept": dept,
                    "admin": admin,
-                   "roles": roles,
+                   "roles": admin_role,
                    "user_type": app_role,
                    "subscribed_to_emails": email_notification
                    }
@@ -280,18 +278,16 @@ class User(AlpineObject):
 
     class ApplicationRole(object):
         def __init__(self):
-            #self.AnalyticsDeveloper = "analytics_developer"
+            self.AnalyticsDeveloper = "analytics_developer"
             self.DataAnalyst = "data_analyst"
-            self.Collaborator = 3
-            self.BusinessUser = 4
+            self.Collaborator = "collaborator"
+            self.BusinessUser = "business_user"
 
-        @property
-        def AnalyticsDeveloper(self):
-            return "analytics_developer"
+
 
     class AdminRole(object):
         def __init__(self):
-            self.ApplicationAdministrator = "admin"
-            self.DataAdministrator = 2
-            self.NonAdmin = 3
+            self.ApplicationAdministrator = "admin", True
+            self.DataAdministrator = "data_admin", False
+            self.NonAdmin = "", False
 
