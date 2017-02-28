@@ -18,8 +18,8 @@ class Workspace(AlpineObject):
     def __init__(self, base_url, session, token):
         super(Workspace, self).__init__(base_url, session, token)
         self.member = self.Member(base_url, session, token)
-        self.WorkspaceStage = self.WorkspaceStage()
-        self.WorkspaceMemberRole = self.WorkspaceMemberRole()
+        self.stage = self.WorkspaceStage()
+        self.memberrole = self.WorkspaceMemberRole()
 
     def create(self, workspace_name, public=False, summary=None):
         """
@@ -208,14 +208,15 @@ class Workspace(AlpineObject):
         :param bool is_active: Sets active vs. archived status.
         :param str name: New name for the workspace.
         :param str summary: New description of the workspace.
-        :param str stage: Stage ID
+        :param int stage: Stage ID. Use the WorkspaceStage object for convenience
         :param int owner_id: ID number of the workspace owner.
         :return: Updated workspace metadata
         :rtype: dict
 
         Example::
 
-            >>> session.workspace.update(workspace_id = 1672, summary = "New focus of project is ML!")
+            >>> session.workspace.update(workspace_id = 1672, summary = "New focus of project is ML!",
+            >>> stage = session.workspace.stage.Model)
 
         """
         url = "{0}/workspaces/{1}".format(self.base_url, workspace_id)
@@ -314,7 +315,8 @@ class Workspace(AlpineObject):
 
             Example::
 
-                >>> session.workspace.member.add(workspace_id = 1672, user_id = 7, role = 'Project Manager')
+                >>> session.workspace.member.add(workspace_id = 1672, user_id = 7,
+                >>> role = session.workspace.memberrole.DataScientist)
 
             """
             members = self.get_list(workspace_id)
@@ -377,7 +379,8 @@ class Workspace(AlpineObject):
 
             Example::
 
-                >>> session.workspace.member.update(workspace_id = 1672, user_id = 7, new_role = 'Data Scientist')
+                >>> session.workspace.member.update(workspace_id = 1672, user_id = 7, new_role =
+                >>> session.workspace.memberrole.DataScientist)
 
             """
             members = self.get_list(workspace_id)

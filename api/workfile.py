@@ -154,19 +154,14 @@ class Workfile(AlpineObject):
         except WorkfileNotFoundException as err:
             self.logger.debug("Workfile not found, error {}".format(err))
 
-    def upload_hdfs_afm(self, workspace_id, data_source_id, afm_file):
+    def upload(self, workspace_id, afm_file, data_sources_list):
+        # TODO Example
         """
         Uploads an afm file with list of data source information.
 
         :param workspace_id: Id of workspace
         :param afm_file: Path of the afm file
-        :param data_sources_list: A list of data source information as the following format
-         datasource_info = [{"data_source_type": "HdfsDataSource", "data_source_id": "1", "database_type": "hdfs_data_source",
-                            "database_id":""},
-                           {"data_source_type": "JdbcDataSource", "data_source_id": "421", "database_type": "jdbc_data_source",
-                            "database_id": ""},
-                           {"data_source_type": "GpdbDataSource", "data_source_id": "1", "database_type": "gpdb_database",
-                            "database_id": "42"}]
+        :param data_sources_list: A list of data source information as the following format: datasource_info = [{"data_source_type": "HdfsDataSource", "data_source_id": "1", "database_type": "hdfs_data_source", "database_id":""}, {"data_source_type": "JdbcDataSource", "data_source_id": "421", "database_type": "jdbc_data_source", "database_id": ""}, {"data_source_type": "GpdbDataSource", "data_source_id": "1", "database_type": "gpdb_database", "database_id": "42"}]
         :return: One workfile's metadata
         :rtype: dict
         """
