@@ -29,8 +29,9 @@ class AlpineObject(object):
         """
         Used internally to properly form  URLs.
 
-        :param url: (string, required) An Alpine API URL
-        :return: (Unicode string) Formatted URL
+        :param str url: An Alpine API URL
+        :return: Formatted URL
+        :rtype str:
         """
         return unicode("{0}?session_id={1}".format(url, self.token))
 
@@ -41,10 +42,11 @@ class AlpineObject(object):
         """
         Sets internal values for logging through a file or an environmental variable
 
-        :param default_configuration_setting_file: Path to logging config file. Will be overwrite by environment
+        :param str default_configuration_setting_file: Path to logging config file. Will be overwrite by environment
          variable if it exists.
-        :param default_level: See possible levels here https://docs.python.org/2/library/logging.html#logging-levels
-        :param env_key: Name of environment variable with logging setting.
+        :param default_level: See possible levels here
+        https://docs.python.org/2/library/logging.html#logging-levels
+        :param str env_key: Name of environment variable with logging setting.
         :return: None
         """
 
