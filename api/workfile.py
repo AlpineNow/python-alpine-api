@@ -17,6 +17,7 @@ class Workfile(AlpineObject):
     def __init__(self, base_url, session, token):
         super(Workfile, self).__init__(base_url, session, token)
         self.chorus_domain = '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(self.base_url))
+        # self.chorus_domain = '{uri.scheme}://{uri.hostname}:'.format(uri=urlparse(self.base_url)) + "9090"
         self.logger.debug(self.chorus_domain)
         self.alpine_base_url = urljoin(self.chorus_domain,
                                        "alpinedatalabs/api/{0}/json".format(self._alpine_api_version))
@@ -291,7 +292,7 @@ class Workfile(AlpineObject):
                     .format(variables) \
                     .replace("\'", "\"")
 
-            response = self.session.post(url, data=workflow_variables, timeout=30)
+            response = self.session.post(url, data=workflow_variables, timeout=60)
             self.session.headers.pop("Content-Type")
             self.logger.debug(response.content)
 

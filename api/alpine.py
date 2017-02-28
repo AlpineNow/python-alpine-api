@@ -239,4 +239,7 @@ class Alpine(AlpineObject):
         # """
         url = self.base_url + "/license"
         response = self.session.get(url)
-        return response.json()
+        try:
+            return response.json()['response']
+        except:
+            return {}

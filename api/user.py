@@ -11,8 +11,8 @@ class User(AlpineObject):
 
     def __init__(self, base_url, session, token):
         super(User, self).__init__(base_url, session, token)
-        self.ApplicationRole = self.ApplicationRole()
-        self.AdminRole = self.AdminRole()
+        self.applicationRole = self.ApplicationRole()
+        self.adminRole = self.AdminRole()
 
     def create(self, username, password, first_name, last_name, email, title="", dept="",
                     notes="Add Via API", admin_role="", app_role="analytics_developer", email_notification=False):
@@ -44,7 +44,7 @@ class User(AlpineObject):
 
         """
         # Get correct values for admin and roles for url call:
-        if admin_role == self.AdminRole.ApplicationAdministrator:
+        if admin_role == self.adminRole.ApplicationAdministrator:
             admin = True
         else:
             admin = False
@@ -282,8 +282,6 @@ class User(AlpineObject):
             self.DataAnalyst = "data_analyst"
             self.Collaborator = "collaborator"
             self.BusinessUser = "business_user"
-
-
 
     class AdminRole(object):
         def __init__(self):

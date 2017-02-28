@@ -199,7 +199,6 @@ class Workspace(AlpineObject):
 
     def update(self, workspace_id, is_public=None, is_active=None, name=None,
                summary=None, stage=None, owner_id=None):
-        #TODO: Some fields don't seem to work: is_public, is_active, owner_id???
         """
         Update a workspace's metadata. Only included fields will be changed.
 
@@ -210,6 +209,7 @@ class Workspace(AlpineObject):
         :param str summary: New description of the workspace.
         :param int stage: Stage ID. Use the WorkspaceStage object for convenience
         :param int owner_id: ID number of the workspace owner.
+        The user need to be an member first before assigning as the new owner.
         :return: Updated workspace metadata
         :rtype: dict
 
@@ -233,10 +233,12 @@ class Workspace(AlpineObject):
                       ]
 
         # replace fields with updated ones from kwargs
-        if is_public:
+        if is_public is not None:
             payload["public"] = is_public
-        if is_active:
+            # payload["public"] = str(is_public).lower()
+        if is_active is not None:
             payload["archived"] = not is_active
+            # payload["archived"] = str(not is_active).lower()
         if name:
             payload["name"] = name
         if summary:
@@ -425,6 +427,12 @@ class Workspace(AlpineObject):
             self.Model = 3
             self.Deploy = 4
             self.Act = 5
+
+        def __iter__(self):
+            i = self.Define
+            while i < self.Act:
+                yield i
+                i += 1
 
     class MemberRole(object):
         def __init__(self):
