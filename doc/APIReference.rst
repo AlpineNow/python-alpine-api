@@ -9,3 +9,4 @@ API Reference
    Workspaces
    Workfiles
    Job
+   Datasources

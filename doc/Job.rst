@@ -1,5 +1,5 @@
-Job
-***
+Jobs
+****
 
 .. automodule:: api.job
 

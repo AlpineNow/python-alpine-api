@@ -4,18 +4,20 @@ from api.alpineobject import AlpineObject
 
 class DataSource(AlpineObject):
     """
-        A class for interacting with data sources.
-        """
+    A class for interacting with data sources.
+    """
+
     def __init__(self, base_url=None, session=None, token = None):
         super(DataSource, self).__init__(base_url, session, token)
         self.dsType = self.DSType()
 
     def get_list(self, type=None, per_page=100):
         """
-        Get a list of all data sources' metadata
-        :param str type: Type of the data source, could be either "Database" or "Hadoop"
+        Get a list of all data sources' metadata.
+
+        :param str type: Type of the data source. Either "Database" or "Hadoop".
         :param int per_page: How many data sources to return in each page.
-        :return: A list of all the data sources' data
+        :return: List of data sources with metadata.
         rtype: list of dict
 
         Example::
@@ -83,8 +85,6 @@ class DataSource(AlpineObject):
             return hd_datasource_list
         else:
             return None
-
-
 
         return datasource_list
 
@@ -184,6 +184,7 @@ class DataSource(AlpineObject):
 
     class DSType(object):
         """
+        Convenience strings for data source types.
         """
         def __init__(self):
             self.GreenplumDatabase = "gpdb_data_source"
