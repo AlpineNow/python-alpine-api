@@ -157,12 +157,12 @@ class Workfile(AlpineObject):
     def upload(self, workspace_id, afm_file, data_sources_list):
         # TODO: database admins only?
         """
-        Uploads an APIClient workfile file (.afm format). Will attempt to alter the workfile to use the data source(s)
+        Uploads an Alpine workfile file (.afm format). Will attempt to alter the workfile to use the data source(s)
         chosen. Operators within a workflow must remain consistent with type of datasource, e.g. a workflow built with
         on a Hadoop datasource can be converted to use a different Hadoop datasource, but not to a database.
 
         :param int workspace_id: ID of workspace
-        :param str afm_file: Local path to the APIClient workfile (.afm).
+        :param str afm_file: Local path to the Alpine workfile (.afm).
         :param list data_sources_list: A list of data source information with the following format: datasource_info = [{"data_source_type": DataSource.dsType.HadoopCluster, "data_source_id": "1", "database_id":""},{"data_source_type": DataSource.dsType.JDBCDataSource, "data_source_id": "421", "database_id": ""},{"data_source_type": DataSource.dsType.GreenplumDatabase, "data_source_id": "1", "database_id": "42"}]
         :return: One workfile's metadata.
         :rtype: dict
@@ -252,7 +252,7 @@ class Workfile(AlpineObject):
             Helper method to parse a downloaded workflow result to extract data for a single operator.
 
             :param str operator_name: Operator name to extract. Must be an exact match to the name in the workflow.
-            :param dict flow_results: JSON object of APIClient flow results from download_results.
+            :param dict flow_results: JSON object of Alpine flow results from download_results.
             :return: Single operator dictionary.
             :rtype: dict
             :exception FlowResultsMalformedException: Workflow result does not contain the key ['outputs'].
@@ -277,7 +277,7 @@ class Workfile(AlpineObject):
             Return the metadata for a particular workflow run including time, number of operators, \
             user, and number of runtime errors.
 
-            :param dict flow_results: JSON object of APIClient flow results from download_results.
+            :param dict flow_results: JSON object of Alpine flow results from download_results.
             :return: Run metadata.
             :rtype: dict
             :exception FlowResultsMalformedException: Workflow results does not contain the key ['flowMetaInfo'].

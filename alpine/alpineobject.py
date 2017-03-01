@@ -6,7 +6,7 @@ import os
 
 class AlpineObject(object):
     """
-    Base Class of APIClient API objects
+    Base Class of Alpine API objects
 
     """
     #
@@ -29,7 +29,7 @@ class AlpineObject(object):
         """
         Used internally to properly form  URLs.
 
-        :param str url: An APIClient API URL
+        :param str url: An Alpine API URL
         :return: Formatted URL
         :rtype str:
         """

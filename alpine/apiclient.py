@@ -13,7 +13,7 @@ from .exception import *
 
 class APIClient(AlpineObject):
     """
-    The main entry point for the APIClient API. Most of the functions require a logged-in user. Begin a session by
+    The main entry point for the Alpine API. Most of the functions require a logged-in user. Begin a session by
     creating an instance of the :class:`APIClient` class.
 
     Example::
@@ -32,17 +32,17 @@ class APIClient(AlpineObject):
     def __init__(self, host=None, port=None, username=None, password=None, is_secure=False, validate_certs=False,
                  ca_certs=None, token=None, logging_level='WARN'):
         """
-        Sets internal values for APIClient API session. If username and password are supplied then a login is
-        attempted. This is useful to check APIClient url and user login parameters.
+        Sets internal values for Alpine API session. If username and password are supplied then a login is
+        attempted. This is useful to check Alpine url and user login parameters.
 
-        :param string host: hostname or ip address of the APIClient server
-        :param string port: port number for APIClient
+        :param string host: hostname or ip address of the Alpine server
+        :param string port: port number for Alpine
         :param string username: username to login with
         :param string password: password to login with
         :param bool is_secure:
         :param bool validate_certs:
         :param ??? ca_certs:
-        :param string token: APIClient API authentication token
+        :param string token: Alpine API authentication token
         :param string logging_level: Use to set a logging
         level. See https://docs.python.org/2/howto/logging.html#logging-levels.
         :return: None
@@ -76,12 +76,12 @@ class APIClient(AlpineObject):
 
     def login(self, username, password):
         """
-        Attempts a login to APIClient with provided username and password. Typically login is handled at
+        Attempts a login to Alpine with provided username and password. Typically login is handled at
         session-creation time.
 
         :param string username: username to login with
         :param string password: password to login with
-        :return: returns a APIClient API authentication token to be used for other actions
+        :return: returns a Alpine API authentication token to be used for other actions
         :rtype: string
 
         Example::
@@ -206,9 +206,9 @@ class APIClient(AlpineObject):
 
     def get_version(self):
         """
-        Returns the APIClient version.
+        Returns the Alpine version.
 
-        :return: APIClient version.
+        :return: Alpine version.
         :rtype: str
 
         Example::
@@ -223,9 +223,9 @@ class APIClient(AlpineObject):
 
     def get_license(self):
         # """
-        # Get the the current license information for APIClient.
+        # Get the the current license information for Alpine.
         #
-        # :return: Summary of APIClient license information - expiration, user limits, add-ons.
+        # :return: Summary of Alpine license information - expiration, user limits, add-ons.
         # :rtype: dict
         #
         # Example::

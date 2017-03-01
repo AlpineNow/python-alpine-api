@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Licensed to APIClient Data, Inc.
+# Licensed to Alpine Data, Inc.
 # TODO
-# Copyright 2017 APIClient Data All Rights reserved.
+# Copyright 2017 Alpine Data All Rights reserved.
 
 
-"""Simple Command-Line Sample For APIClient API.
-Command-line application to login and logout with APIClient API
+"""Simple Command-Line Sample For Alpine API.
+Command-line application to login and logout with Alpine API
 Usage:
   $ python workfile.py
 To get detailed log output run:
