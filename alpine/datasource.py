@@ -1,5 +1,5 @@
-from api.exception import *
-from api.alpineobject import AlpineObject
+from .alpineobject import *
+from .exception import *
 
 
 class DataSource(AlpineObject):
@@ -118,12 +118,12 @@ class DataSource(AlpineObject):
 
         try:
             if ds_response['response']:
-                self.logger.debug("Found {0} Datasource with id: <{1}>".format(data_source_type, ds_id))
+                self.logger.debug("Found {0} Datasource with id: <{1}>".format(type, ds_id))
                 return ds_response['response']
             else:
-                raise DataSourceNotFoundException("{0} Datasource id: <{1}> not found".format(data_source_type, ds_id))
+                raise DataSourceNotFoundException("{0} Datasource id: <{1}> not found".format(type, ds_id))
         except Exception as err:
-            raise DataSourceNotFoundException("{0} Datasource id: <{1}> not found".format(data_source_type, ds_id))
+            raise DataSourceNotFoundException("{0} Datasource id: <{1}> not found".format(type, ds_id))
 
     def get_id(self, name, type=None):
         """

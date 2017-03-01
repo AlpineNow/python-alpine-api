@@ -1,6 +1,6 @@
 import json
-from api.exception import *
-from api.alpineobject import AlpineObject
+from alpine.exception import *
+from alpine.alpineobject import AlpineObject
 
 
 class DataSource(AlpineObject):

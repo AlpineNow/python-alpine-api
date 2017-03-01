@@ -1,5 +1,5 @@
-from api.alpine import Alpine
-from api.exception import *
+from alpine.apiclient import APIClient
+from alpine.exception import *
 from alpineunittest import AlpineTestCase
 
 
@@ -14,7 +14,7 @@ class TestJob(AlpineTestCase):
         # Need to upload the workflow to get id
         workflow_id = 1
         # Creating a Workspace for Job tests
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         try:
             workspace_id = alpine_session.workspace.get_id("Workspace for Job Tests")
@@ -31,24 +31,24 @@ class TestJob(AlpineTestCase):
 
     def tearDown(self):
         # Drop the datasources created in setup
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         #alpine_session.workspace.delete(workspace_id)
 
     def test_get_jobs_list(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         jobs_list = alpine_session.job.get_list(workspace_id)
         self.assertIsNotNone(jobs_list)
 
     def test_get_job_detail(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         job_detail = alpine_session.job.get(workspace_id, job_id)
         self.assertEqual(job_detail['name'], "Job for Test")
 
     def test_get_job_id(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         job_name = "test"
         try:
@@ -61,7 +61,7 @@ class TestJob(AlpineTestCase):
         self.assertEqual(job_id, job_info['id'])
 
     def test_add_job(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         job_name = "test1"
         try:
@@ -73,7 +73,7 @@ class TestJob(AlpineTestCase):
         self.assertIsNotNone(job_info)
 
     def test_delete_job_from_workspace(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         job_name = "test"
         try:
@@ -93,14 +93,14 @@ class TestJob(AlpineTestCase):
             self.fail("Failed to Delete the Job {0}".format(job_name))
 
     def test_get_tasks_on_a_job(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         tasks_list = alpine_session.job.task.get_list(workspace_id, job_id)
         self.assertNotEqual(0, len(tasks_list))
         self.assertEqual(tasks_list[0]['id'], task_id)
 
     def test_add_workflow_task(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         job_name = "test3"
         try:
@@ -113,20 +113,20 @@ class TestJob(AlpineTestCase):
         self.assertIsNotNone(task_info)
 
     def test_get_task_info(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         task_info = alpine_session.job.task.get(workspace_id, job_id, task_id)
         self.assertEqual(task_info['id'], task_id)
 
     def test_get_task_id(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         task_name = alpine_session.job.task.get(workspace_id, job_id, task_id)['name']
         task_id_get = alpine_session.job.task.get_id(workspace_id, job_id, task_name)
         self.assertEqual(task_id,task_id_get)
 
     def test_delete_task(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         job_info = alpine_session.job.create(workspace_id, "Job for Test Delete Tasks")
         task_info = alpine_session.job.task.create(workspace_id, job_info['id'], workflow_id)

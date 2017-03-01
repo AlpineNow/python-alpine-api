@@ -3,24 +3,23 @@ import sys
 
 import requests
 
-from api.alpineobject import AlpineObject
-from api.job import Job
-from api.user import User
-from api.workfile import Workfile
-from api.workspace import Workspace
-from api.datasource import DataSource
-from api.exception import *
+from .alpineobject import AlpineObject
+from .job import Job
+from .user import User
+from .workfile import Workfile
+from .workspace import Workspace
+from .datasource import DataSource
+from .exception import *
 
-
-class Alpine(AlpineObject):
+class APIClient(AlpineObject):
     """
     The main entry point for the Alpine API. Most of the functions require a logged-in user. Begin a session by
-    creating an instance of the :class:`Alpine` class.
+    creating an instance of the :class:`APIClient` class.
 
     Example::
 
-        >>> import api as AlpineAPI
-        >>> session = AlpineAPI.Alpine(host, port, username, password)
+        >>> import alpine as AlpineAPI
+        >>> session = alpine.APIClient(host, port, username, password)
 
     """
 
@@ -49,7 +48,7 @@ class Alpine(AlpineObject):
         :return: None
         """
 
-        super(Alpine, self).__init__(token=token)
+        super(APIClient, self).__init__(token=token)
         self._setup_logging(default_level=logging_level)
         self.is_secure = is_secure
 

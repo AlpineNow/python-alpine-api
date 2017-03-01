@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
-from api.exception import *
-from api.alpineobject import AlpineObject
+from .exception import *
+from .alpineobject import AlpineObject
 from .user import User
 
 import json
@@ -245,7 +245,19 @@ class Workspace(AlpineObject):
         if stage:
             payload["workspace_stage_id"] = stage
         if owner_id:
-            payload["owner_id"] = owner_id
+            is_member = False
+            members = self.member.get_list(workspace_id)
+            for member in members:
+                if member['id'] == owner_id:
+                    is_member = True
+                    self.logger.debug("User with id: <{0}> is a member of the workspace id: <{1}>, OK to update owner"
+                                      .format(owner_id, workspace_id))
+                    payload["owner_id"] = owner_id
+            if not is_member:
+                raise WorkspaceMemberNotFoundException("The user with id: <{0}> is not a member of workspace id: <{1}> "
+                                                       "Cannot assing it as the new owner."
+                                                       .format(owner_id, workspace_id)
+                                                       )
 
         for field in pop_fields:
             payload.pop(field)

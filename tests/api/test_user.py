@@ -1,12 +1,13 @@
-from api.alpine import Alpine
-from api.exception import *
+from alpine.apiclient import APIClient
+from alpine.exception import *
+
 from alpineunittest import AlpineTestCase
 
 
 class TestUser(AlpineTestCase):
 
     def test_create_user(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         try:
             user_id = alpine_session.user.get_id("apitest1")
@@ -24,7 +25,7 @@ class TestUser(AlpineTestCase):
         alpine_session.user.delete(user_info['id'])
 
     def test_delete_user(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         try:
             user_id = alpine_session.user.get_id("apitest2")
@@ -43,7 +44,7 @@ class TestUser(AlpineTestCase):
             self.fail("Failed to Delete the User {0}".format("apitest2"))
 
     def test_update_user_info(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         try:
             user_id = alpine_session.user.get_id("apitest2")
@@ -60,7 +61,7 @@ class TestUser(AlpineTestCase):
         self.assertEqual(updated_user_info, user_info_new)
 
     def test_get_user_id(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         try:
             user_id = alpine_session.user.get_id("apitest1")
@@ -74,7 +75,7 @@ class TestUser(AlpineTestCase):
         self.assertEqual(user_id, user_info['id'])
 
     def test_get_user_info(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         user_id = alpine_session.user.get_id(self.username)
         user_info = alpine_session.user.get(user_id)
@@ -82,7 +83,7 @@ class TestUser(AlpineTestCase):
         self.assertEqual(user_info['username'], self.username)
 
     def test_get_users_list(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         users_list1 = alpine_session.user.get_list(per_page=1)
         users_list2 = alpine_session.user.get_list(per_page=10)
