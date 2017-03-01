@@ -100,7 +100,7 @@ class Workfile(AlpineObject):
         """
         Return the ID number of a workfile in a workspace.
 
-        :param string workfile_name: Name of workfile.
+        :param str workfile_name: Name of workfile.
         :param int workspace_id: Id of workspace that contains the workfile.
         :return: ID number of workfile
         :rtype: int
@@ -124,7 +124,7 @@ class Workfile(AlpineObject):
         """
         Delete a workfile from a workspace.
 
-        :param workfile_id: Name of workfile to delete.
+        :param int workfile_id: ID number of workfile to delete.
         :return: None
         :rtype: NoneType
         :exception WorkspaceNotFoundException: The workspace does not exist.
@@ -156,14 +156,16 @@ class Workfile(AlpineObject):
             self.logger.debug("Workfile not found, error {}".format(err))
 
     def upload(self, workspace_id, afm_file, data_sources_list):
+        # TODO: database admins only?
         """
-        Uploads an afm file with list of data source information.
+        Uploads an Alpine workfile file (.afm format). Will attempt to alter the workfile to use the data source(s)
+        chosen. Operators within a workflow must remain consistent with type of datasource, e.g. a workflow built with
+        on a Hadoop datasource can be converted to use a different Hadoop datasource, but not to a database.
 
-        :param workspace_id: Id of workspace
-        :param afm_file: Path of the afm file
-        :param data_sources_list: A list of data source information as the following format:
-        datasource_info = [{"data_source_type": DataSource.dsType.HadoopCluster, "data_source_id": "1", "database_id":""},{"data_source_type": DataSource.dsType.JDBCDataSource, "data_source_id": "421", "database_id": ""},{"data_source_type": DataSource.dsType.GreenplumDatabase, "data_source_id": "1", "database_id": "42"}]
-        :return: One workfile's metadata
+        :param int workspace_id: ID of workspace
+        :param str afm_file: Local path to the Alpine workfile (.afm).
+        :param list data_sources_list: A list of data source information with the following format: datasource_info = [{"data_source_type": DataSource.dsType.HadoopCluster, "data_source_id": "1", "database_id":""},{"data_source_type": DataSource.dsType.JDBCDataSource, "data_source_id": "421", "database_id": ""},{"data_source_type": DataSource.dsType.GreenplumDatabase, "data_source_id": "1", "database_id": "42"}]
+        :return: One workfile's metadata.
         :rtype: dict
 
         Example::
@@ -174,6 +176,7 @@ class Workfile(AlpineObject):
             >>>                     "data_source_id": 1,
             >>>                     "database_id": 42}]
             >>> workfile_info = session.workfile.upload(workspace_id, afm_path, datasource_info)
+
         """
 
         url = "{0}/workspaces/{1}/workfiles".format(self.base_url, workspace_id)
@@ -257,7 +260,8 @@ class Workfile(AlpineObject):
 
             Example::
 
-                >>> operator_data = session.workfile.process.find_operator('Row Filter', flow_results)
+                >>> operator_data = session.workfile.process.find_operator(operator_name = 'Row Filter',
+                >>>                                                        flow_results = downloaded_flow_results)
 
             """
 
@@ -281,7 +285,7 @@ class Workfile(AlpineObject):
 
             Example::
 
-                >>> session.workfile.process.get_metadata(flow_results)
+                >>> session.workfile.process.get_metadata(flow_results = downloaded_flow_results)
 
             """
 
@@ -296,7 +300,7 @@ class Workfile(AlpineObject):
             other functions which query a run or download results.
 
             :param str workflow_id: ID of workflow.
-            :param list variables: Workflow variables in the following format ...
+            :param list variables: A list of workflow variables, each item with the format: [{"name": "@wfv_name", "value": "wfv_value"}]
             :return: ID number for the workflow run process.
             :rtype: str
             :exception WorkspaceNotFoundException: The workspace does not exist.
@@ -391,22 +395,25 @@ class Workfile(AlpineObject):
 
             Example::
 
-                >>> flow_results = session.workfile.process.download_results(workflow_id = 375, process_id =
-                >>> process_id)
+                >>> downloaded_flow_results = session.workfile.process.download_results(workflow_id = 375,
+                >>>                                                                     process_id = process_id)
 
             """
 
             url = "{0}/workflows/{1}/results/{2}".format(self.alpine_base_url, workflow_id, process_id)
             response = self.session.get(url)
             self.logger.debug(response.content)
+            # print(response.status_code)
+            # print(response.json())
             if response.status_code == 200:
                 if response.content == "\"\"":
                     raise ResultsNotFoundException("Could not find run results for process id <{}>"
                                                    .format(process_id))
+                else:
+                    return json.loads(response.json())
             else:
                 raise ResultsNotFoundException("Download results failed with status {0}: {1}"
                                                .format(response.status_code, response.reason))
-            results = json.loads(response.json())
 
         def stop(self, process_id):
             """

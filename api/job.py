@@ -7,7 +7,7 @@ from api.alpineobject import AlpineObject
 
 class Job(AlpineObject):
     """
-    Setup and run jobs and tasks
+    A class for interacting with jobs. Top-level methods deal with jobs. The subclass Task can be used to interact with individual tasks within a job.
     """
 
     task = None
@@ -22,14 +22,20 @@ class Job(AlpineObject):
 
     def create(self, workspace_id, job_name, interval_unit="on_demand", interval_value=0, next_run=""):
         """
-        Adding a job to a workspace with specified configuration
+        Add a job to a workspace with specified configuration.
 
-        :param workspace_id: id of the workspace where the job to be created
-        :param job_name: name of the job that to be created
-        :param interval_unit: units on_demand or in weeks days and hours
-        :param interval_value: how many times should it run
-        :param next_run: when should the next run happen
-        :return: Job info of the new added one
+        :param int workspace_id: ID of the workspace where the job is to be created.
+        :param str job_name: Name of the job to be created.
+        :param ??? interval_unit: Units on_demand or in weeks, days, and hours.
+        :param int interval_value: Number of times it should run.
+        :param next_run: When the next run should happen.
+        :return: Created job metadata.
+        :rtype:
+
+        Example::
+
+            >>> placeholder
+
         """
         url = "{0}/workspaces/{1}/jobs".format(self.base_url, workspace_id)
         url = self._add_token_to_url(url)
@@ -53,10 +59,10 @@ class Job(AlpineObject):
 
     def delete(self, workspace_id, job_id):
         """
-        Delete job from a workspace
+        Delete a job from a workspace.
 
-        :param workspace_id: Id of the workspace to be deleted in
-        :param job_name: name of the job to delete
+        :param int workspace_id: ID number of the workspace the job is in.
+        :param str job_id: ID number of the job to delete.
         :return: response for the delete action
         """
 

@@ -153,7 +153,7 @@ class Workspace(AlpineObject):
 
         Example::
 
-            >>> session.workspace.get(workspace_id=1761)
+            >>> session.workspace.get(workspace_id = 1761)
 
         """
 
@@ -207,16 +207,15 @@ class Workspace(AlpineObject):
         :param bool is_active: Sets active vs. archived status.
         :param str name: New name for the workspace.
         :param str summary: New description of the workspace.
-        :param int stage: Stage ID. Use the WorkspaceStage object for convenience
-        :param int owner_id: ID number of the workspace owner.
-        The user need to be an member first before assigning as the new owner.
+        :param int stage: Stage ID. Use the Workspace.Stage object for convenience.
+        :param int owner_id: ID number of the new workspace owner. Must also be a member of the workspace.
         :return: Updated workspace metadata
         :rtype: dict
 
         Example::
 
             >>> session.workspace.update(workspace_id = 1672, summary = "New focus of project is ML!",
-            >>> stage = session.workspace.stage.Model)
+            >>>                          stage = session.workspace.stage.Model)
 
         """
         url = "{0}/workspaces/{1}".format(self.base_url, workspace_id)
@@ -307,9 +306,9 @@ class Workspace(AlpineObject):
             """
             Add a new user to the workspace member list.
 
-            :param workspace_id: ID number of the workspace.
-            :param user_id: ID number of member to add to the workspace.
-            :param role: Role for the user.
+            :param int workspace_id: ID number of the workspace.
+            :param int user_id: ID number of member to add to the workspace.
+            :param str role: Role for the user.
             :return: Updated member list
             :rtype: list of dict
             :exception WorkspaceNotFoundException: The workspace id does not exist.
@@ -318,7 +317,7 @@ class Workspace(AlpineObject):
             Example::
 
                 >>> session.workspace.member.add(workspace_id = 1672, user_id = 7,
-                >>> role = session.workspace.memberrole.DataScientist)
+                >>>                              role = session.workspace.memberRole.DataScientist)
 
             """
             members = self.get_list(workspace_id)
@@ -340,8 +339,8 @@ class Workspace(AlpineObject):
             """
             Remove a user from the workspace member list.
 
-            :param workspace_id: ID number of the workspace.
-            :param user_id: ID number of member to add to the workspace.
+            :param int workspace_id: ID number of the workspace.
+            :param int user_id: ID number of member to add to the workspace.
             :return: Updated member list
             :rtype: list of dict
             :exception WorkspaceNotFoundException: The workspace id does not exist.
@@ -372,8 +371,8 @@ class Workspace(AlpineObject):
             Update a user's role in a workspace. If the user is not a member of the workspace then no change will be
             made.
 
-            :param workspace_id: ID number of the workspace.
-            :param user_id: ID number of member to update.
+            :param int workspace_id: ID number of the workspace.
+            :param int user_id: ID number of member to update.
             :param str new_role: New role of the user.
             :return: Updated member list
             :rtype: list of dict
@@ -381,8 +380,8 @@ class Workspace(AlpineObject):
 
             Example::
 
-                >>> session.workspace.member.update(workspace_id = 1672, user_id = 7, new_role =
-                >>> session.workspace.memberrole.DataScientist)
+                >>> session.workspace.member.update(workspace_id = 1672, user_id = 7,
+                >>>                                 new_role = session.workspace.memberRole.DataScientist)
 
             """
             members = self.get_list(workspace_id)
