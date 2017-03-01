@@ -1,5 +1,5 @@
-from alpineapi.alpine import Alpine
-from alpineapi.exception import *
+from alpine.apiclient import APIClient
+from alpine.exception import *
 
 from alpineunittest import AlpineTestCase
 
@@ -7,7 +7,7 @@ from alpineunittest import AlpineTestCase
 class TestWorkspace(AlpineTestCase):
 
     def test_create_new_workspace(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         try:
             workspace_id = alpine_session.workspace.get_id("test_workspace1")
@@ -20,7 +20,7 @@ class TestWorkspace(AlpineTestCase):
         self.assertEqual(workspace_info['summary'], "Summary")
 
     def test_get_workspace_details(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         try:
             workspace_id = alpine_session.workspace.get_id("test_workspace2")
@@ -32,7 +32,7 @@ class TestWorkspace(AlpineTestCase):
         self.assertEqual(workspace_info_created, workspace_info)
 
     def test_get_workspace_id(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         try:
             workspace_id = alpine_session.workspace.get_id("test_workspace3")
@@ -44,7 +44,7 @@ class TestWorkspace(AlpineTestCase):
         self.assertEqual(workspace_id, workspace_info_created['id'])
 
     def test_get_member_list_for_workspace(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         try:
             workspace_id = alpine_session.workspace.get_id("test_workspace4")
@@ -63,7 +63,7 @@ class TestWorkspace(AlpineTestCase):
             self.fail("failed to find owner {0} in member_list {1}".format(self.username, member_list))
 
     def test_get_workspaces_list(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         # user_id = alpine_session.user.get_id(self.username)
         # workspace_list1 = alpine_session.workspace.get_list(active=True, user_id=user_id, per_page=10)
@@ -97,7 +97,7 @@ class TestWorkspace(AlpineTestCase):
         test_workspace_stage2 = 2
 
 
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         try:
             workspace_id = alpine_session.workspace.get_id(test_workspace_name)
@@ -116,7 +116,7 @@ class TestWorkspace(AlpineTestCase):
     def test_update_workspace_membership(self):
         test_workspace_name = "test_workspace0"
         new_role = "Business Analyst"
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         try:
             workspace_id = alpine_session.workspace.get_id(test_workspace_name)
@@ -140,7 +140,7 @@ class TestWorkspace(AlpineTestCase):
 
     def test_add_workspace_member(self):
         test_workspace_name = "test_workspace0"
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         new_role = alpine_session.workspace.memberRole.BusinessOwner
         try:
@@ -173,7 +173,7 @@ class TestWorkspace(AlpineTestCase):
     def test_update_workspace_stage(self):
         test_workspace_name = "test_workspace1"
         # stages = ["Define", "Transform", "Model", "Deploy", "Act"]
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         stages = alpine_session.workspace.stage
 
@@ -192,7 +192,7 @@ class TestWorkspace(AlpineTestCase):
     def test_update_workspace_name(self):
         test_workspace_name = "test_workspace1"
         test_workspace_name_new = "test_workspace1_new"
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         try:
             workspace_id = alpine_session.workspace.get_id(test_workspace_name)
@@ -213,7 +213,7 @@ class TestWorkspace(AlpineTestCase):
     def test_update_workspace_owner(self):
         test_workspace_name = "test_workspace0"
         new_user = "new_user1"
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         try:
             user_id = alpine_session.user.get_id(new_user)
@@ -239,7 +239,7 @@ class TestWorkspace(AlpineTestCase):
     def test_update_workspace_owner_not_a_member(self):
         test_workspace_name = "test_workspace0"
         new_user = "new_user1"
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         try:
             user_id = alpine_session.user.get_id(new_user)
@@ -265,7 +265,7 @@ class TestWorkspace(AlpineTestCase):
 
     def test_update_workspace_privacy(self):
         test_workspace_name = "test_workspace1"
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         try:
             workspace_id = alpine_session.workspace.get_id(test_workspace_name)
@@ -282,7 +282,7 @@ class TestWorkspace(AlpineTestCase):
 
     def test_update_workspace_status(self):
         test_workspace_name = "test_workspace1"
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         try:
             workspace_id = alpine_session.workspace.get_id(test_workspace_name)
@@ -300,7 +300,7 @@ class TestWorkspace(AlpineTestCase):
 
     def test_delete_workspace(self):
         test_workspace_name = "test_workspace0"
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         try:
             workspace_id = alpine_session.workspace.get_id(test_workspace_name)

@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Licensed to Alpine Data, Inc.
+# Licensed to APIClient Data, Inc.
 # TODO
-# Copyright 2017 Alpine Data All Rights reserved.
+# Copyright 2017 APIClient Data All Rights reserved.
 
 
-"""Simple Command-Line Sample For Alpine API.
-Command-line application to login and logout with Alpine API
+"""Simple Command-Line Sample For APIClient API.
+Command-line application to login and logout with APIClient API
 Usage:
   $ python workfile.py
 To get detailed log output run:
@@ -17,8 +17,8 @@ import logging
 import sys
 import time
 
-from alpineapi.exception import *
-from alpineapi import *
+from alpine.exception import *
+from alpine import *
 from future.datasource import DataSource
 
 
@@ -57,7 +57,7 @@ def setUp(alpine_host, alpine_port, username, password):
          "value": "awscdh57singlenode.alpinenow.local:8031"},
         {"key": "yarn.resourcemanager.scheduler.address", "value": "awscdh57singlenode.alpinenow.local:8030"}
     ]
-    alpine_session = Alpine(alpine_host, alpine_port)
+    alpine_session = APIClient(alpine_host, alpine_port)
     # Login with the admin user credential
     alpine_session.login(username, password)
     ds = DataSource(alpine_session.base_url, alpine_session.session, alpine_session.token)
@@ -94,7 +94,7 @@ def tearDown(alpine_host, alpine_port, username, password):
     sample_username = "test_user"
     sample_workspace_name = "API Sample Workspace"
 
-    alpine_session = Alpine(alpine_host, alpine_port)
+    alpine_session = APIClient(alpine_host, alpine_port)
     # Login with the admin user credential
     alpine_session.login(username, password)
     # Delete the Datasource
@@ -130,10 +130,10 @@ def main(alpine_host, alpine_port, username, password):
     sample_workspace_name = "API Sample Workspace"
     sample_workspace_public_state_true = True
 
-    # Create a Alpine session
-    # alpine_session = Alpine(alpine_host, alpine_port)
+    # Create a APIClient session
+    # alpine_session = APIClient(alpine_host, alpine_port)
     # alpine_session.login(username, password)
-    alpine_session = Alpine(alpine_host, alpine_port, username, password)
+    alpine_session = APIClient(alpine_host, alpine_port, username, password)
 
     # Logging Examples
     # use default logger

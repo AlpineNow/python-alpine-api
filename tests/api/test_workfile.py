@@ -1,8 +1,8 @@
 import os
 import time
 
-from alpineapi.alpine import Alpine
-from alpineapi.exception import *
+from alpine.apiclient import APIClient
+from alpine.exception import *
 
 from alpineunittest import AlpineTestCase
 from future.datasource import DataSource
@@ -21,7 +21,7 @@ class TestWorkfile(AlpineTestCase):
 
         global hadoop_datasource_id
         # Creating a Workspace for Job tests
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         try:
             workspace_id = alpine_session.workspace.get_id("Workspace for Workfile Tests")
@@ -80,26 +80,26 @@ class TestWorkfile(AlpineTestCase):
 
     def tearDown(self):
         # Drop the datasources created in setup
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         #alpine_session.workspace.delete_workspace_if_exists("Workspace for Workfile Tests")
 
     def test_get_workfiles_list(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         workfile_list = alpine_session.workfile.get_list(workspace_id)
         self.assertIsNotNone(workfile_list)
         self.assertEqual(workfile_list.__len__(), 1)
 
     def test_get_workfile_info(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         workfile_id = alpine_session.workfile.get_id("db_row_fil_with_variable", workspace_id)
         workfile_info = alpine_session.workfile.get(workfile_id)
         self.assertIsNotNone(workfile_info)
 
     def test_get_workfile_id(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         get_id = alpine_session.workfile.get_id("db_row_fil_with_variable", workspace_id)
         self.assertIsNotNone(get_id)
@@ -107,7 +107,7 @@ class TestWorkfile(AlpineTestCase):
 
     def test_run_workflow(self):
         variables = [{"name": "@min_credit_line", "value": "7"}]
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         workfile_id = alpine_session.workfile.get_id(workfile_name, workspace_id)
         process_id = alpine_session.workfile.process.run(workfile_id, variables)
@@ -116,7 +116,7 @@ class TestWorkfile(AlpineTestCase):
     def test_query_workflow_status(self):
         valid_workfile_status = ["WORKING", "FINISHED"]
         variables = [{"name": "@min_credit_line", "value": "7"}]
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         workfile_id = alpine_session.workfile.get_id(workfile_name, workspace_id)
         process_id = alpine_session.workfile.process.run(workfile_id, variables)
@@ -132,7 +132,7 @@ class TestWorkfile(AlpineTestCase):
 
     def test_download_workflow_results(self):
         variables = [{"name": "@min_credit_line", "value": "7"}]
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         workfile_id = alpine_session.workfile.get_id(workfile_name, workspace_id)
 
@@ -145,7 +145,7 @@ class TestWorkfile(AlpineTestCase):
 
     def test_stop_workflow(self):
         variables = [{"name": "@min_credit_line", "value": "7"}]
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         workfile_id = alpine_session.workfile.get_id(workfile_name, workspace_id)
         process_id = alpine_session.workfile.process.run(workfile_id, variables)
@@ -153,7 +153,7 @@ class TestWorkfile(AlpineTestCase):
         self.assertEqual(finish_state, "STOPPED")
 
     def test_upload_hdfs_afm(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         base_dir = os.getcwd()
         afm_path = "{0}/../data/afm/demo_hadoop_row_filter_regression.afm".format(base_dir)
@@ -170,7 +170,7 @@ class TestWorkfile(AlpineTestCase):
         self.assertEqual(workfile_info['file_name'], "demo_hadoop_row_filter_regression")
 
     def test_upload_db_afm(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         base_dir = os.getcwd()
         afm_path = "{0}/../data/afm/db_bat_row_fil.afm".format(base_dir)

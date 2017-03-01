@@ -1,6 +1,6 @@
 from alpineunittest import AlpineTestCase
-from alpineapi.alpine import Alpine
-from alpineapi.exception import *
+from alpine.apiclient import APIClient
+from alpine.exception import *
 from future.datasource import *
 import time
 
@@ -12,7 +12,7 @@ class TestDataSource(AlpineTestCase):
         global hadoop_datasource_id
         global ds
         # Creating a Database Datasource for test get/update functions
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         ds = DataSource(alpine_session.base_url, alpine_session.session, alpine_session.token)
 
@@ -42,7 +42,7 @@ class TestDataSource(AlpineTestCase):
 
     def tearDown(self):
         # Drop the datasources created in setup
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         ds = DataSource(alpine_session.base_url, alpine_session.session, alpine_session.token)
 
@@ -50,37 +50,37 @@ class TestDataSource(AlpineTestCase):
         ds.delete_db_data_source_if_exists("Test_Cloudera")
 
     def test_get_db_data_source_list(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         datasource_list = alpine_session.datasource.get_list("Database")
         self.assertIsNotNone(datasource_list)
 
     def test_get_db_data_source_info(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         datasource_info = alpine_session.datasource.get(1, "Database")
         self.assertEqual(datasource_info['id'], 1)
 
     def test_get_db_data_source_id(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         datasource_id = alpine_session.datasource.get_id("Test_GP", "Database")
         self.assertEqual(datasource_id, db_datasource_id)
 
     def test_get_hadoop_data_source_list(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         datasource_list = alpine_session.datasource.get_list("Hadoop")
         self.assertIsNotNone(datasource_list)
 
     def test_get_hadoop_data_source_info(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         datasource_info = alpine_session.datasource.get(hadoop_datasource_id, "Hadoop")
         self.assertEqual(datasource_info['name'], "Test_Cloudera")
 
     def test_get_hadoop_data_source_id(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         datasource_id = alpine_session.datasource.get_id("Test_Cloudera", "Hadoop")
         self.assertEqual(datasource_id, hadoop_datasource_id)

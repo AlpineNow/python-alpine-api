@@ -1,5 +1,5 @@
 from alpineunittest import AlpineTestCase
-from alpineapi.alpine import Alpine
+from alpine.apiclient import APIClient
 from future.datasource import *
 
 class TestDataSource(AlpineTestCase):
@@ -10,7 +10,7 @@ class TestDataSource(AlpineTestCase):
         global hadoop_datasource_id
         global ds
         # Creating a Database Datasource for test get/update functions
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         ds = DataSource(alpine_session.base_url, alpine_session.session, alpine_session.token)
 
@@ -40,7 +40,7 @@ class TestDataSource(AlpineTestCase):
 
     def tearDown(self):
         # Drop the datasources created in setup
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         ds = DataSource(alpine_session.base_url, alpine_session.session, alpine_session.token)
 
@@ -69,7 +69,7 @@ class TestDataSource(AlpineTestCase):
         self.fail()
 
     def test_add_hadoop_data_source(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         ds = DataSource(alpine_session.base_url, alpine_session.session, alpine_session.token)
 
@@ -93,7 +93,7 @@ class TestDataSource(AlpineTestCase):
         self.fail()
 
     def test_delete_db_data_source(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         ds.delete_db_data_source_if_exists("Test_GP_delete")
         ds.add_greenplum_data_source("Test_GP_delete", "Test Greenplum", "10.10.0.151", 5432,
@@ -108,7 +108,7 @@ class TestDataSource(AlpineTestCase):
             self.fail("Failed to Delete the Datasource {0}".format("Test_GP_delete"))
 
     def test_delete_hadoop_data_source(self):
-        alpine_session = Alpine(self.host, self.port)
+        alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
         ds.delete_hadoop_data_source_if_exists("Test_Cloudera_delete")
         additional_parameters = [

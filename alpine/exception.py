@@ -5,7 +5,7 @@ Exception classes - Subclassing to check for specific errors
 
 class AlpineException(Exception):
     """
-    General Alpine Exception
+    General APIClient Exception
     """
     def __init__(self, reason, *args):
         super(AlpineException, self).__init__(reason, *args)

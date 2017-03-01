@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Licensed to Alpine Data, Inc.
+# Licensed to APIClient Data, Inc.
 # TODO
-# Copyright 2017 Alpine Data All Rights reserved.
+# Copyright 2017 APIClient Data All Rights reserved.
 
 from __future__ import print_function
 
@@ -29,16 +29,16 @@ def readme():
         return f.read()
 
 setup(
-    name="alpineapi",
+    name="alpine",
     version='0.0.1',
-    description="Alpine Web API Client",
+    description="APIClient Web API Client",
     long_description=readme(),
-    author="Alpine Data, Inc.",
+    author="APIClient Data, Inc.",
     author_email="ggao@alpinenow.com",
     keywords='alpine api sdk chorus',
     url="https://github.com/alpinedatalabs/python-alpine-api",
     package_data={
-        "alpineapi": ["logging.json"],
+        "alpine": ["logging.json"],
     },
     install_requires=install_requires,
 

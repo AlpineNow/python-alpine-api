@@ -6,11 +6,11 @@ import os
 
 class AlpineObject(object):
     """
-    Base Class of Alpine API objects
+    Base Class of APIClient API objects
 
     """
     #
-    # alpineapi alpineapi version string
+    # alpine alpine version string
     #
     _alpine_api_version = "v1"
     _min_alpine_version = "6.2"
@@ -29,7 +29,7 @@ class AlpineObject(object):
         """
         Used internally to properly form  URLs.
 
-        :param str url: An Alpine API URL
+        :param str url: An APIClient API URL
         :return: Formatted URL
         :rtype str:
         """

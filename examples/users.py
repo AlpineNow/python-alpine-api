@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Licensed to Alpine Data, Inc.
+# Licensed to APIClient Data, Inc.
 # TODO
-# Copyright 2017 Alpine Data All Rights reserved.
+# Copyright 2017 APIClient Data All Rights reserved.
 
 # Sample
 
-"""Simple Command-Line Sample For Alpine API.
-Command-line application to login and logout with Alpine API
+"""Simple Command-Line Sample For APIClient API.
+Command-line application to login and logout with APIClient API
 Usage:
   $ python users.py
 To get debug log output run:
@@ -15,8 +15,8 @@ To get debug log output run:
 """
 import sys
 
-from alpineapi.exception import *
-from alpineapi import *
+from alpine.exception import *
+from alpine import *
 if __name__ == '__main__':
     self = sys.modules['__main__']
     #host = raw_input(">>> Host: ")
@@ -27,9 +27,9 @@ if __name__ == '__main__':
     port = "8080"
     username = "demoadmin"
     password = "password"
-    alpine = Alpine(host, port)
+    alpine = APIClient(host, port)
     alpine.login(username, password)
-    # alpine = Alpine(host, port, username, password)
+    # alpine = APIClient(host, port, username, password)
     while True:
         # input_option = raw_input("Press Enter to Continue...")
         print "----------------------------------------------------------------"

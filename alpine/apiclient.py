@@ -11,15 +11,15 @@ from .workspace import Workspace
 from .datasource import DataSource
 from .exception import *
 
-class Alpine(AlpineObject):
+class APIClient(AlpineObject):
     """
-    The main entry point for the Alpine API. Most of the functions require a logged-in user. Begin a session by
-    creating an instance of the :class:`Alpine` class.
+    The main entry point for the APIClient API. Most of the functions require a logged-in user. Begin a session by
+    creating an instance of the :class:`APIClient` class.
 
     Example::
 
-        >>> import alpineapi as AlpineAPI
-        >>> session = AlpineAPI.Alpine(host, port, username, password)
+        >>> import alpine as AlpineAPI
+        >>> session = alpine.APIClient(host, port, username, password)
 
     """
 
@@ -32,23 +32,23 @@ class Alpine(AlpineObject):
     def __init__(self, host=None, port=None, username=None, password=None, is_secure=False, validate_certs=False,
                  ca_certs=None, token=None, logging_level='WARN'):
         """
-        Sets internal values for Alpine API session. If username and password are supplied then a login is
-        attempted. This is useful to check Alpine url and user login parameters.
+        Sets internal values for APIClient API session. If username and password are supplied then a login is
+        attempted. This is useful to check APIClient url and user login parameters.
 
-        :param string host: hostname or ip address of the Alpine server
-        :param string port: port number for Alpine
+        :param string host: hostname or ip address of the APIClient server
+        :param string port: port number for APIClient
         :param string username: username to login with
         :param string password: password to login with
         :param bool is_secure:
         :param bool validate_certs:
         :param ??? ca_certs:
-        :param string token: Alpine API authentication token
+        :param string token: APIClient API authentication token
         :param string logging_level: Use to set a logging
         level. See https://docs.python.org/2/howto/logging.html#logging-levels.
         :return: None
         """
 
-        super(Alpine, self).__init__(token=token)
+        super(APIClient, self).__init__(token=token)
         self._setup_logging(default_level=logging_level)
         self.is_secure = is_secure
 
@@ -76,12 +76,12 @@ class Alpine(AlpineObject):
 
     def login(self, username, password):
         """
-        Attempts a login to Alpine with provided username and password. Typically login is handled at
+        Attempts a login to APIClient with provided username and password. Typically login is handled at
         session-creation time.
 
         :param string username: username to login with
         :param string password: password to login with
-        :return: returns a Alpine API authentication token to be used for other actions
+        :return: returns a APIClient API authentication token to be used for other actions
         :rtype: string
 
         Example::
@@ -206,9 +206,9 @@ class Alpine(AlpineObject):
 
     def get_version(self):
         """
-        Returns the Alpine version.
+        Returns the APIClient version.
 
-        :return: Alpine version.
+        :return: APIClient version.
         :rtype: str
 
         Example::
@@ -223,9 +223,9 @@ class Alpine(AlpineObject):
 
     def get_license(self):
         # """
-        # Get the the current license information for Alpine.
+        # Get the the current license information for APIClient.
         #
-        # :return: Summary of Alpine license information - expiration, user limits, add-ons.
+        # :return: Summary of APIClient license information - expiration, user limits, add-ons.
         # :rtype: dict
         #
         # Example::
