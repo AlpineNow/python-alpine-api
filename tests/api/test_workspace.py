@@ -148,7 +148,7 @@ class TestWorkspace(AlpineTestCase):
             alpine_session.user.delete(user_id)
         except UserNotFoundException:
             pass
-        user_info = alpine_session.user.create("test_user1", "password", "firstName", "lastName", "testuser1@alpineapi.test",
+        user_info = alpine_session.user.create("test_user1", "password", "firstName", "lastName", "testuser1@alpine.test",
                          "QA", "Developement")
 
         try:
@@ -220,7 +220,7 @@ class TestWorkspace(AlpineTestCase):
             alpine_session.user.delete(user_id)
         except UserNotFoundException:
             pass
-        new_user_info = alpine_session.user.create(new_user, "password", "firstName", "lastName", "testuser1@alpineapi.test",
+        new_user_info = alpine_session.user.create(new_user, "password", "firstName", "lastName", "testuser1@alpine.test",
                          "QA", "Developement")
 
         try:
@@ -246,7 +246,7 @@ class TestWorkspace(AlpineTestCase):
             alpine_session.user.delete(user_id)
         except UserNotFoundException:
             pass
-        new_user_info = alpine_session.user.create(new_user, "password", "firstName", "lastName", "testuser1@alpineapi.test",
+        new_user_info = alpine_session.user.create(new_user, "password", "firstName", "lastName", "testuser1@alpine.test",
                          "QA", "Developement")
 
         try:

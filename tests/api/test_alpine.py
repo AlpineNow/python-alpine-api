@@ -48,7 +48,7 @@ class TestAlpine(AlpineTestCase):
     def test__add_token_to_url(self):
         alpine_session = Alpine(self.host, self.port)
         alpine_session.token = "this_is_token_string"
-        url = "http://base_url:port/alpineapi"
+        url = "http://base_url:port/api"
         url_with_token = "{0}?session_id={1}".format(url, alpine_session.token)
         self.assertEqual(alpine_session._add_token_to_url(url), url_with_token)
 
