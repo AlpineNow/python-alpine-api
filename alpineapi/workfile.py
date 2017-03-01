@@ -2,10 +2,9 @@ import time
 import json
 from urlparse import urljoin
 from urlparse import urlparse
-from api.alpineobject import AlpineObject
-from api.exception import *
-from api.datasource import *
-
+from .alpineobject import AlpineObject
+from .datasource import DataSource
+from .exception import *
 
 class Workfile(AlpineObject):
     """

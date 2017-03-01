@@ -1,6 +1,6 @@
-from api.alpine import Alpine
+from alpineapi.alpine import Alpine
+from alpineapi.exception import *
 
-from api.exception import *
 from alpineunittest import AlpineTestCase
 
 
@@ -148,7 +148,7 @@ class TestWorkspace(AlpineTestCase):
             alpine_session.user.delete(user_id)
         except UserNotFoundException:
             pass
-        user_info = alpine_session.user.create("test_user1", "password", "firstName", "lastName", "testuser1@alpine.test",
+        user_info = alpine_session.user.create("test_user1", "password", "firstName", "lastName", "testuser1@alpineapi.test",
                          "QA", "Developement")
 
         try:
@@ -220,7 +220,7 @@ class TestWorkspace(AlpineTestCase):
             alpine_session.user.delete(user_id)
         except UserNotFoundException:
             pass
-        new_user_info = alpine_session.user.create(new_user, "password", "firstName", "lastName", "testuser1@alpine.test",
+        new_user_info = alpine_session.user.create(new_user, "password", "firstName", "lastName", "testuser1@alpineapi.test",
                          "QA", "Developement")
 
         try:
@@ -233,6 +233,33 @@ class TestWorkspace(AlpineTestCase):
         alpine_session.workspace.member.add(workspace_info['id'], new_user_info['id'], "Data Engineer")
         workspace_info = alpine_session.workspace.update(workspace_info['id'], owner_id=new_user_info['id'])
         self.assertEqual(workspace_info['owner'], new_user_info)
+        alpine_session.workspace.delete(workspace_info['id'])
+        alpine_session.user.delete(new_user_info['id'])
+
+    def test_update_workspace_owner_not_a_member(self):
+        test_workspace_name = "test_workspace0"
+        new_user = "new_user1"
+        alpine_session = Alpine(self.host, self.port)
+        alpine_session.login(self.username, self.password)
+        try:
+            user_id = alpine_session.user.get_id(new_user)
+            alpine_session.user.delete(user_id)
+        except UserNotFoundException:
+            pass
+        new_user_info = alpine_session.user.create(new_user, "password", "firstName", "lastName", "testuser1@alpineapi.test",
+                         "QA", "Developement")
+
+        try:
+            workspace_id = alpine_session.workspace.get_id(test_workspace_name)
+            alpine_session.workspace.delete(workspace_id)
+        except WorkspaceNotFoundException:
+            pass
+        workspace_info = alpine_session.workspace.create(workspace_name=test_workspace_name, public=True,
+                                       summary="Summary")
+        try:
+            workspace_info = alpine_session.workspace.update(workspace_info['id'], owner_id=new_user_info['id'])
+        except WorkspaceMemberNotFoundException:
+            pass
         alpine_session.workspace.delete(workspace_info['id'])
         alpine_session.user.delete(new_user_info['id'])
 

@@ -53,6 +53,13 @@ class WorkspaceNotFoundException(AlpineException):
     pass
 
 
+class WorkspaceMemberNotFoundException(AlpineException):
+    """
+
+    """
+    pass
+
+
 class WorkfileNotFoundException(AlpineException):
     """
 

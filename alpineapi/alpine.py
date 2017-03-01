@@ -3,14 +3,13 @@ import sys
 
 import requests
 
-from api.alpineobject import AlpineObject
-from api.job import Job
-from api.user import User
-from api.workfile import Workfile
-from api.workspace import Workspace
-from api.datasource import DataSource
-from api.exception import *
-
+from .alpineobject import AlpineObject
+from .job import Job
+from .user import User
+from .workfile import Workfile
+from .workspace import Workspace
+from .datasource import DataSource
+from .exception import *
 
 class Alpine(AlpineObject):
     """
@@ -19,7 +18,7 @@ class Alpine(AlpineObject):
 
     Example::
 
-        >>> import api as AlpineAPI
+        >>> import alpineapi as AlpineAPI
         >>> session = AlpineAPI.Alpine(host, port, username, password)
 
     """

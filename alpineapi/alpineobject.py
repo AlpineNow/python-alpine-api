@@ -10,7 +10,7 @@ class AlpineObject(object):
 
     """
     #
-    # alpine api version string
+    # alpineapi alpineapi version string
     #
     _alpine_api_version = "v1"
     _min_alpine_version = "6.2"
@@ -23,7 +23,7 @@ class AlpineObject(object):
         self._setup_logging()
         # Get loggers from the configuration files(logging.json) if exists
         # For detail, reference logging.json
-        self.logger = logging.getLogger("debug")    # debug or api
+        self.logger = logging.getLogger("debug")    # debug
 
     def _add_token_to_url(self, url):
         """

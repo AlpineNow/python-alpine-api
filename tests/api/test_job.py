@@ -1,5 +1,5 @@
-from api.alpine import Alpine
-from api.exception import *
+from alpineapi.alpine import Alpine
+from alpineapi.exception import *
 from alpineunittest import AlpineTestCase
 
 

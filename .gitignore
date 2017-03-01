@@ -1,7 +1,20 @@
+# Compiled python modules.
 *.pyc
+
+#
 .idea/*
+
+#
 .DS_Store
 
+#
 doc/_build/
 
+#
 .ipynb_checkpoints/
+
+# Setuptools distribution folder.
+/dist/
+
+# Python egg metadata, regenerated from source files by setuptools.
+/*.egg-info

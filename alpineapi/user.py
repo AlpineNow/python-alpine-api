@@ -1,7 +1,6 @@
 import json
-from api import *
-from api.exception import *
-from api.alpineobject import AlpineObject
+from .alpineobject import AlpineObject
+from .exception import *
 
 
 class User(AlpineObject):

@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#
+# Licensed to Alpine Data, Inc.
+# TODO
 # Copyright 2017 Alpine Data All Rights reserved.
+
 # Sample
 
 """Simple Command-Line Sample For Alpine API.
@@ -11,11 +13,10 @@ Usage:
 To get debug log output run:
   $ python users.py --logging_level=DEBUG
 """
+import sys
 
-from api.exception import *
-from api.alpine import *
-
-
+from alpineapi.exception import *
+from alpineapi import *
 if __name__ == '__main__':
     self = sys.modules['__main__']
     #host = raw_input(">>> Host: ")
@@ -78,7 +79,7 @@ if __name__ == '__main__':
                                 print "User '{0}' is owner of workspace '{1}', Please transfer ownership of " \
                                       "active workspaces to another person.".format(user_name, workspace['name'])
                     # Check whether there are any Datasource owned by the user
-                    db_database_list = alpine.datasource.get_db_data_source_list()
+                    db_database_list = alpine.datasource.get_list("Database")
                     if db_database_list:
                         for db_datasource in db_database_list:
                             if db_datasource['owner']['username'] == user_name:

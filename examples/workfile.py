@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#
-# Copyright 2017 Alpine Data All Rights reserved.
+# Licensed to Alpine Data, Inc.
 # TODO
+# Copyright 2017 Alpine Data All Rights reserved.
+
 
 """Simple Command-Line Sample For Alpine API.
 Command-line application to login and logout with Alpine API
@@ -16,8 +17,9 @@ import logging
 import sys
 import time
 
-from api.exception import *
-from api.alpine import *
+from alpineapi.exception import *
+from alpineapi import *
+from future.datasource import DataSource
 
 
 def help():
@@ -58,8 +60,9 @@ def setUp(alpine_host, alpine_port, username, password):
     alpine_session = Alpine(alpine_host, alpine_port)
     # Login with the admin user credential
     alpine_session.login(username, password)
-    alpine_session.datasource.delete_db_data_source_if_exists(sample_datasource_db_name)
-    datasource_gp = alpine_session.datasource.add_greenplum_data_source(sample_datasource_db_name,
+    ds = DataSource(alpine_session.base_url, alpine_session.session, alpine_session.token)
+    ds.delete_db_data_source_if_exists(sample_datasource_db_name)
+    datasource_gp = ds.add_greenplum_data_source(sample_datasource_db_name,
                                                                         sample_datasource_db_description,
                                                                         sample_datasource_db_host,
                                                                         sample_datasource_db_port,
@@ -68,9 +71,9 @@ def setUp(alpine_host, alpine_port, username, password):
                                                                         sample_datasource_db_database_password)
 
     # Create a Hadoop datasource
-    alpine_session.datasource.delete_hadoop_data_source_if_exists(sample_datasource_hadoop_name)
+    ds.delete_hadoop_data_source_if_exists(sample_datasource_hadoop_name)
 
-    datasource_hadoop = alpine_session.datasource.add_hadoop_data_source(sample_datasource_hadoop_version_string,
+    datasource_hadoop = ds.add_hadoop_data_source(sample_datasource_hadoop_version_string,
                                                                          sample_datasource_hadoop_name,
                                                                          sample_datasource_hadoop_description,
                                                                          sample_datasource_hadoop_namenode_host,
@@ -174,7 +177,10 @@ def main(alpine_host, alpine_port, username, password):
         alpine_session.workfile.delete(workfile_id)
     except WorkfileNotFoundException:
         pass
-    workfile_info = alpine_session.workfile.upload_hdfs_afm(workspace_info['id'], hadoop_data_source_id, afm_path)
+    datasource_info = [{"data_source_type": alpine_session.datasource.dsType.HadoopCluster,
+                        "data_source_id": hadoop_data_source_id
+                        }]
+    workfile_info = alpine_session.workfile.upload(workspace_info['id'], afm_path, datasource_info)
     print "Uploaded Workfile Info: {0}".format(workfile_info)
 
     variables = [{"name": "@min_credit_line", "value": "7"}]
