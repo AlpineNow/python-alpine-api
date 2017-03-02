@@ -1,7 +1,7 @@
 Workspaces
 **********
 
-.. automodule:: api.workspace
+.. automodule:: alpine.workspace
 
 .. autoclass:: Workspace
    :members:
