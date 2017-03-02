@@ -42,7 +42,6 @@ if __name__ == '__main__':
                                  "2. view info of a user.\n"
                                  "3. delete users.\n"
                                  "q. exit.\n")
-        print(input_option)
         if input_option == 'q':
             break
         if input_option == '1':
