@@ -9,7 +9,7 @@ import os
 
 version_major = 0
 version_minor = 0
-version_build = 0
+version_build = 1
 
 # For jenkins packaging to pass version number.
 # Adding the following step in jenkins for the build number
