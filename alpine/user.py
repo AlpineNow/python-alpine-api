@@ -104,7 +104,7 @@ class User(AlpineObject):
                                                    "the actual Response Code is {1}".format(200, response.status_code))
             return None
         except UserNotFoundException as err:
-            self.logger.debug("User not found, error {}".format(err))
+            self.logger.debug("User not found, error {0}".format(err))
 
     def update(self, user_id, first_name=None, last_name=None, email=None, title=None,
                          dept=None, notes=None, admin_role=None, app_role=None, email_notification=None):

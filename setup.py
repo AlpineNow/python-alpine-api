@@ -14,8 +14,8 @@ except ImportError:
     extra = {}
 
 import sys
-if sys.version_info <= (2, 5):
-    error = "ERROR: boto requires Python Version 2.6 or above...exiting."  # TODO
+if sys.version_info <= (2, 6):
+    error = "ERROR: boto requires Python Version 2.7 or above...exiting."  # TODO
     print(error, file=sys.stderr)
     sys.exit(1)
     # TBD
@@ -49,9 +49,11 @@ setup(
         "Intended Audience :: Developers",                 # TODO
         "Operating System :: OS Independent",
         "Topic :: Internet",
-        "Programming Language :: Python :: 2.6",           # TODO
         "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3.4"            # TODO
+        "Programming Language :: Python :: 3.2",            # TODO
+        "Programming Language :: Python :: 3.3",            # TODO
+        "Programming Language :: Python :: 3.4",           # TODO
+        "Programming Language :: Python :: 3.5",
     ],
     include_package_data=True,
     zip_safe=False,

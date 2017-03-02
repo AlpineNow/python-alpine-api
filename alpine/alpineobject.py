@@ -33,7 +33,7 @@ class AlpineObject(object):
         :return: Formatted URL
         :rtype str:
         """
-        return unicode("{0}?session_id={1}".format(url, self.token))
+        return str("{0}?session_id={1}".format(url, self.token))
 
     @staticmethod
     def _setup_logging(default_configuration_setting_file='logging.json',

@@ -83,7 +83,7 @@ class Workspace(AlpineObject):
                                                    "the actual Response Code is {1}".format(200, response.status_code))
             return None
         except WorkspaceNotFoundException as err:
-            self.logger.debug("Workspace not found, error {}".format(err))
+            self.logger.debug("Workspace not found, error {0}".format(err))
 
     def get_list(self, user_id=None, active=None, per_page=50):
         """
@@ -406,7 +406,7 @@ class Workspace(AlpineObject):
                 else:
                     updated_members.append({"user_id": member['id'], "role": member["role"]})
 
-            print updated_members
+            print(updated_members)
 
             return self.__update(workspace_id, updated_members)
 

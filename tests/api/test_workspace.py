@@ -80,7 +80,7 @@ class TestWorkspace(AlpineTestCase):
             for member in member_list:
                 if member['username'] == self.username:
                     contain_member = True
-                    print ws['name']
+                    print(ws['name'])
                     break
             if contain_member:
                 workspace_number = workspace_number + 1

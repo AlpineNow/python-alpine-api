@@ -32,7 +32,7 @@ if __name__ == '__main__':
     # alpine = APIClient(host, port, username, password)
     while True:
         # input_option = raw_input("Press Enter to Continue...")
-        print "----------------------------------------------------------------"
+        print("----------------------------------------------------------------")
         input_option = raw_input("Please select the number of functions you want to use: \n"
                                  "1. view the list of users.\n"
                                  "2. view info of a user.\n"
@@ -76,22 +76,22 @@ if __name__ == '__main__':
                             workspace['owner']['username']
                             if workspace['owner']['username'] == user_name:
                                 delete_safe_flag = False
-                                print "User '{0}' is owner of workspace '{1}', Please transfer ownership of " \
-                                      "active workspaces to another person.".format(user_name, workspace['name'])
+                                print ("User '{0}' is owner of workspace '{1}', Please transfer ownership of " \
+                                      "active workspaces to another person.".format(user_name, workspace['name']))
                     # Check whether there are any Datasource owned by the user
                     db_database_list = alpine.datasource.get_list("Database")
                     if db_database_list:
                         for db_datasource in db_database_list:
                             if db_datasource['owner']['username'] == user_name:
                                 delete_safe_flag = False
-                                print "User '{0}' is owner of data source '{1}', Please transfer ownership of " \
-                                      "the data source to another person.".format(user_name, db_datasource['name'])
+                                print ("User '{0}' is owner of data source '{1}', Please transfer ownership of " \
+                                      "the data source to another person.".format(user_name, db_datasource['name']))
                     # Delete the user when it is safe to do so.
                     if delete_safe_flag:
                         alpine.user.delete(user_id)
-                        print "User '{0}' successfully deleted".format(user_name)
+                        print ("User '{0}' successfully deleted".format(user_name))
                 except UserNotFoundException:
-                    print "User '{0}' not found, please double check the username exists".format(user_name)
+                    print ("User '{0}' not found, please double check the username exists".format(user_name))
                     continue
         else:
             print "Invalid Input"
