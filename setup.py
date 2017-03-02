@@ -11,17 +11,18 @@ version_major = 0
 version_minor = 0
 version_build = 0
 
-
+# For jenkins packaging to pass version number.
+# Adding the following step in jenkins for the build number
+#   echo $BUILD_NUMBER > build.info
 def __path(filename):
     return os.path.join(os.path.dirname(__file__),
                         filename)
 if os.path.exists(__path('build.info')):
     build = open(__path('build.info')).read().strip()
 
-build = 0
-
 if os.path.exists(__path('build.info')):
-    build = open(__path('build.info')).read().strip()
+    version_build = open(__path('build.info')).read().strip()
+# -----
 
 try:
     from setuptools import setup, find_packages
