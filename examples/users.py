@@ -43,9 +43,9 @@ if __name__ == '__main__':
                                  "3. delete users.\n"
                                  "q. exit.\n")
         print(input_option)
-        if str(input_option) == 'q':
+        if input_option == 'q':
             break
-        if str(input_option) == '1':
+        if input_option == '1':
             user_list = alpine.user.get_list()
             print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}".format("User_ID", "User Name", "Email","First Name",
                                                                   "Last Name", "App Role", "Department", "Title"))
@@ -53,7 +53,7 @@ if __name__ == '__main__':
                 print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}".format(user['id'], user['username'], user['email'],
                                                                       user['first_name'], user['last_name'],
                                                                       user['user_type'],user['dept'],user['title']))
-        elif str(input_option) == '2':
+        elif input_option == '2':
             user_name = input(">>> username: ")
             try:
                 user_id = alpine.user.get_id(user_name)
@@ -66,7 +66,7 @@ if __name__ == '__main__':
             except UserNotFoundException:
                 print("User '{0}' Not Found".format(user_name))
 
-        elif str(input_option) == '3':
+        elif input_option == '3':
             user_names = input(">>> Please enter user names to be deleted, split by ',' : ")
             for user_name in user_names.split(','):
                 if not user_name:
