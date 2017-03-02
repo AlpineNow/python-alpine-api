@@ -1,7 +1,7 @@
 from alpine.apiclient import APIClient
 from alpine.exception import *
 
-from alpineunittest import AlpineTestCase
+from .alpineunittest import AlpineTestCase
 
 
 class TestWorkspace(AlpineTestCase):
@@ -80,7 +80,7 @@ class TestWorkspace(AlpineTestCase):
             for member in member_list:
                 if member['username'] == self.username:
                     contain_member = True
-                    print ws['name']
+                    print(ws['name'])
                     break
             if contain_member:
                 workspace_number = workspace_number + 1

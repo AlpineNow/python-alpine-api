@@ -4,7 +4,7 @@ import time
 from alpine.apiclient import APIClient
 from alpine.exception import *
 
-from alpineunittest import AlpineTestCase
+from .alpineunittest import AlpineTestCase
 from future.datasource import DataSource
 
 

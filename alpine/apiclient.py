@@ -66,7 +66,7 @@ class APIClient(AlpineObject):
 
         self.session = requests.Session()  # instantiate a session for requests
 
-        self.base_url = "{}://{}/api".format(self.protocol, self.host)
+        self.base_url = "{0}://{1}/api".format(self.protocol, self.host)
 
         self.ca_certs = ca_certs
         self.validate_certs = validate_certs
@@ -112,7 +112,7 @@ class APIClient(AlpineObject):
             response = login_response.json()
             self.token = response['response']['session_id']
             self.user_id = response['response']['user']['id']
-            self.logger.debug("Successfully logged in with username <{}>".format(username))
+            self.logger.debug("Successfully logged in with username <{0}>".format(username))
             self.logger.debug("Token ID is: {0}".format(self.token))
             self.user = User(self.base_url, self.session, self.token)
             self.datasource = DataSource(self.base_url, self.session, self.token)
@@ -157,7 +157,7 @@ class APIClient(AlpineObject):
             self.logger.debug("No user is logged-in.")
             return logout_response
         else:
-            self.logger.debug("Failure with status code: {}".format(status))
+            self.logger.debug("Failure with status code: {0}".format(status))
             return logout_response
 
     def get_status(self):
@@ -219,7 +219,7 @@ class APIClient(AlpineObject):
         """
         url = "{0}/VERSION".format(self.base_url)
         response = self.session.get(url)
-        return response.content.strip()
+        return response.content.strip().decode('utf-8')
 
     def get_license(self):
         # """

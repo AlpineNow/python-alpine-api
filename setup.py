@@ -5,6 +5,24 @@
 # Copyright 2017 Alpine Data All Rights reserved.
 
 from __future__ import print_function
+import os
+
+version_major = 0
+version_minor = 0
+version_build = 1
+
+# For jenkins packaging to pass version number.
+# Adding the following step in jenkins for the build number
+#   echo $BUILD_NUMBER > build.info
+def __path(filename):
+    return os.path.join(os.path.dirname(__file__),
+                        filename)
+if os.path.exists(__path('build.info')):
+    build = open(__path('build.info')).read().strip()
+
+if os.path.exists(__path('build.info')):
+    version_build = open(__path('build.info')).read().strip()
+# -----
 
 try:
     from setuptools import setup, find_packages
@@ -14,8 +32,8 @@ except ImportError:
     extra = {}
 
 import sys
-if sys.version_info <= (2, 5):
-    error = "ERROR: boto requires Python Version 2.6 or above...exiting."  # TODO
+if sys.version_info <= (2, 6):
+    error = "ERROR: boto requires Python Version 2.7 or above...exiting."  # TODO
     print(error, file=sys.stderr)
     sys.exit(1)
     # TBD
@@ -30,16 +48,22 @@ def readme():
 
 setup(
     name="alpine",
-    version='0.0.1',
+    version='{0}.{1}.{2}'.format(version_major, version_minor, version_build),
     description="Alpine Web API Client",
     long_description=readme(),
     author="Alpine Data, Inc.",
     author_email="ggao@alpinenow.com",
     keywords='alpine api sdk chorus',
-    url="https://github.com/alpinedatalabs/python-alpine-api",
+    url="https://github.com/alpinedatalabs/python-alpine-api",  #TODO
+    packages=find_packages(exclude=['future', 'doc', "examples", 'tests*']),
+
     package_data={
         "alpine": ["logging.json"],
     },
+    package_dir = {
+        'alpine': 'alpine',
+    },
+
     install_requires=install_requires,
 
     license="TODO",       #TODO
@@ -49,9 +73,13 @@ setup(
         "Intended Audience :: Developers",                 # TODO
         "Operating System :: OS Independent",
         "Topic :: Internet",
-        "Programming Language :: Python :: 2.6",           # TODO
         "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3.4"            # TODO
+        "Programming Language :: Python :: 3.2",
+        "Programming Language :: Python :: 3.3",
+        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+
     ],
     include_package_data=True,
     zip_safe=False,

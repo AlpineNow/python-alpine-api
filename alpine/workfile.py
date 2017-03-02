@@ -1,7 +1,11 @@
 import time
 import json
-from urlparse import urljoin
-from urlparse import urlparse
+try:
+    from urllib.parse import urlparse
+    from urllib.parse import urljoin
+except ImportError:
+    from urlparse import urlparse
+    from urlparse import urljoin
 from .alpineobject import AlpineObject
 from .datasource import DataSource
 from .exception import *
@@ -152,7 +156,7 @@ class Workfile(AlpineObject):
                                                    "the actual Response Code is {1}".format(200, response.status_code))
             return None
         except WorkfileNotFoundException as err:
-            self.logger.debug("Workfile not found, error {}".format(err))
+            self.logger.debug("Workfile not found, error {0}".format(err))
 
     def upload(self, workspace_id, afm_file, data_sources_list):
         # TODO: database admins only?
@@ -325,7 +329,7 @@ class Workfile(AlpineObject):
                     if all(key in variable for key in ("name", "value")):
                         pass
                     else:
-                        raise WorkflowVariableException("Workflow variable item <{}> doesn't contain the " \
+                        raise WorkflowVariableException("Workflow variable item <{0}> doesn't contain the " \
                                                         "expected keys 'name' and 'value'.".format(variable))
 
                 workflow_variables = '{{"meta": {{"version": 1}}, "variables": {0}}}' \
@@ -378,7 +382,7 @@ class Workfile(AlpineObject):
                     else:
                         return "FAILED"
             else:
-                raise RunFlowFailureException("Workflow process ID <{}> not found".format(process_id))
+                raise RunFlowFailureException("Workflow process ID <{0}> not found".format(process_id))
 
         def download_results(self, workflow_id, process_id):
             """
@@ -406,7 +410,7 @@ class Workfile(AlpineObject):
             # print(response.json())
             if response.status_code == 200:
                 if response.content == "\"\"":
-                    raise ResultsNotFoundException("Could not find run results for process id <{}>"
+                    raise ResultsNotFoundException("Could not find run results for process id <{0}>"
                                                    .format(process_id))
                 else:
                     return json.loads(response.json())

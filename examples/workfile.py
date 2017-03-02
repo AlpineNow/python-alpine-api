@@ -23,7 +23,7 @@ from future.datasource import DataSource
 
 
 def help():
-    print "Usage: host=[host] port=[port] user=[username] password=[password]"
+    print("Usage: host=[host] port=[port] user=[username] password=[password]")
 
 
 def setUp(alpine_host, alpine_port, username, password):
@@ -99,17 +99,17 @@ def tearDown(alpine_host, alpine_port, username, password):
     alpine_session.login(username, password)
     # Delete the Datasource
     response = alpine_session.datasource.delete_db_data_source(sample_datasource_db_name)
-    print "Received response code {0} with reason {1}...".format(response.status_code, response.reason)
+    print("Received response code {0} with reason {1}...".format(response.status_code, response.reason))
     response = alpine_session.datasource.delete_hadoop_data_source(sample_datasource_hadoop_name)
-    print "Received response code {0} with reason {1}...".format(response.status_code, response.reason)
+    print("Received response code {0} with reason {1}...".format(response.status_code, response.reason))
 
     # Delete the workspace
     response = alpine_session.workspace.delete_workspace(sample_workspace_name)
-    print "Received response code {0} with reason {1}...".format(response.status_code, response.reason)
+    print("Received response code {0} with reason {1}...".format(response.status_code, response.reason))
 
     # Delete the user.
     response = alpine_session.user.delete_user(sample_username)
-    print "Received response code {0} with reason {1}...".format(response.status_code, response.reason)
+    print("Received response code {0} with reason {1}...".format(response.status_code, response.reason))
 
 
 def main(alpine_host, alpine_port, username, password):
@@ -181,7 +181,7 @@ def main(alpine_host, alpine_port, username, password):
                         "data_source_id": hadoop_data_source_id
                         }]
     workfile_info = alpine_session.workfile.upload(workspace_info['id'], afm_path, datasource_info)
-    print "Uploaded Workfile Info: {0}".format(workfile_info)
+    print("Uploaded Workfile Info: {0}".format(workfile_info))
 
     variables = [{"name": "@min_credit_line", "value": "7"}]
     process_id = alpine_session.workfile.process.run(workfile_info['id'], variables)
@@ -192,7 +192,7 @@ def main(alpine_host, alpine_port, username, password):
         if workfile_status in ["WORKING"]:
             time.sleep(10)
         elif workfile_status == "FINISHED":
-            print "Workfile Finished after waiting for {0} seconds".format(i*10)
+            print("Workfile Finished after waiting for {0} seconds".format(i*10))
             break
         else:
             raise RunFlowFailureException("Workflow run into unexpected stage: {0}".format(workfile_status))

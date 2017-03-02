@@ -18,22 +18,26 @@ import sys
 from alpine.exception import *
 from alpine import *
 if __name__ == '__main__':
+    try:
+        input = raw_input  # To runs in both Python 2 and Python 3
+    except NameError:
+        pass
     self = sys.modules['__main__']
-    #host = raw_input(">>> Host: ")
-    #port = raw_input(">>> Port: ")
-    #username = raw_input(">>> Login User: ")
-    #password = raw_input(">>> Password: ")
-    host = "10.10.0.204"
-    port = "8080"
-    username = "demoadmin"
-    password = "password"
+    host = input(">>> Host: ")
+    port = input(">>> Port: ")
+    username = input(">>> Login User: ")
+    password = input(">>> Password: ")
+    # host = "10.10.0.204"
+    # port = "8080"
+    # username = "demoadmin"
+    # password = "password"
     alpine = APIClient(host, port)
     alpine.login(username, password)
     # alpine = APIClient(host, port, username, password)
     while True:
-        # input_option = raw_input("Press Enter to Continue...")
-        print "----------------------------------------------------------------"
-        input_option = raw_input("Please select the number of functions you want to use: \n"
+        # input_option = input("Press Enter to Continue...")
+        print("----------------------------------------------------------------")
+        input_option = input("Please select the number of functions you want to use: \n"
                                  "1. view the list of users.\n"
                                  "2. view info of a user.\n"
                                  "3. delete users.\n"
@@ -49,7 +53,7 @@ if __name__ == '__main__':
                                                                       user['first_name'], user['last_name'],
                                                                       user['user_type'],user['dept'],user['title']))
         elif input_option == '2':
-            user_name = raw_input(">>> username: ")
+            user_name = input(">>> username: ")
             try:
                 user_id = alpine.user.get_id(user_name)
                 user = alpine.user.get(user_id)
@@ -62,7 +66,7 @@ if __name__ == '__main__':
                 print("User '{0}' Not Found".format(user_name))
 
         elif input_option == '3':
-            user_names = raw_input(">>> Please enter user names to be deleted, split by ',' : ")
+            user_names = input(">>> Please enter user names to be deleted, split by ',' : ")
             for user_name in user_names.split(','):
                 if not user_name:
                     continue
@@ -76,22 +80,22 @@ if __name__ == '__main__':
                             workspace['owner']['username']
                             if workspace['owner']['username'] == user_name:
                                 delete_safe_flag = False
-                                print "User '{0}' is owner of workspace '{1}', Please transfer ownership of " \
-                                      "active workspaces to another person.".format(user_name, workspace['name'])
+                                print ("User '{0}' is owner of workspace '{1}', Please transfer ownership of " \
+                                      "active workspaces to another person.".format(user_name, workspace['name']))
                     # Check whether there are any Datasource owned by the user
                     db_database_list = alpine.datasource.get_list("Database")
                     if db_database_list:
                         for db_datasource in db_database_list:
                             if db_datasource['owner']['username'] == user_name:
                                 delete_safe_flag = False
-                                print "User '{0}' is owner of data source '{1}', Please transfer ownership of " \
-                                      "the data source to another person.".format(user_name, db_datasource['name'])
+                                print ("User '{0}' is owner of data source '{1}', Please transfer ownership of " \
+                                      "the data source to another person.".format(user_name, db_datasource['name']))
                     # Delete the user when it is safe to do so.
                     if delete_safe_flag:
                         alpine.user.delete(user_id)
-                        print "User '{0}' successfully deleted".format(user_name)
+                        print ("User '{0}' successfully deleted".format(user_name))
                 except UserNotFoundException:
-                    print "User '{0}' not found, please double check the username exists".format(user_name)
+                    print ("User '{0}' not found, please double check the username exists".format(user_name))
                     continue
         else:
-            print "Invalid Input"
+            print("Invalid Input")

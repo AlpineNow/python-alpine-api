@@ -1,8 +1,12 @@
 import json
-from urlparse import urljoin
-from urlparse import urlparse
-from exception import *
-from alpineobject import AlpineObject
+try:
+    from urllib.parse import urlparse
+    from urllib.parse import urljoin
+except ImportError:
+    from urlparse import urlparse
+    from urlparse import urljoin
+from .exception import *
+from .alpineobject import AlpineObject
 
 
 class Job(AlpineObject):
