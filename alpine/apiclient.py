@@ -219,7 +219,7 @@ class APIClient(AlpineObject):
         """
         url = "{0}/VERSION".format(self.base_url)
         response = self.session.get(url)
-        return response.content.strip()
+        return response.content.strip().decode('utf-8')
 
     def get_license(self):
         # """

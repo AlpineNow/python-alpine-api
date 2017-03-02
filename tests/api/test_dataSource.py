@@ -1,4 +1,4 @@
-from alpineunittest import AlpineTestCase
+from .alpineunittest import AlpineTestCase
 from alpine.apiclient import APIClient
 from alpine.exception import *
 from future.datasource import *

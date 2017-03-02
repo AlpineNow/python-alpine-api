@@ -5,6 +5,23 @@
 # Copyright 2017 Alpine Data All Rights reserved.
 
 from __future__ import print_function
+import os
+
+version_major = 0
+version_minor = 0
+version_build = 0
+
+
+def __path(filename):
+    return os.path.join(os.path.dirname(__file__),
+                        filename)
+if os.path.exists(__path('build.info')):
+    build = open(__path('build.info')).read().strip()
+
+build = 0
+
+if os.path.exists(__path('build.info')):
+    build = open(__path('build.info')).read().strip()
 
 try:
     from setuptools import setup, find_packages
@@ -30,7 +47,7 @@ def readme():
 
 setup(
     name="alpine",
-    version='0.0.4',
+    version='{0}.{1}.{2}'.format(version_major, version_minor, version_build),
     description="Alpine Web API Client",
     long_description=readme(),
     author="Alpine Data, Inc.",

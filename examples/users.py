@@ -18,23 +18,23 @@ import sys
 from alpine.exception import *
 from alpine import *
 if __name__ == '__main__':
+    try:
+        input = raw_input  # To runs in both Python 2 and Python 3
+    except NameError:
+        pass
     self = sys.modules['__main__']
-    #host = input(">>> Host: ")
-    #port = input(">>> Port: ")
-    #username = input(">>> Login User: ")
-    #password = input(">>> Password: ")
-    host = "10.10.0.204"
-    port = "8080"
-    username = "demoadmin"
-    password = "password"
+    host = input(">>> Host: ")
+    port = input(">>> Port: ")
+    username = input(">>> Login User: ")
+    password = input(">>> Password: ")
+    # host = "10.10.0.204"
+    # port = "8080"
+    # username = "demoadmin"
+    # password = "password"
     alpine = APIClient(host, port)
     alpine.login(username, password)
     # alpine = APIClient(host, port, username, password)
     while True:
-        try:
-            input = raw_input   # To runs in both Python 2 and Python 3
-        except NameError:
-            pass
         # input_option = input("Press Enter to Continue...")
         print("----------------------------------------------------------------")
         input_option = input("Please select the number of functions you want to use: \n"
