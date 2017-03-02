@@ -30,16 +30,22 @@ def readme():
 
 setup(
     name="alpine",
-    version='0.0.1',
+    version='0.0.4',
     description="Alpine Web API Client",
     long_description=readme(),
     author="Alpine Data, Inc.",
     author_email="ggao@alpinenow.com",
     keywords='alpine api sdk chorus',
     url="https://github.com/alpinedatalabs/python-alpine-api",
+    packages=find_packages(exclude=['future', 'doc', "examples", 'tests*']),
+
     package_data={
         "alpine": ["logging.json"],
     },
+    package_dir = {
+        'alpine': 'alpine',
+    },
+
     install_requires=install_requires,
 
     license="TODO",       #TODO
