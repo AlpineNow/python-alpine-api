@@ -19,10 +19,10 @@ from alpine.exception import *
 from alpine import *
 if __name__ == '__main__':
     self = sys.modules['__main__']
-    #host = raw_input(">>> Host: ")
-    #port = raw_input(">>> Port: ")
-    #username = raw_input(">>> Login User: ")
-    #password = raw_input(">>> Password: ")
+    #host = input(">>> Host: ")
+    #port = input(">>> Port: ")
+    #username = input(">>> Login User: ")
+    #password = input(">>> Password: ")
     host = "10.10.0.204"
     port = "8080"
     username = "demoadmin"
@@ -31,16 +31,21 @@ if __name__ == '__main__':
     alpine.login(username, password)
     # alpine = APIClient(host, port, username, password)
     while True:
-        # input_option = raw_input("Press Enter to Continue...")
+        try:
+            input = raw_input   # To runs in both Python 2 and Python 3
+        except NameError:
+            pass
+        # input_option = input("Press Enter to Continue...")
         print("----------------------------------------------------------------")
-        input_option = raw_input("Please select the number of functions you want to use: \n"
+        input_option = input("Please select the number of functions you want to use: \n"
                                  "1. view the list of users.\n"
                                  "2. view info of a user.\n"
                                  "3. delete users.\n"
                                  "q. exit.\n")
-        if input_option == 'q':
+        print(input_option)
+        if str(input_option) == 'q':
             break
-        if input_option == '1':
+        if str(input_option) == '1':
             user_list = alpine.user.get_list()
             print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}".format("User_ID", "User Name", "Email","First Name",
                                                                   "Last Name", "App Role", "Department", "Title"))
@@ -48,8 +53,8 @@ if __name__ == '__main__':
                 print("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}".format(user['id'], user['username'], user['email'],
                                                                       user['first_name'], user['last_name'],
                                                                       user['user_type'],user['dept'],user['title']))
-        elif input_option == '2':
-            user_name = raw_input(">>> username: ")
+        elif str(input_option) == '2':
+            user_name = input(">>> username: ")
             try:
                 user_id = alpine.user.get_id(user_name)
                 user = alpine.user.get(user_id)
@@ -61,8 +66,8 @@ if __name__ == '__main__':
             except UserNotFoundException:
                 print("User '{0}' Not Found".format(user_name))
 
-        elif input_option == '3':
-            user_names = raw_input(">>> Please enter user names to be deleted, split by ',' : ")
+        elif str(input_option) == '3':
+            user_names = input(">>> Please enter user names to be deleted, split by ',' : ")
             for user_name in user_names.split(','):
                 if not user_name:
                     continue
@@ -94,4 +99,4 @@ if __name__ == '__main__':
                     print ("User '{0}' not found, please double check the username exists".format(user_name))
                     continue
         else:
-            print "Invalid Input"
+            print("Invalid Input")
