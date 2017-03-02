@@ -54,7 +54,7 @@ setup(
     author="Alpine Data, Inc.",
     author_email="ggao@alpinenow.com",
     keywords='alpine api sdk chorus',
-    url="https://github.com/alpinedatalabs/python-alpine-api",
+    url="https://github.com/alpinedatalabs/python-alpine-api",  #TODO
     packages=find_packages(exclude=['future', 'doc', "examples", 'tests*']),
 
     package_data={
