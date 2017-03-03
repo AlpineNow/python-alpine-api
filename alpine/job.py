@@ -193,7 +193,7 @@ class Job(AlpineObject):
 
         Example::
 
-            >>> job_id = session.job.get_id(workspace_id = 1672, "DemoJob")
+            >>> job_id = session.job.get_id(workspace_id = 1672, job_name = "DemoJob")
             >>> print(job_id)
             675
 
@@ -381,7 +381,7 @@ class Job(AlpineObject):
 
             Example::
 
-                >>> session.job.task.get_id(workspace_id = 1672, job_id = 675, "Run test2")
+                >>> session.job.task.get_id(workspace_id = 1672, job_id = 675, task_name = "Run test2")
                 344
 
             """
