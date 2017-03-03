@@ -35,16 +35,15 @@ class APIClient(AlpineObject):
         Sets internal values for Alpine API session. If username and password are supplied then a login is
         attempted. This is useful to check Alpine url and user login parameters.
 
-        :param string host: hostname or ip address of the Alpine server
-        :param string port: port number for Alpine
-        :param string username: username to login with
-        :param string password: password to login with
-        :param bool is_secure:
+        :param str host: Hostname or ip address of the Alpine server.
+        :param str port: Port number for Alpine.
+        :param str username: Username to login with.
+        :param str password: Password to login with.
+        :param bool is_secure: True for https else false.
         :param bool validate_certs:
-        :param ??? ca_certs:
-        :param string token: Alpine API authentication token
-        :param string logging_level: Use to set a logging
-        level. See https://docs.python.org/2/howto/logging.html#logging-levels.
+        :param ca_certs:
+        :param str token: Alpine API authentication token.
+        :param str logging_level: Use to set the logging level. See https://docs.python.org/2/howto/logging.html#logging-levels.
         :return: None
         """
 
@@ -79,10 +78,10 @@ class APIClient(AlpineObject):
         Attempts a login to Alpine with provided username and password. Typically login is handled at
         session-creation time.
 
-        :param string username: username to login with
-        :param string password: password to login with
-        :return: returns a Alpine API authentication token to be used for other actions
-        :rtype: string
+        :param str username: Username to login with.
+        :param str password: Password to login with.
+        :return: Logged-in user's metadata.
+        :rtype: dict
 
         Example::
 
@@ -164,7 +163,7 @@ class APIClient(AlpineObject):
         """
         Returns information about the currently logged-in user. Or, if no user if logged-in, returns an empty dict.
 
-        :return: Current login status.
+        :return: Logged-in user's metadata.
         :rtype: dict
 
         Example::
@@ -222,17 +221,17 @@ class APIClient(AlpineObject):
         return response.content.strip().decode('utf-8')
 
     def get_license(self):
-        # """
-        # Get the the current license information for Alpine.
-        #
-        # :return: Summary of Alpine license information - expiration, user limits, add-ons.
-        # :rtype: dict
-        #
-        # Example::
-        #
-        #     >>> license_info = session.get_license()
-        #
-        # """
+        """
+        Get the the current license information for Alpine.
+
+        :return: Summary of Alpine license information - expiration, user limits, add-ons, etc.
+        :rtype: dict
+
+        Example::
+
+            >>> license_info = session.get_license()
+
+        """
         url = self.base_url + "/license"
         response = self.session.get(url)
         try:

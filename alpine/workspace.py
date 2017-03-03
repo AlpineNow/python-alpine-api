@@ -62,7 +62,7 @@ class Workspace(AlpineObject):
         """
         Attempts to delete the given workspace. Will fail if the workspace does not exist.
 
-        :param str workspace_id: Id of the workspace to be deleted.
+        :param str workspace_id: ID number of the workspace to be deleted.
         :return: None
         :rtype: NoneType
         :exception WorkspaceNotFoundException: The workspace does not exist.
@@ -78,7 +78,7 @@ class Workspace(AlpineObject):
             url = "{0}/workspaces/{1}".format(self.base_url, workspace_id)
             url = self._add_token_to_url(url)
 
-            self.logger.debug("Deleting workspace with id {0}".format(workspace_id))
+            self.logger.debug("Deleting workspace with ID: {0}".format(workspace_id))
             response = self.session.delete(url)
             self.logger.debug("Received response code {0} with reason {1}"
                               .format(response.status_code, response.reason))
@@ -96,7 +96,7 @@ class Workspace(AlpineObject):
         Get a list of metadata for each workspace. If username is provided, only workspaces that the user \
         is a member of will be returned.
 
-        :param str user_id: Id of the user.
+        :param str user_id: ID number of the user.
         :param bool active: Optionally only return active workspaces. True will return only the active spaces.
         :param int per_page: How many workspaces to return in each page.
 
@@ -173,19 +173,19 @@ class Workspace(AlpineObject):
         workspace_response = r.json()
         try:
             if workspace_response['response']:
-                self.logger.debug("Found workspace id: <{0}> in list...".format(workspace_id))
+                self.logger.debug("Found workspace ID: <{0}> in list...".format(workspace_id))
                 return workspace_response['response']
             else:
-                raise WorkspaceNotFoundException("Workspace id: <{0}> not found".format(workspace_id))
+                raise WorkspaceNotFoundException("Workspace ID: <{0}> not found".format(workspace_id))
         except Exception as err:
-            raise WorkspaceNotFoundException("Workspace id: <{0}> not found".format(workspace_id))
+            raise WorkspaceNotFoundException("Workspace ID: <{0}> not found".format(workspace_id))
 
     def get_id(self, workspace_name, user_id=None):
         """
-        Get the ID number of the workspace. Will throw an exception if the workspace doens't exist.
+        Get the ID number of the workspace. Will throw an exception if the workspace does not exist.
 
         :param str workspace_name: Unique workspace name.
-        :param int user_id: Id of a user.
+        :param int user_id: ID number of a user.
         :return: ID number of the workspace.
         :rtype: int
         :exception WorkspaceNotFoundException: The workspace does not exist.
@@ -214,7 +214,7 @@ class Workspace(AlpineObject):
         :param bool is_active: Sets active vs. archived status.
         :param str name: New name for the workspace.
         :param str summary: New description of the workspace.
-        :param int stage: Stage ID. Use the Workspace.Stage object for convenience.
+        :param int stage: Stage ID number. Use the Workspace.Stage object for convenience.
         :param int owner_id: ID number of the new workspace owner. Must also be a member of the workspace.
         :return: Updated workspace metadata
         :rtype: dict
@@ -257,12 +257,12 @@ class Workspace(AlpineObject):
             for member in members:
                 if member['id'] == owner_id:
                     is_member = True
-                    self.logger.debug("User with id: <{0}> is a member of the workspace id: <{1}>, OK to update owner"
+                    self.logger.debug("User with ID: <{0}> is a member of the workspace Id: <{1}>, OK to update owner"
                                       .format(owner_id, workspace_id))
                     payload["owner_id"] = owner_id
             if not is_member:
-                raise WorkspaceMemberNotFoundException("The user with id: <{0}> is not a member of workspace id: <{1}> "
-                                                       "Cannot assing it as the new owner."
+                raise WorkspaceMemberNotFoundException("The user with Id: <{0}> is not a member of workspace ID: <{1}> "
+                                                       "Cannot assign as the new owner."
                                                        .format(owner_id, workspace_id)
                                                        )
 
@@ -289,9 +289,9 @@ class Workspace(AlpineObject):
 
             :param str workspace_id: ID number of the workspace.
             :param int int per_page: Maximum number to fetch with each API call.
-            :return: A list of user data
+            :return: A list of user data.
             :rtype: list of dict
-            :exception WorkspaceNotFoundException: The workspace id does not exist.
+            :exception WorkspaceNotFoundException: The workspace does not exist.
 
             Example::
 
@@ -327,11 +327,11 @@ class Workspace(AlpineObject):
 
             :param int workspace_id: ID number of the workspace.
             :param int user_id: ID number of member to add to the workspace.
-            :param str role: Role for the user. Ref to Workspace.MemberRole. The default role is Workspace.MemberRole.ProjectMember
-            :return: Updated member list
+            :param str role: Role for the user. Use Workspace.MemberRole for convenience.
+            :return: Updated member list.
             :rtype: list of dict
-            :exception WorkspaceNotFoundException: The workspace id does not exist.
-            :exception UserNotFoundException: The user id  does not exist.
+            :exception WorkspaceNotFoundException: The workspace ID number does not exist.
+            :exception UserNotFoundException: The user ID number does not exist.
 
             Example::
 
@@ -362,10 +362,10 @@ class Workspace(AlpineObject):
 
             :param int workspace_id: ID number of the workspace.
             :param int user_id: ID number of member to add to the workspace.
-            :return: Updated member list
+            :return: Updated member list.
             :rtype: list of dict
-            :exception WorkspaceNotFoundException: The workspace id does not exist.
-            :exception UserNotFoundException: The user id  does not exist.
+            :exception WorkspaceNotFoundException: The workspace Id number does not exist.
+            :exception UserNotFoundException: The user Id number  does not exist.
 
             Example::
 
@@ -380,7 +380,7 @@ class Workspace(AlpineObject):
             for member in members:
                 if member['id'] == user_id:
                     self.logger.debug(
-                        "Remove the user with id: <{0}> from workspace with id <{1}>".format(user_id, workspace_id)
+                        "Remove the user with ID: <{0}> from workspace with ID <{1}>".format(user_id, workspace_id)
                     )
                     continue
                 else:
@@ -394,10 +394,11 @@ class Workspace(AlpineObject):
 
             :param int workspace_id: ID number of the workspace.
             :param int user_id: ID number of member to update.
-            :param str new_role: New role of the user.
+            :param str new_role: New role for the user. Use Workspace.MemberRole for convenience.
+
             :return: Updated member list
             :rtype: list of dict
-            :exception WorkspaceNotFoundException: The workspace id does not exist.
+            :exception WorkspaceNotFoundException: The workspace does not exist.
 
             Example::
 
@@ -442,7 +443,7 @@ class Workspace(AlpineObject):
 
     class Stage(object):
         """
-        Convenience id for workspace stages.
+        Convenience IDs for workspace stages.
         """
         Define = 1
         Transform = 2
@@ -471,4 +472,3 @@ class Workspace(AlpineObject):
         DataEngineer = "Data Engineer"
         ApplicationEngineer = "Application Engineer"
         ProjectManager = "Project Manager"
-

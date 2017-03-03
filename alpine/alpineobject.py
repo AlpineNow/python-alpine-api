@@ -45,10 +45,9 @@ class AlpineObject(object):
         """
         Sets internal values for logging through a file or an environmental variable
 
-        :param str default_configuration_setting_file: Path to logging config file. Will be overwrite by environment
+        :param str default_configuration_setting_file: Path to logging config file. Will be overwritten by environment
          variable if it exists.
-        :param default_level: See possible levels here
-        https://docs.python.org/2/library/logging.html#logging-levels
+        :param default_level: See possible levels here: https://docs.python.org/2/library/logging.html#logging-levels
         :param str env_key: Name of environment variable with logging setting.
         :return: None
         """
