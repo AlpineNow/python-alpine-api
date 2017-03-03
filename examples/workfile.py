@@ -29,73 +29,68 @@ def help():
 def setUp(alpine_host, alpine_port, username, password):
     global db_data_source_id
     global hadoop_data_source_id
-    global sample_datasource_db_name
-    global sample_datasource_hadoop_name
+    # Demo Database Info (Greenplum)
     sample_datasource_db_name = "Demo_GP"
+    sample_datasource_db_description = "Test Greenplum"
+    sample_datasource_db_host = "10.10.0.151"
+    sample_datasource_db_port = 5432
+    sample_datasource_db_database_name = "miner_demo"
+    sample_datasource_db_database_username = "miner_demo"
+    sample_datasource_db_database_password = "miner_demo"
+
+    # Demo Hadoop Info (Cloudera CDH5.7)
     sample_datasource_hadoop_name = "Demo_Hadoop"
+    sample_datasource_hadoop_version_string = "Cloudera CDH5.4-5.7"
+    sample_datasource_hadoop_description = "Test Cloudera"
+    sample_datasource_hadoop_namenode_host = "awscdh57singlenode.alpinenow.local"
+    sample_datasource_hadoop_namenode_port = 8020
+    sample_datasource_hadoop_resource_manager_host = "awscdh57singlenode.alpinenow.local"
+    sample_datasource_hadoop_resource_manager_port = 8032
+    sample_datasource_hadoop_username = "yarn"
+    sample_datasource_hadoop_group_list = "hadoop"
+    sample_datasource_hadoop_additional_parameters = [
+        {"key": "mapreduce.jobhistory.address", "value": "awscdh57singlenode.alpinenow.local:10020"},
+        {"key": "mapreduce.jobhistory.webapp.address", "value": "awscdh57singlenode.alpinenow.local:19888"},
+        {"key": "yarn.app.mapreduce.am.staging-dir", "value": "/tmp"},
+        {"key": "yarn.resourcemanager.admin.address", "value": "awscdh57singlenode.alpinenow.local:8033"},
+        {"key": "yarn.resourcemanager.resource-tracker.address",
+         "value": "awscdh57singlenode.alpinenow.local:8031"},
+        {"key": "yarn.resourcemanager.scheduler.address", "value": "awscdh57singlenode.alpinenow.local:8030"}
+    ]
     alpine_session = APIClient(alpine_host, alpine_port)
     # Login with the admin user credential
     alpine_session.login(username, password)
-    db_data_source_id = alpine_session.datasource.get_id(sample_datasource_db_name, "Database")
-    hadoop_data_source_id = alpine_session.datasource.get_id(sample_datasource_hadoop_name, "Hadoop")
+    ds = DataSource(alpine_session.base_url, alpine_session.session, alpine_session.token)
+    ds.delete_db_data_source_if_exists(sample_datasource_db_name)
+    datasource_gp = ds.add_greenplum_data_source(sample_datasource_db_name,
+                                                                        sample_datasource_db_description,
+                                                                        sample_datasource_db_host,
+                                                                        sample_datasource_db_port,
+                                                                        sample_datasource_db_database_name,
+                                                                        sample_datasource_db_database_username,
+                                                                        sample_datasource_db_database_password)
 
-    # # Demo Database Info (Greenplum)
-    # sample_datasource_db_description = "Test Greenplum"
-    # sample_datasource_db_host = "10.10.0.151"
-    # sample_datasource_db_port = 5432
-    # sample_datasource_db_database_name = "miner_demo"
-    # sample_datasource_db_database_username = "miner_demo"
-    # sample_datasource_db_database_password = "miner_demo"
-    #
-    # # Demo Hadoop Info (Cloudera CDH5.7)
-    # sample_datasource_hadoop_version_string = "Cloudera CDH5.4-5.7"
-    # sample_datasource_hadoop_description = "Test Cloudera"
-    # sample_datasource_hadoop_namenode_host = "awscdh57singlenode.alpinenow.local"
-    # sample_datasource_hadoop_namenode_port = 8020
-    # sample_datasource_hadoop_resource_manager_host = "awscdh57singlenode.alpinenow.local"
-    # sample_datasource_hadoop_resource_manager_port = 8032
-    # sample_datasource_hadoop_username = "yarn"
-    # sample_datasource_hadoop_group_list = "hadoop"
-    # sample_datasource_hadoop_additional_parameters = [
-    #     {"key": "mapreduce.jobhistory.address", "value": "awscdh57singlenode.alpinenow.local:10020"},
-    #     {"key": "mapreduce.jobhistory.webapp.address", "value": "awscdh57singlenode.alpinenow.local:19888"},
-    #     {"key": "yarn.app.mapreduce.am.staging-dir", "value": "/tmp"},
-    #     {"key": "yarn.resourcemanager.admin.address", "value": "awscdh57singlenode.alpinenow.local:8033"},
-    #     {"key": "yarn.resourcemanager.resource-tracker.address",
-    #      "value": "awscdh57singlenode.alpinenow.local:8031"},
-    #     {"key": "yarn.resourcemanager.scheduler.address", "value": "awscdh57singlenode.alpinenow.local:8030"}
-    # ]
-    # ds = DataSource(alpine_session.base_url, alpine_session.session, alpine_session.token)
-    # ds.delete_db_data_source_if_exists(sample_datasource_db_name)
-    # datasource_gp = ds.add_greenplum_data_source(sample_datasource_db_name,
-    #                                                                     sample_datasource_db_description,
-    #                                                                     sample_datasource_db_host,
-    #                                                                     sample_datasource_db_port,
-    #                                                                     sample_datasource_db_database_name,
-    #                                                                     sample_datasource_db_database_username,
-    #                                                                     sample_datasource_db_database_password)
-    #
-    # # Create a Hadoop datasource
-    # ds.delete_hadoop_data_source_if_exists(sample_datasource_hadoop_name)
-    #
-    # datasource_hadoop = ds.add_hadoop_data_source(sample_datasource_hadoop_version_string,
-    #                                                                      sample_datasource_hadoop_name,
-    #                                                                      sample_datasource_hadoop_description,
-    #                                                                      sample_datasource_hadoop_namenode_host,
-    #                                                                      sample_datasource_hadoop_namenode_port,
-    #                                                                      sample_datasource_hadoop_resource_manager_host,
-    #                                                                      sample_datasource_hadoop_resource_manager_port,
-    #                                                                      sample_datasource_hadoop_username,
-    #                                                                      sample_datasource_hadoop_group_list,
-    #                                                                      sample_datasource_hadoop_additional_parameters
-    #                                                                      )
-    #
-    # db_data_source_id = datasource_gp['id']
-    # hadoop_data_source_id = datasource_hadoop['id']
+    # Create a Hadoop datasource
+    ds.delete_hadoop_data_source_if_exists(sample_datasource_hadoop_name)
 
+    datasource_hadoop = ds.add_hadoop_data_source(sample_datasource_hadoop_version_string,
+                                                                         sample_datasource_hadoop_name,
+                                                                         sample_datasource_hadoop_description,
+                                                                         sample_datasource_hadoop_namenode_host,
+                                                                         sample_datasource_hadoop_namenode_port,
+                                                                         sample_datasource_hadoop_resource_manager_host,
+                                                                         sample_datasource_hadoop_resource_manager_port,
+                                                                         sample_datasource_hadoop_username,
+                                                                         sample_datasource_hadoop_group_list,
+                                                                         sample_datasource_hadoop_additional_parameters
+                                                                         )
+    db_data_source_id = datasource_gp['id']
+    hadoop_data_source_id = datasource_hadoop['id']
 
 
 def tearDown(alpine_host, alpine_port, username, password):
+    sample_datasource_db_name = "Demo_GP"
+    sample_datasource_hadoop_name = "Demo_Hadoop"
     sample_username = "test_user"
     sample_workspace_name = "API Sample Workspace"
 
@@ -103,8 +98,10 @@ def tearDown(alpine_host, alpine_port, username, password):
     # Login with the admin user credential
     alpine_session.login(username, password)
     # Delete the Datasource
-    # alpine_session.datasource.delete_db_data_source(sample_datasource_db_name)
-    # response = alpine_session.datasource.delete_hadoop_data_source(sample_datasource_hadoop_name)
+    response = alpine_session.datasource.delete_db_data_source(sample_datasource_db_name)
+    print("Received response code {0} with reason {1}...".format(response.status_code, response.reason))
+    response = alpine_session.datasource.delete_hadoop_data_source(sample_datasource_hadoop_name)
+    print("Received response code {0} with reason {1}...".format(response.status_code, response.reason))
 
     # Delete the workspace
     response = alpine_session.workspace.delete_workspace(sample_workspace_name)

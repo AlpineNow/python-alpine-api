@@ -1,6 +1,5 @@
-from alpine import APIClient
+from alpine.apiclient import APIClient
 from alpine.exception import *
-from alpine.workspace import *
 
 from .alpineunittest import AlpineTestCase
 

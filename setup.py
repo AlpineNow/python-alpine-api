@@ -40,7 +40,6 @@ if sys.version_info <= (2, 6):
 
 install_requires = [
     'requests >= 2.13.0',
-    'pytz',
     ]
 
 def readme():

@@ -15,17 +15,11 @@ class Workspace(AlpineObject):
     """
     member = None
 
-    @property
-    def stage(self):
-        return self.Stage()
-
-    @property
-    def memberRole(self):
-        return self.MemberRole()
-
     def __init__(self, base_url, session, token):
         super(Workspace, self).__init__(base_url, session, token)
         self.member = self.Member(base_url, session, token)
+        self.stage = self.Stage()
+        self.memberRole = self.MemberRole()
 
     def create(self, workspace_name, public=False, summary=None):
         """
@@ -62,7 +56,7 @@ class Workspace(AlpineObject):
         """
         Attempts to delete the given workspace. Will fail if the workspace does not exist.
 
-        :param str workspace_id: Id of the workspace to be deleted.
+        :param str workspace_name: Workspace to be deleted.
         :return: None
         :rtype: NoneType
         :exception WorkspaceNotFoundException: The workspace does not exist.
@@ -185,7 +179,6 @@ class Workspace(AlpineObject):
         Get the ID number of the workspace. Will throw an exception if the workspace doens't exist.
 
         :param str workspace_name: Unique workspace name.
-        :param int user_id: Id of a user.
         :return: ID number of the workspace.
         :rtype: int
         :exception WorkspaceNotFoundException: The workspace does not exist.
@@ -321,13 +314,13 @@ class Workspace(AlpineObject):
                     break
             return member_list
 
-        def add(self, workspace_id, user_id, role=None):
+        def add(self, workspace_id, user_id, role):
             """
             Add a new user to the workspace member list.
 
             :param int workspace_id: ID number of the workspace.
             :param int user_id: ID number of member to add to the workspace.
-            :param str role: Role for the user. Ref to Workspace.MemberRole. The default role is Workspace.MemberRole.ProjectMember
+            :param str role: Role for the user.
             :return: Updated member list
             :rtype: list of dict
             :exception WorkspaceNotFoundException: The workspace id does not exist.
@@ -339,8 +332,6 @@ class Workspace(AlpineObject):
                 >>>                              role = session.workspace.memberRole.DataScientist)
 
             """
-            if role is None:
-                role = Workspace.MemberRole.ProjectMember
             members = self.get_list(workspace_id)
             user_info = User(self.base_url, self.session, self.token).get(user_id)
             members.append(user_info)
@@ -441,17 +432,12 @@ class Workspace(AlpineObject):
                 return response.json()
 
     class Stage(object):
-        """
-        Convenience id for workspace stages.
-        """
-        Define = 1
-        Transform = 2
-        Model = 3
-        Deploy = 4
-        Act = 5
-
         def __init__(self):
-            pass
+            self.Define = 1
+            self.Transform = 2
+            self.Model = 3
+            self.Deploy = 4
+            self.Act = 5
 
         def __iter__(self):
             i = self.Define
@@ -460,15 +446,12 @@ class Workspace(AlpineObject):
                 i += 1
 
     class MemberRole(object):
-        """
-        Convenience strings for user workspace member roles.
-        """
-        ProjectMember = "Project Member"
-        BusinessOwner = "Business Owner"
-        BusinessAnalyst = "Business Analyst"
-        DataScienceManager = "Data Science Manager"
-        DataScientist = "Data Scientist"
-        DataEngineer = "Data Engineer"
-        ApplicationEngineer = "Application Engineer"
-        ProjectManager = "Project Manager"
-
+        def __init__(self):
+            self.ProjectMember = "Project Member"
+            self.BusinessOwner = "Business Owner"
+            self.BusinessAnalyst = "Business Analyst"
+            self.DataScienceManager = "Data Science Manager"
+            self.DataScientist = "Data Scientist"
+            self.DataEngineer = "Data Engineer"
+            self.ApplicationEngineer = "Application Engineer"
+            self.ProjectManager = "Project Manager"

@@ -81,13 +81,6 @@ class TaskNotFoundException(AlpineException):
     pass
 
 
-class RunJobFailureException(AlpineException):
-    """
-
-    """
-    pass
-
-
 class LoginFailureException(AlpineException):
     """
 
