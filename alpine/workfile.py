@@ -31,9 +31,9 @@ class Workfile(AlpineObject):
         """
         Return all workfiles in a workspace.
 
-        :param int workspace_id: Id of workspace.
-        :param int per_page: Number of workfiles to get in each call.
-        :return: List of workfiles' metadata
+        :param int workspace_id: ID number of workspace.
+        :param int per_page: Maximum number to fetch with each API call.
+        :return: List of workfiles' metadata.
         :rtype: list of dict
         :exception WorkspaceNotFoundException: The workspace does not exist.
 
@@ -70,8 +70,8 @@ class Workfile(AlpineObject):
         """
         Return metadata for one workfile.
 
-        :param str workfile_id: Id of workfile.
-        :return: One workfile's metadata
+        :param str workfile_id: ID number of workfile.
+        :return: One workfile's metadata.
         :rtype: dict
         :exception WorkspaceNotFoundException: The workspace does not exist.
         :exception WorkfileNotFoundException: The workfile does not exist.
@@ -92,20 +92,20 @@ class Workfile(AlpineObject):
 
         try:
             if workfile_response['response']:
-                self.logger.debug("Found workfile id: <{0}> in list...".format(workfile_id))
+                self.logger.debug("Found workfile ID: <{0}> in list...".format(workfile_id))
                 return workfile_response
             else:
-                raise WorkfileNotFoundException("Workfile id: <{0}> not found".format(workfile_id))
+                raise WorkfileNotFoundException("Workfile ID: <{0}> not found".format(workfile_id))
         except Exception:
-            raise WorkfileNotFoundException("Workfile id: <{0}> not found".format(workfile_id))
+            raise WorkfileNotFoundException("Workfile ID: <{0}> not found".format(workfile_id))
 
     def get_id(self, workfile_name, workspace_id):
         """
         Return the ID number of a workfile in a workspace.
 
         :param str workfile_name: Name of workfile.
-        :param int workspace_id: Id of workspace that contains the workfile.
-        :return: ID number of workfile
+        :param int workspace_id: ID number of workspace that contains the workfile.
+        :return: ID number of workfile.
         :rtype: int
         :exception WorkspaceNotFoundException: The workspace does not exist.
         :exception WorkfileNotFoundException: The workfile does not exist.
@@ -145,7 +145,7 @@ class Workfile(AlpineObject):
             self.logger.debug("We have constructed the URL and the URL is {0}...".format(url))
 
             # POSTing a HTTP DELETE
-            self.logger.debug("Deleting the workfile with id: <{0}>".format(workfile_id))
+            self.logger.debug("Deleting the workfile with ID: <{0}>".format(workfile_id))
             response = self.session.delete(url, verify=False)
             self.logger.debug(
                 "Received response code {0} with reason {1}...".format(response.status_code, response.reason))
@@ -161,11 +161,11 @@ class Workfile(AlpineObject):
     def upload(self, workspace_id, afm_file, data_sources_list):
         # TODO: database admins only?
         """
-        Uploads an Alpine workfile file (.afm format). Will attempt to alter the workfile to use the data source(s)
+        Uploads an Alpine workfile file (.afm format). Will alter the workfile to use the data source(s)
         chosen. Operators within a workflow must remain consistent with type of datasource, e.g. a workflow built with
         on a Hadoop datasource can be converted to use a different Hadoop datasource, but not to a database.
 
-        :param int workspace_id: ID of workspace
+        :param int workspace_id: ID number of workspace.
         :param str afm_file: Local path to the Alpine workfile (.afm).
         :param list data_sources_list: A list of data source information with the following format: datasource_info = [{"data_source_type": DataSource.dsType.HadoopCluster, "data_source_id": "1", "database_id":""},{"data_source_type": DataSource.dsType.JDBCDataSource, "data_source_id": "421", "database_id": ""},{"data_source_type": DataSource.dsType.GreenplumDatabase, "data_source_id": "1", "database_id": "42"}]
         :return: One workfile's metadata.
@@ -257,7 +257,7 @@ class Workfile(AlpineObject):
 
             :param str operator_name: Operator name to extract. Must be an exact match to the name in the workflow.
             :param dict flow_results: JSON object of Alpine flow results from download_results.
-            :return: Single operator dictionary.
+            :return: Single operator data.
             :rtype: dict
             :exception FlowResultsMalformedException: Workflow result does not contain the key ['outputs'].
 
@@ -302,8 +302,8 @@ class Workfile(AlpineObject):
             Run a workflow, optionally including a list of workflow variables. Returns a process_id which is needed by \
             other functions which query a run or download results.
 
-            :param str workflow_id: ID of workflow.
-            :param list variables: A list of workflow variables, each item with the format: [{"name": "@wfv_name", "value": "wfv_value"}]
+            :param str workflow_id: ID number of workflow.
+            :param list variables: A list of workflow variables, each item with the format: [{"name": "wfv_name", "value": "wfv_value"}]
             :return: ID number for the workflow run process.
             :rtype: str
             :exception WorkspaceNotFoundException: The workspace does not exist.
@@ -377,7 +377,7 @@ class Workfile(AlpineObject):
                         return "WORKING"
                 except ValueError:
                     if response.text == 'Workflow not started or already stopped.\n' or \
-                                    response.text == "invalid processId or workflow already stopped.\n":
+                                    response.text == "invalid processID or workflow already stopped.\n":
                         return "FINISHED"
                     else:
                         return "FAILED"
@@ -386,9 +386,9 @@ class Workfile(AlpineObject):
 
         def download_results(self, workflow_id, process_id):
             """
-            Download and store locally a workflow run result.
+            Download a workflow run result.
 
-            :param str workflow_id: Id of workflow.
+            :param str workflow_id: ID of workflow.
             :param ste process_id: ID number of a particular workflow run.
             :return: JSON object of workflow results.
             :rtype: dict
@@ -406,11 +406,10 @@ class Workfile(AlpineObject):
             url = "{0}/workflows/{1}/results/{2}".format(self.alpine_base_url, workflow_id, process_id)
             response = self.session.get(url)
             self.logger.debug(response.content)
-            # print(response.status_code)
-            # print(response.json())
+
             if response.status_code == 200:
                 if response.content == "\"\"":
-                    raise ResultsNotFoundException("Could not find run results for process id <{0}>"
+                    raise ResultsNotFoundException("Could not find run results for process ID <{0}>"
                                                    .format(process_id))
                 else:
                     return json.loads(response.json())
@@ -472,11 +471,6 @@ class Workfile(AlpineObject):
                 wait_count += 1
                 wait_total = time.time() - start
 
-                # self.logger.debug(
-                #     "Workflow status: {0}, on query {1} sleeping for {2} seconds".format(workflow_status,
-                #                                                                          wait_count,
-                #                                                                          wait_total))
-
                 if wait_total >= timeout:
                     stop_status = self.stop(process_id)
                     raise RunFlowTimeoutException(
@@ -489,6 +483,6 @@ class Workfile(AlpineObject):
                 time.sleep(query_time)
 
                 if workflow_status == "FAILED":
-                    raise RunFlowFailureException("The workflow with process id: {0} failed.".format(process_id))
+                    raise RunFlowFailureException("The workflow with process ID: {0} failed.".format(process_id))
                 workflow_status = self.query_status(process_id)
             return workflow_status

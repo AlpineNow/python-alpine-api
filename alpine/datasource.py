@@ -19,7 +19,7 @@ class DataSource(AlpineObject):
         Get a list of metadata for all data sources.
 
         :param str type: Type of the data source. Either "Database", "Hadoop", or None for both types.
-        :param int per_page: How many data sources to return in each page.
+        :param int per_page: Maximum number to fetch with each API call.
         :return: List of data sources' metadata.
         :rtype: list of dict
 
@@ -96,7 +96,7 @@ class DataSource(AlpineObject):
         """
         Get one data source's metadata.
 
-        :param int ds_id: A unique id of the data source.
+        :param int ds_id: A unique ID number of the data source.
         :param str type: Data source type. Either "Database" or "Hadoop".
         :return: One data source's metadata.
         :rtype: dict
@@ -126,12 +126,12 @@ class DataSource(AlpineObject):
 
         try:
             if ds_response['response']:
-                self.logger.debug("Found {0} Datasource with id: <{1}>".format(type, ds_id))
+                self.logger.debug("Found {0} Datasource with ID: <{1}>".format(type, ds_id))
                 return ds_response['response']
             else:
-                raise DataSourceNotFoundException("{0} Datasource id: <{1}> not found".format(type, ds_id))
+                raise DataSourceNotFoundException("{0} Datasource ID: <{1}> not found".format(type, ds_id))
         except Exception as err:
-            raise DataSourceNotFoundException("{0} Datasource id: <{1}> not found".format(type, ds_id))
+            raise DataSourceNotFoundException("{0} Datasource ID: <{1}> not found".format(type, ds_id))
 
     def get_id(self, name, type=None):
         """
@@ -154,15 +154,14 @@ class DataSource(AlpineObject):
         for ds_info in ds_list:
             if ds_info['name'] == name:
                 return ds_info['id']
-        # return None
-        raise DataSourceNotFoundException("Datasource with id: <{0}> and type: <{1}> not found".format(name, type))
+        raise DataSourceNotFoundException("Datasource with ID: <{0}> and type: <{1}> not found".format(name, type))
 
     def get_database_list(self, data_source_id, per_page=100):
         """
         Return a list of metadata for all databases in a data source.
 
-        :param int data_source_id: ID of the data source.
-        :param int per_page: How many data sources to return in each page.
+        :param int data_source_id: ID number of the data source.
+        :param int per_page: Maximum number to fetch with each API call.
         :return: List of database metadata.
         :rtype: list of dict
 

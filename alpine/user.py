@@ -88,7 +88,7 @@ class User(AlpineObject):
         """
         Attempts to delete the given user. Will fail if the user does not exist.
 
-        :param int user_id: user_id of account to be deleted.
+        :param int user_id: ID number of user account to be deleted.
         :return: None
         :rtype: NoneType
         :exception UserNotFoundException: The username does not exist.
@@ -121,7 +121,7 @@ class User(AlpineObject):
         """
         Only included fields will be updated.
 
-        :param str user_id: A unique user_id.
+        :param str user_id: ID number of the user to update.
         :param str first_name: New first name of the user.
         :param str last_name: New last name of the user.
         :param str email: New email of the user.
@@ -224,8 +224,8 @@ class User(AlpineObject):
         """
         Get one user's metadata.
 
-        :param str user_id: A Unique user id.
-        :return: Single user's data
+        :param str user_id: A unique user ID number.
+        :return: Single user's metadata.
         :rtype: dict
         :exception UserNotFoundException: The User does not exist.
 
@@ -256,7 +256,7 @@ class User(AlpineObject):
         Get a list of all users' metadata.
 
         :param int per_page: How many users to return in each page.
-        :return: A list of all the user's data.
+        :return: A list of all the users' data.
         :rtype: list of dict
 
         Example::
@@ -264,6 +264,7 @@ class User(AlpineObject):
             >>> all_users = session.user.get_list()
             >>> len(all_users)
             99
+
         """
         url = "{0}/users".format(self.base_url)
         url = self._add_token_to_url(url)

@@ -54,7 +54,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Alpine SDK'
+project = u'Alpine Python API Reference'
 copyright = u'2017, Alpine Data'
 author = u'Alpine Data'
 

@@ -28,11 +28,6 @@ Contents
    Introduction
    Advanced Usage
 
-Requirements:
-
-1. Python 2.7
-2. Requests 2.12.4
-
 Indices and tables
 ==================
 
