@@ -1,8 +1,9 @@
 import os
 import time
 
-from alpine.apiclient import APIClient
+from alpine import APIClient
 from alpine.exception import *
+from alpine.workfile import *
 
 from .alpineunittest import AlpineTestCase
 from future.datasource import DataSource

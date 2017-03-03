@@ -15,23 +15,23 @@ class Job(AlpineObject):
     """
 
     task = None
+
+    @property
+    def scheduleType(self):
+        return self.ScheduleType()
+
     def __init__(self, base_url, session, token):
         super(Job, self).__init__(base_url, session, token)
-        self.chorus_domain = '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(self.base_url))
-        self.logger.debug(self.chorus_domain)
-        self.alpine_base_url = urljoin(self.chorus_domain,
-                                       "alpinedatalabs/api/{0}/json".format(self._alpine_api_version))
-        self.logger.debug("alpine_base_url is: {0}".format(self.alpine_base_url))
         self.task = Job.Task(base_url, session, token)
 
-    def create(self, workspace_id, job_name, interval_unit="on_demand", interval_value=0, next_run=""):
+    def create(self, workspace_id, job_name, schedule_type="on_demand", interval_value=0, next_run=""):
         """
         Create a new job in a workspace with specified configuration.
 
         :param int workspace_id: ID of the workspace where the job is to be created.
         :param str job_name: Name of the job to be created.
-        :param str interval_unit: Units on_demand or in weeks, days, and hours.
-        :param int interval_value: Number of times it should run.
+        :param str schedule_type: Interval unit of schedule type, on_demand or in months, weeks, days, and hours.
+        :param int interval_value: Interval value of schedule type.
         :param str next_run: When the next run should happen.
         :return: Created job metadata
         :rtype: dict
@@ -46,7 +46,7 @@ class Job(AlpineObject):
 
         # Building the Payload information to send with our HTTP POST to create the job
         payload = {"name": job_name,
-                   "interval_unit": interval_unit,
+                   "interval_unit": schedule_type,
                    "interval_value": interval_value,
                    "next_run": next_run,
                    "sucess_notify": "nobody",
@@ -350,3 +350,13 @@ class Job(AlpineObject):
                     return int(task['id'])
             return None
             # raise TaskNotFoundException("The Task with name: {0} doesn't exist".format(task_name))
+
+    class ScheduleType(object):
+        """
+        Convenience strings for schedule types.
+        """
+        OnDemand = "on_demand"
+        Months = "months"
+        Weeks = "weeks"
+        Days = "days"
+        Hours = "hours"

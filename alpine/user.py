@@ -8,10 +8,16 @@ class User(AlpineObject):
     A class for interacting with user accounts.
     """
 
+    @property
+    def applicationRole(self):
+        return self.ApplicationRole()
+
+    @property
+    def adminRole(self):
+        return self.AdminRole()
+
     def __init__(self, base_url, session, token):
         super(User, self).__init__(base_url, session, token)
-        self.applicationRole = self.ApplicationRole()
-        self.adminRole = self.AdminRole()
 
     def create(self, username, password, first_name, last_name, email, title="", dept="",
                     notes="Add Via API", admin_role="", app_role="analytics_developer", email_notification=False):
@@ -276,15 +282,18 @@ class User(AlpineObject):
         return users_list
 
     class ApplicationRole(object):
-        def __init__(self):
-            self.AnalyticsDeveloper = "analytics_developer"
-            self.DataAnalyst = "data_analyst"
-            self.Collaborator = "collaborator"
-            self.BusinessUser = "business_user"
+        """
+        Convenience strings for user application roles.
+        """
+        AnalyticsDeveloper = "analytics_developer"
+        DataAnalyst = "data_analyst"
+        Collaborator = "collaborator"
+        BusinessUser = "business_user"
 
     class AdminRole(object):
-        def __init__(self):
-            self.ApplicationAdministrator = "admin", True
-            self.DataAdministrator = "data_admin", False
-            self.NonAdmin = "", False
-
+        """
+        Convenience strings for user Administrator roles.
+        """
+        ApplicationAdministrator = "admin"
+        DataAdministrator = "data_admin"
+        NonAdmin = ""

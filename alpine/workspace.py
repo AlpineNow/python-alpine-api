@@ -15,11 +15,17 @@ class Workspace(AlpineObject):
     """
     member = None
 
+    @property
+    def stage(self):
+        return self.Stage()
+
+    @property
+    def memberRole(self):
+        return self.MemberRole()
+
     def __init__(self, base_url, session, token):
         super(Workspace, self).__init__(base_url, session, token)
         self.member = self.Member(base_url, session, token)
-        self.stage = self.Stage()
-        self.memberRole = self.MemberRole()
 
     def create(self, workspace_name, public=False, summary=None):
         """
@@ -432,12 +438,17 @@ class Workspace(AlpineObject):
                 return response.json()
 
     class Stage(object):
+        """
+        Convenience id for workspace stages.
+        """
+        Define = 1
+        Transform = 2
+        Model = 3
+        Deploy = 4
+        Act = 5
+
         def __init__(self):
-            self.Define = 1
-            self.Transform = 2
-            self.Model = 3
-            self.Deploy = 4
-            self.Act = 5
+            pass
 
         def __iter__(self):
             i = self.Define
@@ -446,12 +457,15 @@ class Workspace(AlpineObject):
                 i += 1
 
     class MemberRole(object):
-        def __init__(self):
-            self.ProjectMember = "Project Member"
-            self.BusinessOwner = "Business Owner"
-            self.BusinessAnalyst = "Business Analyst"
-            self.DataScienceManager = "Data Science Manager"
-            self.DataScientist = "Data Scientist"
-            self.DataEngineer = "Data Engineer"
-            self.ApplicationEngineer = "Application Engineer"
-            self.ProjectManager = "Project Manager"
+        """
+        Convenience strings for user workspace member roles.
+        """
+        ProjectMember = "Project Member"
+        BusinessOwner = "Business Owner"
+        BusinessAnalyst = "Business Analyst"
+        DataScienceManager = "Data Science Manager"
+        DataScientist = "Data Scientist"
+        DataEngineer = "Data Engineer"
+        ApplicationEngineer = "Application Engineer"
+        ProjectManager = "Project Manager"
+
