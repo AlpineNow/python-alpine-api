@@ -162,7 +162,7 @@ class Job(AlpineObject):
 
         Example::
 
-            >>> job_id = job_id = session.job.get_id(workspace_id = 1672, "DemoJob")
+            >>> job_id = session.job.get_id(workspace_id = 1672, "DemoJob")
             >>> print(job_id)
             675
 
