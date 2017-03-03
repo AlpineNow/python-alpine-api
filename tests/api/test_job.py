@@ -21,9 +21,12 @@ class TestJob(AlpineTestCase):
         gpdb_datasource_name = "API_Test_GPDB"
         hadoop_datasource_name = "API_Test_Hadoop"
         database_name = "miner_demo"
+
         # Creating a Workspace for Job tests
         alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
+        db_datasource_id = alpine_session.datasource.get_id(gpdb_datasource_name, "Database")
+        hadoop_datasource_id = alpine_session.datasource.get_id(hadoop_datasource_name, "Hadoop")
         try:
             workspace_id = alpine_session.workspace.get_id("Workspace for Job Tests")
             alpine_session.workspace.delete(workspace_id)
@@ -33,7 +36,6 @@ class TestJob(AlpineTestCase):
         workspace_id = workspace_info['id']
         workspace_name = workspace_info['name']
 
-        hadoop_datasource_id = alpine_session.datasource.get_id(hadoop_datasource_name, "Hadoop")
 
         # Upload a DB flow
         base_dir = os.getcwd()
@@ -49,10 +51,10 @@ class TestJob(AlpineTestCase):
         for database in database_list:
             if database['name'] == "miner_demo":
                 database_id = database['id']
-        datasource_info = [
-            {"data_source_type": "gpdb_data_source", "data_source_id": DataSource.DSType.GreenplumDatabase,
-             "database_id": database_id}]
-        # workfile_info = alpine_session.workfile.upload_db_afm(workspace_id, data_source_id, 1, "GpdbDataSource", "gpdb_database", afm_path)
+        datasource_info = [{"data_source_type": DataSource.DSType.GreenplumDatabase,
+                            "data_source_id": db_datasource_id,
+                            "database_id": database_id
+                            }]
         workfile_info = alpine_session.workfile.upload(workspace_id, afm_path, datasource_info)
         workflow_id = workfile_info['id']
         workfile_name = workfile_info['file_name']
@@ -60,13 +62,6 @@ class TestJob(AlpineTestCase):
         # Creating a Workspace for Job tests
         alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
-        try:
-            workspace_id = alpine_session.workspace.get_id("Workspace for Job Tests")
-            #alpine_session.workspace.delete(workspace_id)
-        except WorkspaceNotFoundException:
-            pass
-        #workspace_info = alpine_session.workspace.create("Workspace for Job Tests")
-        #workspace_id = workspace_info['id']
         job_info = alpine_session.job.create(workspace_id, "Job for Test")
         job_id = job_info['id']
         task_info = alpine_session.job.task.create(workspace_id, job_id, workflow_id)

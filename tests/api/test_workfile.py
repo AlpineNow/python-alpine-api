@@ -18,7 +18,7 @@ class TestWorkfile(AlpineTestCase):
         global workspace_id
         global workfile_name
         global workfile_id
-        global data_source_id
+        global db_datasource_id
         global database_id
         global hadoop_datasource_id
         # To pass the tests, we need a Hadoop Data Source with Name "API_Test_Hadoop"
@@ -26,9 +26,13 @@ class TestWorkfile(AlpineTestCase):
         gpdb_datasource_name = "API_Test_GPDB"
         hadoop_datasource_name = "API_Test_Hadoop"
         database_name = "miner_demo"
+
         # Creating a Workspace for Job tests
         alpine_session = APIClient(self.host, self.port)
         alpine_session.login(self.username, self.password)
+        db_datasource_id = alpine_session.datasource.get_id(gpdb_datasource_name, "Database")
+        hadoop_datasource_id = alpine_session.datasource.get_id(hadoop_datasource_name, "Hadoop")
+
         try:
             workspace_id = alpine_session.workspace.get_id("Workspace for Workfile Tests")
             alpine_session.workspace.delete(workspace_id)
@@ -37,8 +41,6 @@ class TestWorkfile(AlpineTestCase):
         workspace_info = alpine_session.workspace.create("Workspace for Workfile Tests")
         workspace_id = workspace_info['id']
         workspace_name = workspace_info['name']
-
-        hadoop_datasource_id = alpine_session.datasource.get_id(hadoop_datasource_name, "Hadoop")
 
         # Upload a DB flow
         base_dir = os.getcwd()
@@ -49,14 +51,14 @@ class TestWorkfile(AlpineTestCase):
             alpine_session.workfile.delete(workfile_id)
         except WorkfileNotFoundException:
             pass
-        data_source_id = alpine_session.datasource.get_id(gpdb_datasource_name, "Database")
-        database_list = alpine_session.datasource.get_database_list(data_source_id)
+        database_list = alpine_session.datasource.get_database_list(db_datasource_id)
         for database in database_list:
             if database['name'] == "miner_demo":
                 database_id = database['id']
-        datasource_info = [
-            {"data_source_type": "gpdb_data_source", "data_source_id": DataSource.DSType.GreenplumDatabase, "database_id": database_id}]
-        #workfile_info = alpine_session.workfile.upload_db_afm(workspace_id, data_source_id, 1, "GpdbDataSource", "gpdb_database", afm_path)
+        datasource_info = [{"data_source_type": DataSource.DSType.GreenplumDatabase,
+                            "data_source_id": db_datasource_id,
+                            "database_id": database_id
+                            }]
         workfile_info = alpine_session.workfile.upload(workspace_id, afm_path, datasource_info)
         workfile_id = workfile_info['id']
         workfile_name = workfile_info['file_name']
@@ -174,7 +176,7 @@ class TestWorkfile(AlpineTestCase):
         #                    {"data_source_type": "GpdbDataSource", "data_source_id": "1", "database_type": "gpdb_database",
         #                     "database_id": "42"}]
         datasource_info = [{"data_source_type": alpine_session.datasource.dsType.GreenplumDatabase,
-                            "data_source_id": data_source_id,
+                            "data_source_id": db_datasource_id,
                             "database_id": database_id}]
         workfile_info = alpine_session.workfile.upload(workspace_id, afm_path, datasource_info)
         self.assertEqual(workfile_info['file_name'], "db_bat_row_fil")
