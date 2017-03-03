@@ -1,5 +1,6 @@
 import json
-from datetime import datetime,timedelta,timezone
+import pytz
+from datetime import datetime,timedelta
 
 try:
     from urllib.parse import urlparse
@@ -27,7 +28,7 @@ class Job(AlpineObject):
         self.task = Job.Task(base_url, session, token)
 
     def create(self, workspace_id, job_name, schedule_type=None, interval_value=0, next_run=None,
-               time_zone=timezone.utc):
+               time_zone=None):
         """
         Create a new job in a workspace with specified configuration.
 
@@ -49,6 +50,9 @@ class Job(AlpineObject):
             >>>                   )
 
         """
+        if time_zone is None:
+            time_zone = pytz.utc
+
         if schedule_type is None:
             schedule_type = Job.ScheduleType.OnDemand
 

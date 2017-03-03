@@ -1,6 +1,6 @@
 import os, time
 import pytz
-from datetime import datetime,timedelta,timezone
+from datetime import datetime,timedelta
 
 from alpine import APIClient
 from alpine.exception import *
@@ -128,7 +128,7 @@ class TestJob(AlpineTestCase):
             alpine_session.job.delete(workspace_id, job_id)
         except JobNotFoundException:
             pass
-        start_time = (datetime.today().now(timezone.utc) + timedelta(minutes = 1)).strftime(next_run_datetime_format)
+        start_time = (datetime.today().now(pytz.utc) + timedelta(minutes = 1)).strftime(next_run_datetime_format)
         print(start_time)
         job_info = alpine_session.job.create(workspace_id, job_name,
                                              job_interval_unit, job_interval_value, start_time)
@@ -154,7 +154,7 @@ class TestJob(AlpineTestCase):
             alpine_session.job.delete(workspace_id, job_id)
         except JobNotFoundException:
             pass
-        start_time = (datetime.today().now(timezone.utc) + timedelta(minutes = 1)).strftime(next_run_datetime_format)
+        start_time = (datetime.today().now(pytz.utc) + timedelta(minutes = 1)).strftime(next_run_datetime_format)
         print(start_time)
         job_info = alpine_session.job.create(workspace_id, job_name,
                                              job_interval_unit, job_interval_value, start_time)
