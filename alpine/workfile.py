@@ -239,7 +239,7 @@ class Workfile(AlpineObject):
 
     class Process(AlpineObject):
         """
-        A class for running workfiles.
+        A class for interacting with workfiles.
         """
 
         def __init__(self, base_url, session, token):

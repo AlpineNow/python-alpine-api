@@ -26,19 +26,19 @@ class Job(AlpineObject):
 
     def create(self, workspace_id, job_name, interval_unit="on_demand", interval_value=0, next_run=""):
         """
-        Add a job to a workspace with specified configuration.
+        Create a new job in a workspace with specified configuration.
 
         :param int workspace_id: ID of the workspace where the job is to be created.
         :param str job_name: Name of the job to be created.
-        :param ??? interval_unit: Units on_demand or in weeks, days, and hours.
+        :param str interval_unit: Units on_demand or in weeks, days, and hours.
         :param int interval_value: Number of times it should run.
-        :param next_run: When the next run should happen.
-        :return: Created job metadata.
-        :rtype:
+        :param str next_run: When the next run should happen.
+        :return: Created job metadata
+        :rtype: dict
 
         Example::
 
-            >>> placeholder
+            >>> session.job.create(workspace_id = 1672, job_name = "APICreatedJob")
 
         """
         url = "{0}/workspaces/{1}/jobs".format(self.base_url, workspace_id)
@@ -68,6 +68,12 @@ class Job(AlpineObject):
         :param int workspace_id: ID number of the workspace the job is in.
         :param str job_id: ID number of the job to delete.
         :return: response for the delete action
+        :rtype:
+
+        Example::
+
+            >>> session.job.delete(workspace_id = 1672, job_id = 675)
+
         """
 
         url = "{0}/workspaces/{1}/jobs/{2}".format(self.base_url, workspace_id, job_id)
@@ -81,11 +87,17 @@ class Job(AlpineObject):
 
     def get_list(self, workspace_id, per_page=50):
         """
-        Get a list of jobs from a workspace
+        Get a list of all jobs in a workspace.
 
-        :param workspace_id: Id of the workspace to query on
-        :param per_page: How many jobs to search for each query
-        :return: Returns the list of Jobs.
+        :param int workspace_id: ID of the workspace.
+        :param int per_page: How many jobs to return in each page.
+        :return: Returns the list of jobs
+        :rtype: list of dict
+
+        Example::
+
+            >>> all_jobs = session.job.get_list(workspace_id = 1672)
+
         """
         jobs_list = None
         url = "{0}/workspaces/{1}/jobs".format(self.base_url, workspace_id)
@@ -109,11 +121,17 @@ class Job(AlpineObject):
 
     def get(self, workspace_id, job_id):
         """
-        Get Job info from a workspace
+        Get one job's metadata.
 
-        :param workspace_id: Id of the workspace to query on
-        :param job_name: name of the job to query on
-        :return:
+        :param int workspace_id: ID of the workspace the job is in.
+        :param str job_id: ID number of the job.
+        :return: Single job's data
+        :rtype: dict
+
+        Example::
+
+            >>> job_info = session.job.get(workspace_id = 1672, job_id = 675)
+
         """
         url = "{0}/workspaces/{1}/jobs/{2}".format(self.base_url, workspace_id, job_id)
         url = self._add_token_to_url(url)
@@ -126,20 +144,28 @@ class Job(AlpineObject):
 
         try:
             if job_response['response']:
-                self.logger.debug("Found Job id: <{0}>".format(job_id))
+                self.logger.debug("Found job id: <{0}>".format(job_id))
                 return job_response['response']
             else:
-                raise JobNotFoundException("Job id: <{0}> not found".format(job_id))
+                raise JobNotFoundException("job id: <{0}> not found".format(job_id))
         except Exception as err:
-            raise JobNotFoundException("Job id: <{0}> not found".format(job_id))
+            raise JobNotFoundException("job id: <{0}> not found".format(job_id))
 
     def get_id(self, workspace_id, job_name):
         """
-        Get Job Id from a workspace
+        Get a job ID.
 
-        :param workspace_id: Id of the workspace to query on
-        :param job_name: name of the job to query on
-        :return:
+        :param int workspace_id: ID of the workspace the job is in.
+        :param str job_name: Name of the job.
+        :return: ID of the job.
+        :rtype: int
+
+        Example::
+
+            >>> job_id = job_id = session.job.get_id(workspace_id = 1672, "DemoJob")
+            >>> print(job_id)
+            675
+
         """
         job_list = self.get_list(workspace_id)
         for job_info in job_list:
@@ -152,14 +178,16 @@ class Job(AlpineObject):
         """
         Run a job.
 
-        :param string workflow_id:
-        :param string variables:
-        :return:
-        :rtype: str
-        """
+        :param int job_id:
+        :return: response
+        :rtype: response
 
+        Example::
+
+            >>> session.job.run(job_id = 675)
+
+        """
         url = "{0}/jobs/{1}/run?saveResult=true".format(self.base_url, job_id)
-        print(url)
 
         self.session.headers.update({"x-token": self.token})
         self.session.headers.update({"Content-Type": "application/json"})
@@ -181,7 +209,7 @@ class Job(AlpineObject):
 
     class Task(AlpineObject):
         """
-        Setup job tasks
+        A class for interacting with job tasks.
         """
 
         def __init__(self, base_url, session, token):
@@ -194,13 +222,18 @@ class Job(AlpineObject):
 
         def create(self, workspace_id, job_id, workfile_id, task_type="run_work_flow"):
             """
-            Add a task to a job
+            Add a new task to an existing job from an existing workfile.
 
-            :param workspace_id: Id of the workspace for the job
-            :param job_id: Name of the job for which the task is to be added
-            :param workfile_id: Id of the workfile to be added as a task
-            :param task_type: task type could be run_work_flow or run_sql_workfile
-            :return: Info of the new added task
+            :param int workspace_id: ID of the workspace.
+            :param int job_id: ID of the job to which the task is to be added.
+            :param int workfile_id: ID of the workfile to be added as a task.
+            :param str task_type: One of "run_work_flow" or "run_sql_workfile".
+            :return: Metadata of the new task
+            :rtype: dict
+
+            Example::
+
+                >>> session.job.task.create(workspace_id = 1672, job_id = 675, workfile_id = 823)
 
             """
             self.logger.debug("The job id of the job id: <{0}>".format(job_id))
@@ -219,12 +252,18 @@ class Job(AlpineObject):
 
         def delete(self, workspace_id, job_id, task_id):
             """
-            Delete a task from the job on a workspace
+            Delete a task from a job.
 
-            :param workspace_id: Id of the workspace from which the task has to be deleted
-            :param job_name: Name of the job to from which the task is to be deleted
-            :param task_name: Name of the task
+            :param int workspace_id: ID of the workspace.
+            :param int job_id: ID of the job that has the task to be deleted.
+            :param int task_id: ID of the task.
             :return: Response of the delete action
+            :rtype:
+
+            Example::
+
+                >>> session.job.task.delete(workspace_id = 1672, job_id = 675, task_id = 344)
+
             """
 
             self.logger.debug("Constructing the URL for task deletion")
@@ -238,13 +277,20 @@ class Job(AlpineObject):
 
         def get_list(self, workspace_id, job_id):
             """
+            Get a list of all tasks in a job.
 
-            :param workspace_id:
-            :param job_name:
-            :return:
+            :param int workspace_id: ID of the workspace.
+            :param int job_id: ID of the job.
+            :return: List of all tasks in a job.
+            :rtype: list of dict
+
+            Example::
+
+                >>> session.job.task.get_list(workspace_id = 1672, job_id = 675);
+
             """
-            self.logger.debug("Getting the Job id of Job: {0}".format(job_id))
-            self.logger.debug("Retrieved the Job id of the job: {0} to be: {1}".format(job_id, job_id))
+            self.logger.debug("Getting the job id of job: {0}".format(job_id))
+            self.logger.debug("Retrieved the job id of the job: {0} to be: {1}".format(job_id, job_id))
 
             # Constructing the URL to retrieve the contents
             url = "{0}/workspaces/{1}/jobs/{2}".format(self.base_url, workspace_id, job_id)
@@ -259,12 +305,18 @@ class Job(AlpineObject):
 
         def get(self, workspace_id, job_id, task_id):
             """
-            Get the infomation of a task
+            Return metadata of one task.
 
-            :param workspace_id: Id of the workspace for the job
-            :param job_name: Name of the job
-            :param task_name: Name of the Task
-            :return: Information of the task
+            :param int workspace_id: ID of the workspace.
+            :param  int job_name: ID of the job.
+            :param int task_name: ID of the task.
+            :return: One task's metadata.
+            :rtype: dict
+
+            Example::
+
+                >>> session.job.task.get(workspace_id = 1672, job_id = 675, task_id = 344)
+
             """
             task_list = self.get_list(workspace_id, job_id)
             for task in task_list:
@@ -272,16 +324,23 @@ class Job(AlpineObject):
                     self.logger.debug(
                         "We have successfully verified that we have created the task id: <{0}>".format(task_id))
                     return task
-            raise TaskNotFoundException("The Task with id: <{0}> doesn't exits".format(task_id))
+            raise TaskNotFoundException("The task with id: <{0}> doesn't exist".format(task_id))
 
         def get_id(self, workspace_id, job_id, task_name):
             """
-            Get the Id of a task in a job
+            Return the ID number of a task.
 
-            :param workspace_id: Id of the workspace for the job
-            :param job_name: Name of the job
-            :param task_name: Name of the task
-            :return: Id of the task
+            :param int workspace_id: ID of the workspace.
+            :param int job_ID: ID of the job.
+            :param str task_name: Name of the task.
+            :return: ID number of the task
+            :rtype: int
+
+            Example::
+
+                >>> session.job.task.get_id(workspace_id = 1672, job_id = 675, "Run test2")
+                344
+
             """
             task_list = self.get_list(workspace_id, job_id)
             for task in task_list:
@@ -290,4 +349,4 @@ class Job(AlpineObject):
                         "We have successfully verified that we have created the task: {0}".format(task_name))
                     return int(task['id'])
             return None
-            # raise TaskNotFoundException("The Task with name: {0} doesn't exits".format(task_name))
+            # raise TaskNotFoundException("The Task with name: {0} doesn't exist".format(task_name))
