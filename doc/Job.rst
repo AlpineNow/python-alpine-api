@@ -1,7 +1,7 @@
 Jobs
 ****
 
-.. automodule:: api.job
+.. automodule:: alpine.job
 
 .. autoclass:: Job
    :members:

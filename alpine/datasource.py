@@ -4,7 +4,7 @@ from .exception import *
 
 class DataSource(AlpineObject):
     """
-    A class for interacting with data sources.
+    A class for interacting with data sources. These methods may require a login as a user with admin privileges.
     """
 
     def __init__(self, base_url=None, session=None, token = None):
@@ -13,20 +13,21 @@ class DataSource(AlpineObject):
 
     def get_list(self, type=None, per_page=100):
         """
-        Get a list of all data sources' metadata.
+        Get a list of metadata for all data sources.
 
-        :param str type: Type of the data source. Either "Database" or "Hadoop".
+        :param str type: Type of the data source. Either "Database", "Hadoop", or None for both types.
         :param int per_page: How many data sources to return in each page.
-        :return: List of data sources with metadata.
-        rtype: list of dict
+        :return: List of data sources' metadata.
+        :rtype: list of dict
 
         Example::
 
-                    >>> all_datasource = session.datasource.get_list()
-                    >>> all_database_datasource = session.datasource.get_list("Database")
-                    >>> all_hadoop_datasource = session.datasource.get_list("Hadoop")
-                    >>> len(all_datasource)
-                    20
+            >>> all_datasources = session.datasource.get_list()
+            >>> all_database_datasources = session.datasource.get_list(type = "Database")
+            >>> all_hadoop_datasources = session.datasource.get_list(type = "Hadoop")
+            >>> len(all_datasources)
+            20
+
         """
         db_datasource_list = None
         hd_datasource_list = None
@@ -88,18 +89,22 @@ class DataSource(AlpineObject):
 
         return datasource_list
 
-    def get(self, ds_id, type=None):
+    def get(self, ds_id, type):
         """
         Get one data source's metadata.
-        :param str ds_id: A unique id of the data source
-        :param str type: Data source type, Could be either "Database" or "Hadoop", None for All
-        :return: single data source data
-        :rtype dict
+
+        :param int ds_id: A unique id of the data source.
+        :param str type: Data source type. Either "Database" or "Hadoop".
+        :return: One data source's metadata.
+        :rtype: dict
         :exception DataSourceNotFoundException: the data source does not exist.
+
         Example::
 
-                    >>> session.datasource.get(ds_id = 1, type="Database")
+            >>> session.datasource.get(ds_id = 1, type = "Database")
+
         """
+
         if type == "Database":
             url = "{0}/data_sources/{1}".format(self.base_url, ds_id)
         elif type == "Hadoop":
@@ -128,37 +133,42 @@ class DataSource(AlpineObject):
     def get_id(self, name, type=None):
         """
         Gets the ID number of the data source. Will throw an exception if the data source does not exist.
-        :param str name: Data source name
-        :param type: Data source Type. None for query all data source type
+
+        :param str name: Data source name.
+        :param str type: Data source type. Must be "Database" or "Hadoop" or None for both.
         :return: ID number of the data source
         :rtype: int
-        :exception DataSourceNotFoundException: the data source does not exist
-        Example
+        :exception DataSourceNotFoundException: The data source does not exist.
 
-                    >>> data_source_id = session.datasource.get_id(name = 'demo_data_source', type = "Database")
-                    >>> print(data_source_id)
-                    16
+        Example::
+
+            >>> data_source_id = session.datasource.get_id(name = "Demo_GP", type = "Database")
+            >>> print(data_source_id)
+            786
+
         """
         ds_list = self.get_list(type)
         for ds_info in ds_list:
             if ds_info['name'] == name:
                 return ds_info['id']
         # return None
-        raise DataSourceNotFoundException("Datasource with id: <{0}> and type: <{1}>not found".format(name, type))
+        raise DataSourceNotFoundException("Datasource with id: <{0}> and type: <{1}> not found".format(name, type))
 
     def get_database_list(self, data_source_id, per_page=100):
         """
-        Get a list of all databases' metadata
-        :param str data_source_id: Id of the data source
+        Return a list of metadata for all databases in a data source.
+
+        :param int data_source_id: ID of the data source.
         :param int per_page: How many data sources to return in each page.
-        :return: A list of all the databases' data
-        rtype: list of dict
+        :return: List of database metadata.
+        :rtype: list of dict
 
         Example::
 
-                    >>> database_list = session.datasource.get_database_list(1)
-                    >>> len(database_list)
-                    3
+            >>> database_list = session.datasource.get_database_list(data_source_id = 1)
+            >>> len(database_list)
+            3
+
         """
         database_list = None
         url = "{0}/data_sources/{1}/databases".format(self.base_url, data_source_id)

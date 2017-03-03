@@ -1,7 +1,7 @@
 Datasources
 ***********
 
-.. automodule:: api.datasource
+.. automodule:: alpine.datasource
 
 .. autoclass:: DataSource
    :members:

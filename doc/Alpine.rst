@@ -1,7 +1,7 @@
 Alpine
 ******
 
-.. automodule:: api.alpine
+.. automodule:: alpine.apiclient
 
-.. autoclass:: Alpine
+.. autoclass:: APIClient
    :members:

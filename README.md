@@ -1,14 +1,20 @@
 Alpine API
 ==========
-A Python wrapper for the Alpine API.
+A Python wrapper for the Alpine's API.
 
-### Install
-pip? git clone? how to install in a Alpine Jupyter notebook
+### Setup
+You can install this package using pip:
 
-See "Submitting packages to the package index": https://wiki.python.org/moin/CheeseShopTutorial
+    $ pip install alpine
+    
+You can also download the source directly from Github at 
 
+https://github.com/AlpineNow/...
+  
+### Using the API
+You must have access to an installation of Alpine software to use this package. See www.alpinenow.com for more information. 
 
-### Requirements
-* Python 2.7
-* Requests 2.12.4
+For documentation and examples can be found at: 
+
+https://github.com/AlpineNow/...
 

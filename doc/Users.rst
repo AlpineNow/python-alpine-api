@@ -1,7 +1,7 @@
 User
 ****
 
-.. automodule:: api.user
+.. automodule:: alpine.user
 
 .. autoclass:: User
    :members:
