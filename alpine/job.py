@@ -1,4 +1,7 @@
 import json
+import pytz
+from datetime import datetime,timedelta
+
 try:
     from urllib.parse import urlparse
     from urllib.parse import urljoin
@@ -15,51 +18,68 @@ class Job(AlpineObject):
     """
 
     task = None
+
+    @property
+    def scheduleType(self):
+        return self.ScheduleType()
+
     def __init__(self, base_url, session, token):
         super(Job, self).__init__(base_url, session, token)
-        self.chorus_domain = '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(self.base_url))
-        self.logger.debug(self.chorus_domain)
-        self.alpine_base_url = urljoin(self.chorus_domain,
-                                       "alpinedatalabs/api/{0}/json".format(self._alpine_api_version))
-        self.logger.debug("alpine_base_url is: {0}".format(self.alpine_base_url))
         self.task = Job.Task(base_url, session, token)
 
-    def create(self, workspace_id, job_name, interval_unit="on_demand", interval_value=0, next_run=""):
+    def create(self, workspace_id, job_name, schedule_type=None, interval_value=0, next_run=None,
+               time_zone=None):
         """
         Create a new job in a workspace with specified configuration.
 
         :param int workspace_id: ID of the workspace where the job is to be created.
         :param str job_name: Name of the job to be created.
-        :param str interval_unit: Units on_demand or in weeks, days, and hours.
-        :param int interval_value: Number of times it should run.
-        :param str next_run: When the next run should happen.
+        :param str schedule_type: Interval unit of schedule type, Please Ref to Job.ScheduleType.OnDemand, the default value is Job.ScheduleType.OnDemand.
+        :param int interval_value: Interval value of schedule type.
+        :param datetime next_run: When the next run should happen. the default value is just now.
+        :param timezone time_zone: Time zone info for the next_run.
         :return: Created job metadata
         :rtype: dict
 
         Example::
 
-            >>> session.job.create(workspace_id = 1672, job_name = "APICreatedJob")
+            >>> session.job.create(workspace_id = 1672, job_name = "APICreatedJob",
+            >>>                     schedule_type = Job.ScheduleType.Weekly, interval_value = 2,
+            >>>                     next_run = datetime.today().now(pytz.timezone('US/Pacific')) + timedelta(hours=1),
+            >>>                     time_zone =pytz.timezone('US/Pacific')
+            >>>                   )
 
         """
+        if time_zone is None:
+            time_zone = pytz.utc
+
+        if schedule_type is None:
+            schedule_type = Job.ScheduleType.OnDemand
+
+        if next_run is None and schedule_type != Job.ScheduleType.OnDemand:
+            next_run = datetime.now(time_zone)
         url = "{0}/workspaces/{1}/jobs".format(self.base_url, workspace_id)
         url = self._add_token_to_url(url)
 
         # Building the Payload information to send with our HTTP POST to create the job
         payload = {"name": job_name,
-                   "interval_unit": interval_unit,
+                   "interval_unit": schedule_type,
                    "interval_value": interval_value,
                    "next_run": next_run,
                    "sucess_notify": "nobody",
                    "description": "",
                    "endrun": False,
-                   "time_zone": "Pacific Time (US & Canada)"
+                   "time_zone": time_zone
                    }
 
         # Posting the Payload via HTTP POST
         self.logger.debug("POSTing payload {0} to URL {1}".format(payload, url))
         response = self.session.post(url, data=payload, verify=False)
         self.logger.debug("Received response code {0} with reason {1}...".format(response.status_code, response.reason))
-        return response.json()['response']
+        try:
+            return response.json()['response']
+        except KeyError:
+            return response.json()
 
     def delete(self, workspace_id, job_id):
         """
@@ -67,23 +87,32 @@ class Job(AlpineObject):
 
         :param int workspace_id: ID number of the workspace the job is in.
         :param str job_id: ID number of the job to delete.
-        :return: response for the delete action
-        :rtype:
+        :return: None
+        :rtype: NoneType
+        :exception JobNotFoundException: the job does not exist
+        :exception InvalidResponseCodeException:
 
         Example::
 
             >>> session.job.delete(workspace_id = 1672, job_id = 675)
 
         """
+        try:
+            url = "{0}/workspaces/{1}/jobs/{2}".format(self.base_url, workspace_id, job_id)
+            url = self._add_token_to_url(url)
 
-        url = "{0}/workspaces/{1}/jobs/{2}".format(self.base_url, workspace_id, job_id)
-        url = self._add_token_to_url(url)
-
-        # POSTing a HTTP delete
-        self.logger.debug("Deleting the job id: <{0}> from workspace id: <{1}>".format(job_id, workspace_id))
-        response = self.session.delete(url, verify=False)
-        self.logger.debug("Received response code {0} with reason {1}".format(response.status_code, response.reason))
-        return response
+            # POSTing a HTTP delete
+            self.logger.debug("Deleting the job id: <{0}> from workspace id: <{1}>".format(job_id, workspace_id))
+            response = self.session.delete(url, verify=False)
+            self.logger.debug("Received response code {0} with reason {1}".format(response.status_code, response.reason))
+            if response.status_code == 200:
+                self.logger.debug("Job successfully deleted.")
+            else:
+                raise InvalidResponseCodeException("Response Code Invalid, the expected Response Code is {0}, "
+                                                   "the actual Response Code is {1}".format(200, response.status_code))
+            return None
+        except JobNotFoundException as err:
+            self.logger.debug("Job not found, error {0}".format(err))
 
     def get_list(self, workspace_id, per_page=50):
         """
@@ -103,6 +132,8 @@ class Job(AlpineObject):
         url = "{0}/workspaces/{1}/jobs".format(self.base_url, workspace_id)
         url = self._add_token_to_url(url)
         page_current = 0
+        if self.session.headers.get("Content-Type") is not None:
+            self.session.headers.pop("Content-Type")
         while True:
             payload = {
                    "per_page": per_page,
@@ -180,7 +211,7 @@ class Job(AlpineObject):
 
         :param int job_id:
         :return: response
-        :rtype: response
+        :rtype: job
 
         Example::
 
@@ -194,18 +225,14 @@ class Job(AlpineObject):
 
         response = self.session.post(url, timeout=30)
 
-        return response
-
-        # self.session.headers.pop("Content-Type")
-        # self.logger.debug(response.content)
-        # if response.status_code == 200:
-        #     process_id = response.json()['meta']['processId']
-        #
-        #     self.logger.debug("Workflow {0} started with process {1}".format(workflow_id, process_id))
-        #     return process_id
-        # else:
-        #     raise RunFlowFailureException(
-        #         "Run Workflow {0} failed with status code {1}".format(workflow_id, response.status_code))
+        self.session.headers.pop("Content-Type")
+        self.logger.debug(response.content)
+        if response.status_code == 202:
+            job = response.json()['response']
+            self.logger.debug("Job with id: <{0}> run started".format(job['id']))
+            return job
+        else:
+            raise RunJobFailureException("Run job with id: <{0}> failed with status code {1}".format(job_id, response.status_code))
 
     class Task(AlpineObject):
         """
@@ -220,14 +247,14 @@ class Job(AlpineObject):
                                            "alpinedatalabs/api/{0}/json".format(self._alpine_api_version))
             self.logger.debug("alpine_base_url is: {0}".format(self.alpine_base_url))
 
-        def create(self, workspace_id, job_id, workfile_id, task_type="run_work_flow"):
+        def create(self, workspace_id, job_id, workfile_id, task_type=None):
             """
             Add a new task to an existing job from an existing workfile.
 
             :param int workspace_id: ID of the workspace.
             :param int job_id: ID of the job to which the task is to be added.
             :param int workfile_id: ID of the workfile to be added as a task.
-            :param str task_type: One of "run_work_flow" or "run_sql_workfile".
+            :param str task_type: For task type, please Ref to Job.TaskType. The default task type is Job.TaskType.RunWorkflow.
             :return: Metadata of the new task
             :rtype: dict
 
@@ -236,6 +263,8 @@ class Job(AlpineObject):
                 >>> session.job.task.create(workspace_id = 1672, job_id = 675, workfile_id = 823)
 
             """
+            if task_type is None:
+                task_type = "run_work_flow"
             self.logger.debug("The job id of the job id: <{0}>".format(job_id))
             url = "{0}/workspaces/{1}/jobs/{2}/job_tasks".format(self.base_url, workspace_id, job_id)
             url = self._add_token_to_url(url)
@@ -248,7 +277,10 @@ class Job(AlpineObject):
             response = self.session.post(url, data=payload, verify=False)
             self.logger.debug(
                 "Received response code {0} with reason {1}...".format(response.status_code, response.reason))
-            return response.json()['response']
+            try:
+                return response.json()['response']
+            except KeyError:
+                return response.json()
 
         def delete(self, workspace_id, job_id, task_id):
             """
@@ -257,23 +289,33 @@ class Job(AlpineObject):
             :param int workspace_id: ID of the workspace.
             :param int job_id: ID of the job that has the task to be deleted.
             :param int task_id: ID of the task.
-            :return: Response of the delete action
-            :rtype:
+            :return: None
+            :rtype: Nonetype
+            :exception TaskNotFoundException: the job does not exist
+            :exception InvalidResponseCodeException:
 
             Example::
 
                 >>> session.job.task.delete(workspace_id = 1672, job_id = 675, task_id = 344)
 
             """
-
-            self.logger.debug("Constructing the URL for task deletion")
-            url = "{0}/workspaces/{1}/jobs/{2}/job_tasks/{3}".format(self.base_url, workspace_id, job_id, task_id)
-            url = self._add_token_to_url(url)
-            self.logger.debug("We have constructed the URL for task deletion and is: {0}".format(url))
-            response = self.session.delete(url)
-            self.logger.debug(
-                "Received response code {0} with reason {1}...".format(response.status_code, response.reason))
-            return response
+            try:
+                self.logger.debug("Constructing the URL for task deletion")
+                url = "{0}/workspaces/{1}/jobs/{2}/job_tasks/{3}".format(self.base_url, workspace_id, job_id, task_id)
+                url = self._add_token_to_url(url)
+                self.logger.debug("We have constructed the URL for task deletion and is: {0}".format(url))
+                response = self.session.delete(url)
+                self.logger.debug(
+                    "Received response code {0} with reason {1}...".format(response.status_code, response.reason))
+                if response.status_code == 200:
+                    self.logger.debug("Task successfully deleted.")
+                else:
+                    raise InvalidResponseCodeException("Response Code Invalid, the expected Response Code is {0}, "
+                                                       "the actual Response Code is {1}".format(200,
+                                                                                                response.status_code))
+                return None
+            except TaskNotFoundException as err:
+                self.logger.debug("Task not found, error {0}".format(err))
 
         def get_list(self, workspace_id, job_id):
             """
@@ -301,15 +343,16 @@ class Job(AlpineObject):
             response = self.session.get(url)
             self.logger.debug(
                 "Received response code {0} with reason {1}...".format(response.status_code, response.reason))
-            return response.json()['response']['tasks']
+            task_list = response.json()['response']['tasks']
+            return task_list
 
         def get(self, workspace_id, job_id, task_id):
             """
             Return metadata of one task.
 
             :param int workspace_id: ID of the workspace.
-            :param  int job_name: ID of the job.
-            :param int task_name: ID of the task.
+            :param  int job_id: ID of the job.
+            :param int task_id: ID of the task.
             :return: One task's metadata.
             :rtype: dict
 
@@ -331,7 +374,7 @@ class Job(AlpineObject):
             Return the ID number of a task.
 
             :param int workspace_id: ID of the workspace.
-            :param int job_ID: ID of the job.
+            :param int job_id: ID of the job.
             :param str task_name: Name of the task.
             :return: ID number of the task
             :rtype: int
@@ -345,8 +388,25 @@ class Job(AlpineObject):
             task_list = self.get_list(workspace_id, job_id)
             for task in task_list:
                 if task['name'] == task_name:
-                    self.logger.debug(
-                        "We have successfully verified that we have created the task: {0}".format(task_name))
                     return int(task['id'])
-            return None
-            # raise TaskNotFoundException("The Task with name: {0} doesn't exist".format(task_name))
+            # return None
+            raise TaskNotFoundException("The Task with name: {0} doesn't exist".format(task_name))
+
+    class ScheduleType(object):
+        """
+        Convenience strings for schedule types.
+        """
+        OnDemand = "on_demand"
+        Monthly = "months"
+        Weekly = "weeks"
+        Daily = "days"
+        Hourly = "hours"
+
+    class TaskType(object):
+        """
+        Convenience strings for task types.
+        """
+        RunWorkflow = "run_work_flow"
+        RunSQLFile = "run_sql_workfile"
+        RunNotebook = ""            # TODO
+        ImportSourceData = ""       # TODO

@@ -7,9 +7,12 @@ class DataSource(AlpineObject):
     A class for interacting with data sources. These methods may require a login as a user with admin privileges.
     """
 
+    @property
+    def dsType(self):
+        return self.DSType()
+
     def __init__(self, base_url=None, session=None, token = None):
         super(DataSource, self).__init__(base_url, session, token)
-        self.dsType = self.DSType()
 
     def get_list(self, type=None, per_page=100):
         """
@@ -196,12 +199,11 @@ class DataSource(AlpineObject):
         """
         Convenience strings for data source types.
         """
-        def __init__(self):
-            self.GreenplumDatabase = "gpdb_data_source"
-            self.PostgreSQLDatabase = "pg_data_source"
-            self.OracleDatabase = "oracle_data_source"
-            self.HAWQ = "hawq_data_source"
-            self.JDBCDataSource = "jdbc_data_source"
-            self.JDBCHiveDataSource = "jdbc_hive_data_source"
-            self.HadoopCluster = "hdfs_data_source"
-            self.HadoopHive = "hdfs_hive_data_source"
+        GreenplumDatabase = "gpdb_data_source"
+        PostgreSQLDatabase = "pg_data_source"
+        OracleDatabase = "oracle_data_source"
+        HAWQ = "hawq_data_source"
+        JDBCDataSource = "jdbc_data_source"
+        JDBCHiveDataSource = "jdbc_hive_data_source"
+        HadoopCluster = "hdfs_data_source"
+        HadoopHive = "hdfs_hive_data_source"

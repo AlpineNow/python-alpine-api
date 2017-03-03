@@ -1,5 +1,7 @@
-from alpine.apiclient import APIClient
+from alpine import APIClient
 from alpine.exception import *
+from alpine.user import *
+from alpine import *
 
 from .alpineunittest import AlpineTestCase
 
@@ -15,7 +17,7 @@ class TestUser(AlpineTestCase):
         except UserNotFoundException:
             pass
         user_info = alpine_session.user.create("apitest1", "test111", "test1", "test", "apitest1@alpinenow.com", "title",
-                                               "dept", admin_role="admin", app_role=alpine_session.user.applicationRole.AnalyticsDeveloper)
+                                               "dept", admin_role="admin", app_role=User.ApplicationRole.AnalyticsDeveloper)
         self.assertEqual(user_info['username'], "apitest1")
         alpine_session.logout()
         login_info = alpine_session.login("apitest1", "test111")
@@ -33,7 +35,8 @@ class TestUser(AlpineTestCase):
         except UserNotFoundException:
             pass
 
-        user_info = alpine_session.user.create("apitest2", "password", "test2", "test2", "apitest2@alpinenow.com", "title", "dept",alpine_session.user.applicationRole.BusinessUser)
+        user_info = alpine_session.user.create("apitest2", "password", "test2", "test2", "apitest2@alpinenow.com",
+                                               "title", "dept", User.ApplicationRole.BusinessUser)
         alpine_session.user.delete(user_info['id'])
         # Verify the User is successfully deleted
         try:
@@ -52,9 +55,9 @@ class TestUser(AlpineTestCase):
         except UserNotFoundException:
             pass
 
-        user_info = alpine_session.user.create("apitest2", "password", "test2", "test2", "apitest2@alpinenow.com", "title", "dept")
+        user_info = alpine_session.user.create("apitest2", "password", "test2", "test2", "apitest2@alpinenow.com")
         updated_user_info = alpine_session.user.update(user_info['id'],"test2_new", "test2_new", "apitest2new@alpinenow.com",
-                                  "title_new", "dept_new", "notes_new", "admin", alpine_session.user.applicationRole.DataAnalyst)
+                                  "title_new", "dept_new", "notes_new", "admin", User.ApplicationRole.DataAnalyst)
         user_info_new = alpine_session.user.get(user_info['id'])
         alpine_session.user.delete(user_info['id'])
         self.assertNotEquals(user_info, user_info_new)
@@ -70,7 +73,7 @@ class TestUser(AlpineTestCase):
             pass
 
         user_info = alpine_session.user.create("apitest1", "password", "test1", "test", "apitest1@alpinenow.com", "title",
-                                             "dept", admin_role="admin", app_role=alpine_session.user.applicationRole.AnalyticsDeveloper)
+                                             "dept", admin_role="admin", app_role=User.ApplicationRole.AnalyticsDeveloper)
         user_id = alpine_session.user.get_id("apitest1")
         self.assertEqual(user_id, user_info['id'])
 
