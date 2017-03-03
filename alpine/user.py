@@ -19,8 +19,8 @@ class User(AlpineObject):
     def __init__(self, base_url, session, token):
         super(User, self).__init__(base_url, session, token)
 
-    def create(self, username, password, first_name, last_name, email, title="", dept="",
-                    notes="Add Via API", admin_role="", app_role="analytics_developer", email_notification=False):
+    def create(self, username, password, first_name, last_name, email, title=None, dept=None,
+                    notes=None, admin_role=None, app_role=None, email_notification=False):
         """
         Create a user account with the specified parameters.
 
@@ -32,9 +32,8 @@ class User(AlpineObject):
         :param str title: User Title of the user being created.
         :param str dept: Department of the user being created.
         :param str notes: Note for the user being created.
-        :param str admin_role: Administration role. One of app_admin, data_admin or an empty string.
-        :param str app_role: Application role. One of analytics_developer, data_analyst, \
-                                collaborator or business_user.
+        :param str admin_role: Administration role. Ref to User.AdminRole. By default user is not a Admin
+        :param str app_role: Application role. Ref to User.ApplicationRole. The default application role is User.ApplicationRole.BusinessUser
         :param bool email_notification: Option to subscribe to email notifications.
 
         :return: Created user information or error message.
@@ -49,10 +48,15 @@ class User(AlpineObject):
 
         """
         # Get correct values for admin and roles for url call:
-        if admin_role == self.adminRole.ApplicationAdministrator:
+        if admin_role is None:
+            admin_role == self.adminRole.NonAdmin
+            admin = False
+        elif admin_role == self.adminRole.ApplicationAdministrator:
             admin = True
         else:
             admin = False
+        if app_role is None:
+            app_role = User.ApplicationRole.BusinessUser
 
         self.session.headers.update({"Content-Type": "application/json"})  # Set special header for this post
         url = "{0}/users".format(self.base_url)

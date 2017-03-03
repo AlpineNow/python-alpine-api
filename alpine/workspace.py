@@ -62,7 +62,7 @@ class Workspace(AlpineObject):
         """
         Attempts to delete the given workspace. Will fail if the workspace does not exist.
 
-        :param str workspace_name: Workspace to be deleted.
+        :param str workspace_id: Id of the workspace to be deleted.
         :return: None
         :rtype: NoneType
         :exception WorkspaceNotFoundException: The workspace does not exist.
@@ -185,6 +185,7 @@ class Workspace(AlpineObject):
         Get the ID number of the workspace. Will throw an exception if the workspace doens't exist.
 
         :param str workspace_name: Unique workspace name.
+        :param int user_id: Id of a user.
         :return: ID number of the workspace.
         :rtype: int
         :exception WorkspaceNotFoundException: The workspace does not exist.
@@ -320,13 +321,13 @@ class Workspace(AlpineObject):
                     break
             return member_list
 
-        def add(self, workspace_id, user_id, role):
+        def add(self, workspace_id, user_id, role=None):
             """
             Add a new user to the workspace member list.
 
             :param int workspace_id: ID number of the workspace.
             :param int user_id: ID number of member to add to the workspace.
-            :param str role: Role for the user.
+            :param str role: Role for the user. Ref to Workspace.MemberRole. The default role is Workspace.MemberRole.ProjectMember
             :return: Updated member list
             :rtype: list of dict
             :exception WorkspaceNotFoundException: The workspace id does not exist.
@@ -338,6 +339,8 @@ class Workspace(AlpineObject):
                 >>>                              role = session.workspace.memberRole.DataScientist)
 
             """
+            if role is None:
+                role = Workspace.MemberRole.ProjectMember
             members = self.get_list(workspace_id)
             user_info = User(self.base_url, self.session, self.token).get(user_id)
             members.append(user_info)

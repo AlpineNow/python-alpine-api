@@ -36,7 +36,7 @@ class TestUser(AlpineTestCase):
             pass
 
         user_info = alpine_session.user.create("apitest2", "password", "test2", "test2", "apitest2@alpinenow.com",
-                                               "title", "dept",User.ApplicationRole.BusinessUser)
+                                               "title", "dept", User.ApplicationRole.BusinessUser)
         alpine_session.user.delete(user_info['id'])
         # Verify the User is successfully deleted
         try:
@@ -55,7 +55,7 @@ class TestUser(AlpineTestCase):
         except UserNotFoundException:
             pass
 
-        user_info = alpine_session.user.create("apitest2", "password", "test2", "test2", "apitest2@alpinenow.com", "title", "dept")
+        user_info = alpine_session.user.create("apitest2", "password", "test2", "test2", "apitest2@alpinenow.com")
         updated_user_info = alpine_session.user.update(user_info['id'],"test2_new", "test2_new", "apitest2new@alpinenow.com",
                                   "title_new", "dept_new", "notes_new", "admin", User.ApplicationRole.DataAnalyst)
         user_info_new = alpine_session.user.get(user_info['id'])

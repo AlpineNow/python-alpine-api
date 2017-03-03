@@ -33,7 +33,7 @@ class Job(AlpineObject):
 
         :param int workspace_id: ID of the workspace where the job is to be created.
         :param str job_name: Name of the job to be created.
-        :param str schedule_type: Interval unit of schedule type, Please reference to Job.ScheduleType.OnDemand, the default value is Job.ScheduleType.OnDemand.
+        :param str schedule_type: Interval unit of schedule type, Please Ref to Job.ScheduleType.OnDemand, the default value is Job.ScheduleType.OnDemand.
         :param int interval_value: Interval value of schedule type.
         :param datetime next_run: When the next run should happen. the default value is just now.
         :param timezone time_zone: Time zone info for the next_run.
@@ -250,7 +250,7 @@ class Job(AlpineObject):
             :param int workspace_id: ID of the workspace.
             :param int job_id: ID of the job to which the task is to be added.
             :param int workfile_id: ID of the workfile to be added as a task.
-            :param str task_type: For task type, please reference to Job.TaskType, By default. the task type is Job.TaskType.RunWorkflow.
+            :param str task_type: For task type, please Ref to Job.TaskType. The default task type is Job.TaskType.RunWorkflow.
             :return: Metadata of the new task
             :rtype: dict
 
@@ -347,8 +347,8 @@ class Job(AlpineObject):
             Return metadata of one task.
 
             :param int workspace_id: ID of the workspace.
-            :param  int job_name: ID of the job.
-            :param int task_name: ID of the task.
+            :param  int job_id: ID of the job.
+            :param int task_id: ID of the task.
             :return: One task's metadata.
             :rtype: dict
 
@@ -370,7 +370,7 @@ class Job(AlpineObject):
             Return the ID number of a task.
 
             :param int workspace_id: ID of the workspace.
-            :param int job_ID: ID of the job.
+            :param int job_id: ID of the job.
             :param str task_name: Name of the task.
             :return: ID number of the task
             :rtype: int
