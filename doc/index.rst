@@ -13,11 +13,11 @@ This library can be used to automate, add or simplify functionality of Alpine.
 
 Example request to run an Alpine workflow::
 
-    import api as AlpineAPI
-    session = AlpineAPI.Alpine(host, port, username, password)
-    process_id = session.workfile.run(workfile_id)
-    session.workfile.wait_until_finished(process_id)
-    results = session.workfile.download(workfile_id, process_id)
+    >>> import alpine as AlpineAPI
+    >>> session = AlpineAPI.APIClient(host, port, username, password)
+    >>> process_id = session.workfile.process.run(workfile_id)
+    >>> session.workfile.process.wait_until_finished(process_id)
+    >>> results = session.workfile.process.download(workfile_id, process_id)
 
 Contents
 
