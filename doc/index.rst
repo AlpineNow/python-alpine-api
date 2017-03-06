@@ -20,18 +20,10 @@ Installation::
    pip install alpine
 
 License:
-   MIT. See
+   We use the MIT license. See the LICENSE.md file at github for details.
 
-
-
-
-API Reference
-=============
-
-Welcome to the official Python library for the Alpine API. In this first release we've focused on a subset of the full
-API that we feel users will most frequently use.
-
-This library can be used to automate, add or simplify functionality of Alpine.
+Example
+=======
 
 Example request to run an Alpine workflow::
 
