@@ -344,7 +344,7 @@ class Workspace(AlpineObject):
             members = self.get_list(workspace_id)
             user_info = User(self.base_url, self.session, self.token).get(user_id)
             members.append(user_info)
-            member_list =[]
+            member_list = []
             for member in members:
                 if member['id'] == user_id:
                     continue
@@ -430,7 +430,8 @@ class Workspace(AlpineObject):
             self.session.headers.update({"Content-Type": "application/json"})
             response = self.session.post(url, data=json.dumps(payload), verify=False)
             self.session.headers.pop("Content-Type")
-            self.logger.debug("Received response code {0} with reason {1}...".format(response.status_code, response.reason))
+            self.logger.debug("Received response code {0} with reason {1}...".
+                              format(response.status_code, response.reason))
 
             try:
                 return response.json()['response']

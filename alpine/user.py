@@ -20,7 +20,7 @@ class User(AlpineObject):
         super(User, self).__init__(base_url, session, token)
 
     def create(self, username, password, first_name, last_name, email, title=None, dept=None,
-                    notes=None, admin_role=None, app_role=None, email_notification=False):
+               notes=None, admin_role=None, app_role=None, email_notification=False):
         """
         Create a user account with the specified parameters.
 
@@ -33,7 +33,8 @@ class User(AlpineObject):
         :param str dept: Department of the user being created.
         :param str notes: Note for the user being created.
         :param str admin_role: Administration role. Ref to User.AdminRole. By default user is not a Admin
-        :param str app_role: Application role. Ref to User.ApplicationRole. The default application role is User.ApplicationRole.BusinessUser
+        :param str app_role: Application role. Ref to User.ApplicationRole.
+        The default application role is User.ApplicationRole.BusinessUser
         :param bool email_notification: Option to subscribe to email notifications.
 
         :return: Created user information or error message.
@@ -117,7 +118,7 @@ class User(AlpineObject):
             self.logger.debug("User not found, error {0}".format(err))
 
     def update(self, user_id, first_name=None, last_name=None, email=None, title=None,
-                         dept=None, notes=None, admin_role=None, app_role=None, email_notification=None):
+               dept=None, notes=None, admin_role=None, app_role=None, email_notification=None):
         """
         Only included fields will be updated.
 
