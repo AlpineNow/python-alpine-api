@@ -11,7 +11,7 @@ class DataSource(AlpineObject):
     def dsType(self):
         return self.DSType()
 
-    def __init__(self, base_url=None, session=None, token = None):
+    def __init__(self, base_url=None, session=None, token=None):
         super(DataSource, self).__init__(base_url, session, token)
 
     def get_list(self, type=None, per_page=100):
@@ -81,16 +81,14 @@ class DataSource(AlpineObject):
             except Exception as ex:
                 self.logger.warn("Fail to get {0} data sources, the error is: {1}".format("Hadoop", ex.message))
 
-        if type == None:
+        if type is None:
             return db_datasource_list + hd_datasource_list
         elif type == "Database":
             return db_datasource_list
-        elif type =="Hadoop":
+        elif type == "Hadoop":
             return hd_datasource_list
         else:
             return None
-
-        return datasource_list
 
     def get(self, ds_id, type):
         """
@@ -114,8 +112,8 @@ class DataSource(AlpineObject):
             url = "{0}/hdfs_data_sources/{1}".format(self.base_url, ds_id)
         else:
             raise Exception("the data source type should be either {0} or {1}."
-                                                  .format("Database", "Hadoop")
-            )
+                            .format("Database", "Hadoop")
+                            )
         url = self._add_token_to_url(url)
 
         if self.session.headers.get("Content-DSType") is not None:

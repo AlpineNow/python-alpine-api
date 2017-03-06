@@ -1,6 +1,6 @@
 import json
 import pytz
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 
 try:
     from urllib.parse import urlparse
@@ -14,7 +14,8 @@ from .alpineobject import AlpineObject
 
 class Job(AlpineObject):
     """
-    A class for interacting with jobs. Top-level methods deal with jobs. The subclass Task can be used to interact with individual tasks within a job.
+    A class for interacting with jobs. Top-level methods deal with jobs. The subclass Task can be used to interact with
+    individual tasks within a job.
     """
 
     task = None
@@ -34,7 +35,8 @@ class Job(AlpineObject):
 
         :param int workspace_id: ID number of the workspace where the job is to be created.
         :param str job_name: Name of the job to be created.
-        :param str schedule_type: Job run interval time unit. Use the Job.ScheduleType object for convenience. The default value is "on_demand".
+        :param str schedule_type: Job run interval time unit. Use the Job.ScheduleType object for convenience.
+        The default value is "on_demand".
         :param int interval_value: Job run interval value.
         :param datetime next_run: When the next run should happen.
         :param timezone time_zone: Time zone info.
@@ -104,7 +106,9 @@ class Job(AlpineObject):
             # POSTing a HTTP delete
             self.logger.debug("Deleting the job id: <{0}> from workspace id: <{1}>".format(job_id, workspace_id))
             response = self.session.delete(url, verify=False)
-            self.logger.debug("Received response code {0} with reason {1}".format(response.status_code, response.reason))
+            self.logger.debug("Received response code {0} with reason {1}".
+                              format(response.status_code, response.reason)
+                              )
             if response.status_code == 200:
                 self.logger.debug("Job successfully deleted.")
             else:
@@ -231,7 +235,8 @@ class Job(AlpineObject):
             self.logger.debug("Job with id: <{0}> run started".format(job['id']))
             return job
         else:
-            raise RunJobFailureException("Run job with id: <{0}> failed with status code {1}".format(job_id, response.status_code))
+            raise RunJobFailureException("Run job with id: <{0}> failed with status code {1}".
+                                         format(job_id, response.status_code))
 
     class Task(AlpineObject):
         """
@@ -253,7 +258,8 @@ class Job(AlpineObject):
             :param int workspace_id: ID number of the workspace.
             :param int job_id: ID number of the job to which the task is to be added.
             :param int workfile_id: ID number of the workfile to be added as a task.
-            :param str task_type:  Task type. Use the Workspace.Stage object for convenience. The default is "run_work_flow".
+            :param str task_type:  Task type. Use the Workspace.Stage object for convenience.
+            The default is "run_work_flow".
             :return: Metadata of the new task
             :rtype: dict
 
@@ -323,7 +329,7 @@ class Job(AlpineObject):
             :param int workspace_id: ID number of the workspace.
             :param int job_id: ID number of the job.
             :return: List of all tasks in a job.
-            :rtype: list of dict
+            :rtype: list of dict.
 
             Example::
 
