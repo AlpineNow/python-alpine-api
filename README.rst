@@ -15,7 +15,7 @@ Source code:
 Python Package Index:
    https://pypi.python.org/pypi/alpine
 
-Setup::
+Setup:
 
    pip install alpine
 
@@ -36,3 +36,4 @@ Running a workflow and downloading the results::
     >>> process_id = session.workfile.process.run(workfile_id)
     >>> session.workfile.process.wait_until_finished(process_id)
     >>> results = session.workfile.process.download(workfile_id, process_id)
+
