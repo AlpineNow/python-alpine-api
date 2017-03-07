@@ -4,7 +4,7 @@ Python wrapper for the Alpine API
 Welcome to the official Python library for the Alpine API. In this first release we've focused on a subset of the full
 API that we feel users will most frequently use.
 
-This library can be used to automate, add or simplify functionality of Alpine.
+This library can be used to automate, add, or simplify functionality of Alpine.
 
 Documentation (and examples):
    http://python-alpine-api.readthedocs.io/
@@ -24,7 +24,7 @@ Requirements:
    http://alpinedata.com/
 
 License:
-   We use the MIT license. See the LICENSE file at github for details.
+   We use the MIT license. See the LICENSE file on GitHub for details.
 
 Example
 =======

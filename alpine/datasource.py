@@ -18,9 +18,9 @@ class DataSource(AlpineObject):
         """
         Get a list of metadata for all data sources.
 
-        :param str type: Type of the data source. Either "Database", "Hadoop", or None for both types.
+        :param str type: Type of the data source. Select "Database", "Hadoop", or None for both types.
         :param int per_page: Maximum number to fetch with each API call.
-        :return: List of data sources' metadata.
+        :return: List of data source's metadata.
         :rtype: list of dict
 
         Example::
@@ -38,7 +38,7 @@ class DataSource(AlpineObject):
             try:
                 url = "{0}/data_sources".format(self.base_url)
                 url = self._add_token_to_url(url)
-                self.logger.debug("Getting list of {0} data sources from {1}".format("Database", url))
+                self.logger.debug("Getting list of {0} data sources from {1}".format("database", url))
                 page_current = 0
                 while True:
                     payload = {
@@ -56,7 +56,7 @@ class DataSource(AlpineObject):
                     if page_total == page_current:
                         break
             except Exception as ex:
-                self.logger.warn("Fail to get {0} data sources, the error is: {1}".format("Database", ex.message))
+                self.logger.warn("Failed to get {0} data sources, the error is: {1}".format("database", ex.message))
         if not type == "Database":
             try:
                 url = "{0}/hdfs_data_sources".format(self.base_url)
@@ -79,7 +79,7 @@ class DataSource(AlpineObject):
                     if page_total == page_current:
                         break
             except Exception as ex:
-                self.logger.warn("Fail to get {0} data sources, the error is: {1}".format("Hadoop", ex.message))
+                self.logger.warn("Failed to get {0} data sources, the error is: {1}".format("Hadoop", ex.message))
 
         if type == None:
             return db_datasource_list + hd_datasource_list
@@ -126,19 +126,19 @@ class DataSource(AlpineObject):
 
         try:
             if ds_response['response']:
-                self.logger.debug("Found {0} Datasource with ID: <{1}>".format(type, ds_id))
+                self.logger.debug("Found {0} data source with ID: <{1}>".format(type, ds_id))
                 return ds_response['response']
             else:
-                raise DataSourceNotFoundException("{0} Datasource ID: <{1}> not found".format(type, ds_id))
+                raise DataSourceNotFoundException("{0} data source ID: <{1}> not found".format(type, ds_id))
         except Exception as err:
-            raise DataSourceNotFoundException("{0} Datasource ID: <{1}> not found".format(type, ds_id))
+            raise DataSourceNotFoundException("{0} data source ID: <{1}> not found".format(type, ds_id))
 
     def get_id(self, name, type=None):
         """
         Gets the ID number of the data source. Will throw an exception if the data source does not exist.
 
         :param str name: Data source name.
-        :param str type: Data source type. Must be "Database" or "Hadoop" or None for both.
+        :param str type: Data source type. Choose to search by "Database" or "Hadoop. Entering None searches both types.
         :return: ID number of the data source
         :rtype: int
         :exception DataSourceNotFoundException: The data source does not exist.
@@ -154,7 +154,7 @@ class DataSource(AlpineObject):
         for ds_info in ds_list:
             if ds_info['name'] == name:
                 return ds_info['id']
-        raise DataSourceNotFoundException("Datasource with ID: <{0}> and type: <{1}> not found".format(name, type))
+        raise DataSourceNotFoundException("Data source with ID: <{0}> and type: <{1}> not found".format(name, type))
 
     def get_database_list(self, data_source_id, per_page=100):
         """
@@ -175,7 +175,7 @@ class DataSource(AlpineObject):
         database_list = None
         url = "{0}/data_sources/{1}/databases".format(self.base_url, data_source_id)
         url = self._add_token_to_url(url)
-        self.logger.debug("Getting list of Database from {0}".format(url))
+        self.logger.debug("Getting list of databases from {0}".format(url))
         page_current = 0
         while True:
             payload = {
