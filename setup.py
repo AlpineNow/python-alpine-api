@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Licensed to Alpine Data, Inc.
-# TODO
 # Copyright 2017 Alpine Data All Rights reserved.
 
 from __future__ import print_function
@@ -33,7 +32,7 @@ except ImportError:
 
 import sys
 if sys.version_info <= (2, 6):
-    error = "ERROR: boto requires Python Version 2.7 or above...exiting."  # TODO
+    error = "ERROR: alpine requires Python Version 2.7 or above...exiting."
     print(error, file=sys.stderr)
     sys.exit(1)
     # TBD
@@ -55,7 +54,7 @@ setup(
     author="Alpine Data, Inc.",
     author_email="ggao@alpinenow.com",
     keywords='alpine api sdk chorus',
-    url="https://github.com/alpinedatalabs/python-alpine-api",  #TODO
+    url="https://github.com/AlpineNow/python-alpine-api",
     packages=find_packages(exclude=['future', 'doc', "examples", 'tests*']),
 
     package_data={
@@ -67,11 +66,11 @@ setup(
 
     install_requires=install_requires,
 
-    license="TODO",       #TODO
+    license="MIT License",
     platforms="Linux; MacOS X; Windows",
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
-        "Intended Audience :: Developers",                 # TODO
+        "Intended Audience :: Developers",
         "Operating System :: OS Independent",
         "Topic :: Internet",
         "Programming Language :: Python :: 2.7",

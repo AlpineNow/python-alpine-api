@@ -36,7 +36,7 @@ class Job(AlpineObject):
         :param int workspace_id: ID number of the workspace where the job is to be created.
         :param str job_name: Name of the job to be created.
         :param str schedule_type: Job run interval time unit. Use the Job.ScheduleType object for convenience.
-        The default value is "on_demand".
+                                The default value is "on_demand".
         :param int interval_value: Job run interval value.
         :param datetime next_run: When the next run should happen.
         :param timezone time_zone: Time zone info.
@@ -259,7 +259,7 @@ class Job(AlpineObject):
             :param int job_id: ID number of the job to which the task is to be added.
             :param int workfile_id: ID number of the workfile to be added as a task.
             :param str task_type:  Task type. Use the Workspace.Stage object for convenience.
-            The default is "run_work_flow".
+                                   The default is "run_work_flow".
             :return: Metadata of the new task
             :rtype: dict
 
@@ -413,5 +413,4 @@ class Job(AlpineObject):
         """
         RunWorkflow = "run_work_flow"
         RunSQLFile = "run_sql_workfile"
-        RunNotebook = ""            # TODO
-        ImportSourceData = ""       # TODO
+        RunNotebook = "notebook"

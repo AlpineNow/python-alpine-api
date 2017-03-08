@@ -34,7 +34,7 @@ class User(AlpineObject):
         :param str notes: Note for the user being created.
         :param str admin_role: Administration role. Ref to User.AdminRole. By default user is not a Admin
         :param str app_role: Application role. Ref to User.ApplicationRole.
-        The default application role is User.ApplicationRole.BusinessUser
+                             The default application role is User.ApplicationRole.BusinessUser
         :param bool email_notification: Option to subscribe to email notifications.
 
         :return: Created user information or error message.

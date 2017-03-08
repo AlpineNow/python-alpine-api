@@ -172,11 +172,11 @@ class Workfile(AlpineObject):
         :param int workspace_id: ID number of workspace.
         :param str afm_file: Local path to the Alpine workfile (.afm).
         :param list data_sources_list: A list of data source information with the following format:
-        datasource_info = [
-            {"data_source_type": DataSource.dsType.HadoopCluster, "data_source_id": "1", "database_id":""},
-            {"data_source_type": DataSource.dsType.JDBCDataSource, "data_source_id": "421", "database_id": ""},
-            {"data_source_type": DataSource.dsType.GreenplumDatabase, "data_source_id": "1", "database_id": "42"}
-        ]
+            datasource_info = [
+                {"data_source_type": DataSource.dsType.HadoopCluster, "data_source_id": "1", "database_id":""},
+                {"data_source_type": DataSource.dsType.JDBCDataSource, "data_source_id": "421", "database_id": ""},
+                {"data_source_type": DataSource.dsType.GreenplumDatabase, "data_source_id": "1", "database_id": "42"}
+                ]
         :return: One workfile's metadata.
         :rtype: dict
 
@@ -209,7 +209,7 @@ class Workfile(AlpineObject):
                 database_type = "pg_database"
                 database_id = data_source['database_id']
             elif data_source['data_source_type'] == ds.dsType.HAWQ:
-                data_source_string = "{0}{1}".format(data_source['data_source_id'], "GpdbDataSource")   # TODO
+                data_source_string = "{0}{1}".format(data_source['data_source_id'], "GpdbDataSource")
                 database_type = "gpdb_database"
                 database_id = data_source['database_id']
             elif data_source['data_source_type'] == ds.dsType.OracleDatabase:
@@ -312,8 +312,12 @@ class Workfile(AlpineObject):
             other functions which query a run or download results.
 
             :param str workflow_id: ID number of workflow.
-            :param list variables: A list of workflow variables,
-            each item with the format: [{"name": "wfv_name", "value": "wfv_value"}]
+            :param list variables: A list of workflow variables, with the format:
+                                 [
+                                 {"name": "wfv_name_1", "value": "wfv_value_1"},
+                                 {"name": "wfv_name_2", "value": "wfv_value_2"}
+                                 ]
+
             :return: ID number for the workflow run process.
             :rtype: str
             :exception WorkspaceNotFoundException: The workspace does not exist.
