@@ -1,6 +1,9 @@
 # Compiled python modules.
 *.pyc
 
+# Configuration files. Used to hold Alpine url and login data.
+*.conf
+
 #
 .idea/*
 

@@ -352,8 +352,6 @@ class Workspace(AlpineObject):
                     member_list.append({"user_id": member['id'], "role": member['role']})
             member_list.append({"user_id": user_id, "role": role})
 
-            print(member_list)
-
             return self.__update(workspace_id, member_list)
 
         def remove(self, workspace_id, user_id):
@@ -415,8 +413,6 @@ class Workspace(AlpineObject):
                     updated_members.append({"user_id": member['id'], "role": new_role})
                 else:
                     updated_members.append({"user_id": member['id'], "role": member["role"]})
-
-            print(updated_members)
 
             return self.__update(workspace_id, updated_members)
 

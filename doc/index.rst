@@ -6,8 +6,7 @@ Contents
    :maxdepth: 2
 
    APIReference
-   Introduction
-   Advanced Usage
+   Examples
 
 Indices and tables
 ==================
