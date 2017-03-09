@@ -2,9 +2,11 @@ import os
 import time
 import json
 try:
+    # For Python 3.0 and later
     from urllib.parse import urlparse
     from urllib.parse import urljoin
 except ImportError:
+    # Fall back to Python 2.7
     from urlparse import urlparse
     from urlparse import urljoin
 from .alpineobject import AlpineObject

@@ -3,9 +3,11 @@ import pytz
 from datetime import datetime, timedelta
 
 try:
+    # For Python 3.0 and later
     from urllib.parse import urlparse
     from urllib.parse import urljoin
 except ImportError:
+    # Fall back to Python 2.7
     from urlparse import urlparse
     from urlparse import urljoin
 from .exception import *
