@@ -129,11 +129,13 @@ class FlowResultsMalformedException(AlpineException):
     """
     pass
 
+
 class WorkflowVariableException(AlpineException):
     """
 
     """
     pass
+
 
 class InvalidResponseCodeException(AlpineException):
     """

@@ -11,6 +11,7 @@ from .workspace import Workspace
 from .datasource import DataSource
 from .exception import *
 
+
 class APIClient(AlpineObject):
     """
     The main entry point for the Alpine API. Most of the functions require a logged-in user. Begin a session by
@@ -43,7 +44,8 @@ class APIClient(AlpineObject):
         :param bool validate_certs:
         :param ca_certs:
         :param str token: Alpine API authentication token.
-        :param str logging_level: Use to set the logging level. See https://docs.python.org/2/howto/logging.html#logging-levels.
+        :param str logging_level: Use to set the logging level.
+        See https://docs.python.org/2/howto/logging.html#logging-levels.
         :return: None
         """
 

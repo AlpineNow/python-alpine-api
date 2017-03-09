@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Licensed to Alpine Data, Inc.
-# TODO
 # Copyright 2017 Alpine Data All Rights reserved.
 
 
