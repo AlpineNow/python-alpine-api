@@ -1,4 +1,4 @@
-Workspaces
+Workspace
 **********
 
 .. automodule:: alpine.workspace
