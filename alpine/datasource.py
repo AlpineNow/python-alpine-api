@@ -136,7 +136,7 @@ class DataSource(AlpineObject):
         Gets the ID number of the data source. Will throw an exception if the data source does not exist.
 
         :param str name: Data source name.
-        :param str type: Data source type. Choose to search by "Database" or "Hadoop. Entering None searches both types.
+        :param str type: Data source type. Choose to search by "Database" or "Hadoop." Entering None searches both types.
         :return: ID number of the data source
         :rtype: int
         :exception DataSourceNotFoundException: The data source does not exist.
