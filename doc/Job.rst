@@ -1,4 +1,4 @@
-Jobs
+Job
 ****
 
 .. automodule:: alpine.job

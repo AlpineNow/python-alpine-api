@@ -5,8 +5,8 @@ API Reference
    :maxdepth: 2
 
    Alpine
-   Users
-   Workspaces
-   Workfiles
+   User
+   Workspace
+   Workfile
    Job
-   Datasources
+   Data Source
