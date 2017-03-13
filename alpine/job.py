@@ -16,12 +16,8 @@ from .alpineobject import AlpineObject
 
 class Job(AlpineObject):
     """
-<<<<<<< HEAD
-    A class for interacting with jobs. Top-level methods deal with jobs. The subclass Task can be used to interact with
+    A class for interacting with jobs. Top-level methods deal with jobs. The subclass `Task` can be used to interact with
     individual tasks within a job.
-=======
-    A class for interacting with jobs. Top-level methods deal with jobs. The subclass `Task` can be used to interact with individual tasks within a job.
->>>>>>> job changes
     """
 
     task = None
@@ -241,7 +237,7 @@ class Job(AlpineObject):
             self.logger.debug("Job with ID: <{0}> run started".format(job['id']))
             return job
         else:
-            raise RunJobFailureException("Run job with id: <{0}> failed with status code {1}".
+            raise RunJobFailureException("Running job with ID: <{0}> failed with status code {1}".
                                          format(job_id, response.status_code))
 
 
