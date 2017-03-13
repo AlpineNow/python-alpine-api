@@ -25,16 +25,16 @@ class User(AlpineObject):
         Create a user account with the specified parameters.
 
         :param str username: A unique name.
-        :param str password: Password of the user being created.
-        :param str first_name: First Name of the user being created.
-        :param str last_name: Last Name of the user being created.
-        :param str email: Email of the user being created.
-        :param str title: User Title of the user being created.
-        :param str dept: Department of the user being created.
-        :param str notes: Note for the user being created.
-        :param str admin_role: Administration role. Ref to User.AdminRole. By default user is not a Admin
-        :param str app_role: Application role. Ref to User.ApplicationRole.
-                             The default application role is User.ApplicationRole.BusinessUser
+        :param str password: Password of the user.
+        :param str first_name: First name of the user.
+        :param str last_name: Last name of the user.
+        :param str email: Email of the user.
+        :param str title: Title of the user.
+        :param str dept: Department of the user.
+        :param str notes: Notes for the user.
+        :param str admin_role: Administration role. Refer to `User.AdminRole`. By default, the user is not an Admin.
+        :param str app_role: Application role. Refer to `User.ApplicationRole`.
+                             The default application role is `User.ApplicationRole.BusinessUser`.
         :param bool email_notification: Option to subscribe to email notifications.
 
         :return: Created user information or error message.
@@ -50,7 +50,7 @@ class User(AlpineObject):
         """
         # Get correct values for admin and roles for url call:
         if admin_role is None:
-            admin_role == self.adminRole.NonAdmin
+            admin_role = self.adminRole.NonAdmin
             admin = False
         elif admin_role == self.adminRole.ApplicationAdministrator:
             admin = True
@@ -89,8 +89,8 @@ class User(AlpineObject):
         """
         Attempts to delete the given user. Will fail if the user does not exist.
 
-        :param int user_id: ID number of user account to be deleted.
-        :return: None
+        :param int user_id: ID of user to be deleted.
+        :return: None.
         :rtype: NoneType
         :exception UserNotFoundException: The username does not exist.
 
@@ -104,15 +104,15 @@ class User(AlpineObject):
             url = "{0}/users/{1}".format(self.base_url, user_id)
             url = self._add_token_to_url(url)
             self.session.headers.update({"Content-Type": "application/x-www-form-urlencoded"})
-            self.logger.debug("Deleting User with id {0}".format(user_id))
+            self.logger.debug("Deleting user with ID: <{0}>".format(user_id))
             response = self.session.delete(url)
             self.logger.debug("Received response code {0} with reason {1}"
                               .format(response.status_code, response.reason))
             if response.status_code == 200:
-                self.logger.debug("User successfully deleted.")
+                self.logger.debug("User successfully deleted")
             else:
-                raise InvalidResponseCodeException("Response Code Invalid, the expected Response Code is {0}, "
-                                                   "the actual Response Code is {1}".format(200, response.status_code))
+                raise InvalidResponseCodeException("Response code invalid, the expected response code is {0}, "
+                                                   "the actual response code is {1}".format(200, response.status_code))
             return None
         except UserNotFoundException as err:
             self.logger.debug("User not found, error {0}".format(err))
@@ -122,21 +122,20 @@ class User(AlpineObject):
         """
         Only included fields will be updated.
 
-        :param str user_id: ID number of the user to update.
+        :param str user_id: ID of the user to update.
         :param str first_name: New first name of the user.
         :param str last_name: New last name of the user.
         :param str email: New email of the user.
         :param str title: New title of the user.
         :param str dept: New department of the user.
         :param str notes: New notes for the user.
-        :param str admin_role: New Administration Role. One of app_admin, data_admin or an empty string
-        :param str app_role: New Application Role. One of analytics_developer, data_analyst, \
-                                collaborator or business_user.
+        :param str admin_role: New Administration Role. Refer to `User.AdminRole`.
+        :param str app_role: New Application Role. Refer to `User.ApplicationRole`.
         :param bool email_notification: Change option to subscribe to email notifications.
 
         :return: Updated user information.
         :rtype: dict
-        :exception UserNotFoundException: The username does not exist.
+        :exception UserNotFoundException: The user does not exist.
 
         Example::
 
@@ -190,7 +189,7 @@ class User(AlpineObject):
             payload["admin"] = False
             payload["roles"] = ""
 
-        self.logger.debug("Updating the user information {0} to {1}".format(json.dumps(payload), url))
+        self.logger.debug("Sending the user information {0} to {1}".format(json.dumps(payload), url))
         self.session.headers.update({"Content-Type": "application/json"})  # Set special header for this post
         response = self.session.put(url, data=json.dumps(payload), verify=False)
         self.logger.debug("Received response code {0} with reason {1}...".format(response.status_code, response.reason))
@@ -199,10 +198,10 @@ class User(AlpineObject):
 
     def get_id(self, username):
         """
-        Gets the ID number of the user. Will throw an exception if the user does not exist.
+        Gets the ID of the user. Will throw an exception if the user does not exist.
 
         :param str username: Unique user name
-        :return: ID number of the user
+        :return: ID of the user.
         :rtype: int
         :exception UserNotFoundException: The username does not exist.
 
@@ -223,12 +222,12 @@ class User(AlpineObject):
 
     def get(self, user_id):
         """
-        Get one user's metadata.
+        Get a user's metadata.
 
-        :param str user_id: A unique user ID number.
-        :return: Single user's metadata.
+        :param str user_id: A unique user ID.
+        :return: Selected user's metadata.
         :rtype: dict
-        :exception UserNotFoundException: The User does not exist.
+        :exception UserNotFoundException: The user does not exist.
 
         Example::
 
@@ -245,18 +244,18 @@ class User(AlpineObject):
 
         try:
             if user_response['response']:
-                self.logger.debug("Found user id: <{0}>".format(user_id))
+                self.logger.debug("Found user ID: <{0}>".format(user_id))
                 return user_response['response']
             else:
-                raise UserNotFoundException("User id: <{0}> not found".format(user_id))
+                raise UserNotFoundException("User ID: <{0}> not found".format(user_id))
         except Exception as err:
-            raise UserNotFoundException("User id: <{0}> not found".format(user_id))
+            raise UserNotFoundException("User ID: <{0}> not found".format(user_id))
 
     def get_list(self, per_page=100):
         """
         Get a list of all users' metadata.
 
-        :param int per_page: How many users to return in each page.
+        :param int per_page: Maximum number to fetch with each API call.
         :return: A list of all the users' data.
         :rtype: list of dict
 
@@ -289,7 +288,7 @@ class User(AlpineObject):
 
     class ApplicationRole(object):
         """
-        Convenience strings for user application roles.
+        Convenience strings for application roles.
         """
         AnalyticsDeveloper = "analytics_developer"
         DataAnalyst = "data_analyst"
@@ -298,7 +297,7 @@ class User(AlpineObject):
 
     class AdminRole(object):
         """
-        Convenience strings for user Administrator roles.
+        Convenience strings for administrator roles.
         """
         ApplicationAdministrator = "admin"
         DataAdministrator = "data_admin"
