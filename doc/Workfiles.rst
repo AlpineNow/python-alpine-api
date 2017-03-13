@@ -1,5 +1,5 @@
 Workfile
-*********
+********
 
 .. automodule:: alpine.workfile
 
