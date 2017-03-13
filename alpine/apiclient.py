@@ -34,19 +34,19 @@ class APIClient(AlpineObject):
                  ca_certs=None, token=None, logging_level='WARN'):
         """
         Sets internal values for Alpine API session. If username and password are supplied then a login is
-        attempted. This is useful to check Alpine url and user login parameters.
+        attempted. This is useful to check Alpine URL and user login parameters.
 
-        :param str host: Hostname or ip address of the Alpine server.
+        :param str host: Hostname or IP address of the Alpine server.
         :param str port: Port number for Alpine.
-        :param str username: Username to login with.
-        :param str password: Password to login with.
-        :param bool is_secure: True for https else false.
+        :param str username: Username to log in with.
+        :param str password: Password to log in with.
+        :param bool is_secure: True for HTTPS, else false.
         :param bool validate_certs:
         :param ca_certs:
         :param str token: Alpine API authentication token.
         :param str logging_level: Use to set the logging level.
         See https://docs.python.org/2/howto/logging.html#logging-levels.
-        :return: None
+        :return: None.
         """
 
         super(APIClient, self).__init__(token=token)
@@ -77,11 +77,11 @@ class APIClient(AlpineObject):
 
     def login(self, username, password):
         """
-        Attempts a login to Alpine with provided username and password. Typically login is handled at
-        session-creation time.
+        Attempts to log in to Alpine with provided username and password. Typically login is handled at
+        session creation time.
 
-        :param str username: Username to login with.
-        :param str password: Password to login with.
+        :param str username: Username to log in with.
+        :param str password: Password to log in with.
         :return: Logged-in user's metadata.
         :rtype: dict
 
@@ -113,8 +113,8 @@ class APIClient(AlpineObject):
             response = login_response.json()
             self.token = response['response']['session_id']
             self.user_id = response['response']['user']['id']
-            self.logger.debug("Successfully logged in with username <{0}>".format(username))
-            self.logger.debug("Token ID is: {0}".format(self.token))
+            self.logger.debug("Successfully logged in with username '{0}'".format(username))
+            self.logger.debug("Token ID is: <{0}>".format(self.token))
             self.user = User(self.base_url, self.session, self.token)
             self.datasource = DataSource(self.base_url, self.session, self.token)
             self.workspace = Workspace(self.base_url, self.session, self.token)
@@ -127,7 +127,7 @@ class APIClient(AlpineObject):
 
     def logout(self):
         """
-        Attempts logout current user.
+        Attempts to log out the current user.
 
         :return: Request response.
         :rtype: requests.models.Response
@@ -152,10 +152,10 @@ class APIClient(AlpineObject):
         # parse status codes here:
         status = logout_response.status_code
         if logout_response.status_code == 200:
-            self.logger.debug("Successfully logged-out.")
+            self.logger.debug("Successfully logged out.")
             return logout_response
         elif logout_response.status_code == 401:
-            self.logger.debug("No user is logged-in.")
+            self.logger.debug("No user is logged in.")
             return logout_response
         else:
             self.logger.debug("Failure with status code: {0}".format(status))
@@ -163,7 +163,7 @@ class APIClient(AlpineObject):
 
     def get_status(self):
         """
-        Returns information about the currently logged-in user. Or, if no user if logged-in, returns an empty dict.
+        Returns information about the currently logged-in user. Or, if no user is logged in, returns an empty dict.
 
         :return: Logged-in user's metadata.
         :rtype: dict
