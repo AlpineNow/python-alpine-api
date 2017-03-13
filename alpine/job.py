@@ -16,8 +16,12 @@ from .alpineobject import AlpineObject
 
 class Job(AlpineObject):
     """
+<<<<<<< HEAD
     A class for interacting with jobs. Top-level methods deal with jobs. The subclass Task can be used to interact with
     individual tasks within a job.
+=======
+    A class for interacting with jobs. Top-level methods deal with jobs. The subclass `Task` can be used to interact with individual tasks within a job.
+>>>>>>> job changes
     """
 
     task = None
@@ -94,7 +98,7 @@ class Job(AlpineObject):
         :return: None
         :rtype: NoneType
         :exception JobNotFoundException: The job does not exist
-        :exception InvalidResponseCodeException:
+        :exception InvalidResponseCodeException: The request got an unexpected HTTP status code in response (not 200 OK)
 
         Example::
 
@@ -181,12 +185,12 @@ class Job(AlpineObject):
 
         try:
             if job_response['response']:
-                self.logger.debug("Found job id: <{0}>".format(job_id))
+                self.logger.debug("Found job ID: <{0}>".format(job_id))
                 return job_response['response']
             else:
-                raise JobNotFoundException("job id: <{0}> not found".format(job_id))
+                raise JobNotFoundException("job ID: <{0}> not found".format(job_id))
         except Exception as err:
-            raise JobNotFoundException("job id: <{0}> not found".format(job_id))
+            raise JobNotFoundException("job ID: <{0}> not found".format(job_id))
 
     def get_id(self, workspace_id, job_name):
         """
@@ -234,11 +238,12 @@ class Job(AlpineObject):
         self.logger.debug(response.content)
         if response.status_code == 202:
             job = response.json()['response']
-            self.logger.debug("Job with id: <{0}> run started".format(job['id']))
+            self.logger.debug("Job with ID: <{0}> run started".format(job['id']))
             return job
         else:
             raise RunJobFailureException("Run job with id: <{0}> failed with status code {1}".
                                          format(job_id, response.status_code))
+
 
     class Task(AlpineObject):
         """
@@ -272,7 +277,7 @@ class Job(AlpineObject):
             """
             if task_type is None:
                 task_type = "run_work_flow"
-            self.logger.debug("The job id of the job id: <{0}>".format(job_id))
+            self.logger.debug("The job id: <{0}>".format(job_id))
             url = "{0}/workspaces/{1}/jobs/{2}/job_tasks".format(self.base_url, workspace_id, job_id)
             url = self._add_token_to_url(url)
             self.logger.debug("The URL that we will be posting is: {0}".format(url))
@@ -310,7 +315,7 @@ class Job(AlpineObject):
                 self.logger.debug("Constructing the URL for task deletion")
                 url = "{0}/workspaces/{1}/jobs/{2}/job_tasks/{3}".format(self.base_url, workspace_id, job_id, task_id)
                 url = self._add_token_to_url(url)
-                self.logger.debug("We have constructed the URL for task deletion and is: {0}".format(url))
+                self.logger.debug("We have constructed the URL for task deletion. It is: {0}".format(url))
                 response = self.session.delete(url)
                 self.logger.debug(
                     "Received response code {0} with reason {1}...".format(response.status_code, response.reason))
@@ -372,9 +377,9 @@ class Job(AlpineObject):
             for task in task_list:
                 if task['id'] == task_id:
                     self.logger.debug(
-                        "We have successfully verified that we have created the task id: <{0}>".format(task_id))
+                        "We have successfully verified that we have created the task ID: <{0}>".format(task_id))
                     return task
-            raise TaskNotFoundException("The task with id: <{0}> doesn't exist".format(task_id))
+            raise TaskNotFoundException("The task with ID: <{0}> does not exist".format(task_id))
 
         def get_id(self, workspace_id, job_id, task_name):
             """
@@ -397,7 +402,7 @@ class Job(AlpineObject):
                 if task['name'] == task_name:
                     return int(task['id'])
             # return None
-            raise TaskNotFoundException("The Task with name: {0} doesn't exist".format(task_name))
+            raise TaskNotFoundException("The task with name: {0} does not exist".format(task_name))
 
     class ScheduleType(object):
         """
