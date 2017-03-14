@@ -1,5 +1,5 @@
 Workspace
-**********
+*********
 
 .. automodule:: alpine.workspace
 
