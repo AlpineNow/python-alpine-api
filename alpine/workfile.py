@@ -482,7 +482,7 @@ class Workfile(AlpineObject):
 
             start = time.time()
 
-            self.logger.debug("Waiting for process ID: {0} to complete...".format(process_id))
+            self.logger.debug("Waiting for process ID: <{0}> to complete...".format(process_id))
 
             # workflow_status = self.query_status2(workflow_id, process_id)
             workflow_status = self.query_status(process_id)
