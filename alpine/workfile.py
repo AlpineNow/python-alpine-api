@@ -248,6 +248,35 @@ class Workfile(AlpineObject):
         response = self.session.post(url, files=files, data=payload, verify=False)
         return response.json()['response']
 
+    def download(self, workfile_id):
+        """
+        Download an Alpine workfile. Will not download Alpine workflows.
+
+        :param int workfile_id: ID of the workfile to download.
+        :return: file
+        :rtype: file
+
+        :exception WorkfileNotFoundException: Workfile ID does not exist or is an Alpine workflow.
+
+        Example::
+
+            >>> operator_data = session.workfile.download(workfile_id = 1351)
+
+        """
+        url = "{0}/workfiles/{1}/download".format(self.base_url, workfile_id)
+        url = self._add_token_to_url(url)
+
+        workfile_response = self.session.get(url, verify=False)
+
+        try:
+            if workfile_response.status_code == 200:
+                self.logger.debug("Found and downloaded workfile ID: <{0}>".format(workfile_id))
+                return workfile_response.content
+            else:
+                raise WorkfileNotFoundException("Workfile ID: <{0}> not found or is an Alpine Workflow".format(workfile_id))
+        except Exception:
+            raise WorkfileNotFoundException("Workfile ID: <{0}> not found or is an Alpine Workflow".format(workfile_id))
+
     class Process(AlpineObject):
         """
         A class for interacting with workfiles.
