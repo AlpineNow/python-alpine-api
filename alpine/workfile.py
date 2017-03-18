@@ -433,8 +433,8 @@ class Workfile(AlpineObject):
             """
             Downloads a workflow run result.
 
-            :param str workflow_id: ID of the workflow.
-            :param ste process_id: ID of a particular workflow run.
+            :param int workflow_id: ID of the workflow.
+            :param str process_id: ID of a particular workflow run.
             :return: JSON object of workflow results.
             :rtype: dict
             :exception WorkspaceNotFoundException: The workspace does not exist.
@@ -488,13 +488,14 @@ class Workfile(AlpineObject):
                 raise StopFlowFailureException("Stopping the workflow failed with status {0}: {1}"
                                                .format(response.status_code, response.reason))
 
-        def wait_until_finished(self, process_id, verbose=False, query_time=10, timeout=3600):
+        def wait_until_finished(self, workflow_id, process_id, verbose=False, query_time=10, timeout=3600):
             """
             Waits for a running workflow to finish.
 
-            :param str process_id: Process ID of the workflow.
+            :param int workflow_id: ID of a particular workflow run.
+            :param str process_id: ID of a particular workflow run.
             :param bool verbose: Optionally print approximate run time.
-            :param float query_time: Number of seconds between status queries.
+            :param float query_time: Number of seconds between status queries. Minimum of 1 second.
             :param float timeout: Amount of time in seconds to wait for workflow to finish. Will stop if exceeded.
             :return: Workflow run status.
             :rtype: str
@@ -503,17 +504,20 @@ class Workfile(AlpineObject):
 
             Example::
 
-                >>> session.workfile.process.wait_until_finished(process_id = process_id)
+                >>> session.workfile.process.wait_until_finished(workflow_id = workflow_id, process_id = process_id)
 
             """
+            query_time = max(1, query_time)
 
             start = time.time()
-            self.logger.debug("Waiting for process ID: <{0}> to complete...".format(process_id))
-            wait_count = 0
 
+            self.logger.debug("Waiting for process ID: <{0}> to complete...".format(process_id))
+
+            # workflow_status = self.query_status2(workflow_id, process_id)
             workflow_status = self.query_status(process_id)
+
             while workflow_status == "WORKING":  # loop while waiting for workflow to complete
-                wait_count += 1
+
                 wait_total = time.time() - start
 
                 if wait_total >= timeout:
@@ -523,11 +527,18 @@ class Workfile(AlpineObject):
                         " It now has status '{2}'.".format(process_id, timeout, stop_status))
 
                 if verbose:
-                    print("\rWorkflow in progress for ~{0:.2f} seconds.".format(wait_total)),
+                    print("\rWorkflow in progress for ~{0:.1f} seconds.".format(wait_total)),
 
                 time.sleep(query_time)
 
-                if workflow_status == "FAILED":
-                    raise RunFlowFailureException("The workflow with process ID: <{0}> failed.".format(process_id))
                 workflow_status = self.query_status(process_id)
-            return workflow_status
+
+            if verbose:
+                print("")
+
+            # If workflow is finished - find the final status, otherwise return status in progress.
+            time.sleep(1)
+            final_results = self.download_results(workflow_id, process_id)
+            status = self.get_metadata(final_results)['status']
+
+            return status
