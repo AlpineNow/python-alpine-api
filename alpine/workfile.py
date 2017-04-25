@@ -173,8 +173,7 @@ class Workfile(AlpineObject):
 
         :param int workspace_id: ID of workspace.
         :param str afm_file: Local path to the Alpine workfile (.afm).
-        :param list data_sources_list: A list of data source information with the following format:
-            datasource_info = [
+        :param list data_sources_list: A list of data source information with the following format: datasource_info = [
                 {"data_source_type": DataSource.dsType.HadoopCluster, "data_source_id": "1", "database_id":""},
                 {"data_source_type": DataSource.dsType.JDBCDataSource, "data_source_id": "421", "database_id": ""},
                 {"data_source_type": DataSource.dsType.GreenplumDatabase, "data_source_id": "1", "database_id": "42"}
