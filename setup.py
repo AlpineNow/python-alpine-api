@@ -6,9 +6,9 @@
 from __future__ import print_function
 import os
 
-version_major = 0
+version_major = 1
 version_minor = 0
-version_build = 1
+version_build = 0
 
 # For jenkins packaging to pass version number.
 # Adding the following step in jenkins for the build number
