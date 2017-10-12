@@ -26,6 +26,7 @@ class TestAlpine(AlpineTestCase):
 
     def test_get_login_status(self):
         current_login_info = alpine_client.get_status()
+        del current_login_info["complete_json"]
         self.assertEqual(login_info, current_login_info)
 
     def test_get_version(self):

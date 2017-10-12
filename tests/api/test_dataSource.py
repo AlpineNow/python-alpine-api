@@ -33,8 +33,8 @@ class TestDataSource(AlpineTestCase):
         self.assertIsNotNone(datasource_list)
 
     def test_get_db_data_source_info(self):
-        datasource_info = alpine_client.datasource.get(1, "Database")
-        self.assertEqual(datasource_info['id'], 1)
+        datasource_info = alpine_client.datasource.get(db_datasource_id, "Database")
+        self.assertEqual(datasource_info['id'], db_datasource_id)
 
     def test_get_db_data_source_id(self):
         datasource_id = alpine_client.datasource.get_id(gpdb_datasource_name, "Database")
