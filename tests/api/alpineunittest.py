@@ -16,28 +16,14 @@ except ImportError:
 from alpine import APIClient
 
 
-def fake_urlopen(request):
-    """
-    A stub urlopen() implementation that load json responses from
-    the filesystem.
-    """
-    # Map path from url to a file
-    parsed_url = urlparse(request.get_full_url())
-    resource_file = os.path.normpath('resources%s' % parsed_url.path)
-    try:
-        return open(resource_file, mode='rb')
-    except IOError:
-        return open('resources/404.json', mode='rb')
-
-
 class AlpineTestCase(TestCase):
 
     def setUp(self):
-        self.host = "10.10.0.204"
+        self.host = "10.0.0.205"
         self.port = "8080"
         self.regex_alpine_version_string = "6.3.*"
         self.username = "demoadmin"
-        self.password = "password"
+        self.password = "4*DemoAdmin"
 
     def tearDown(self):
         pass
@@ -49,4 +35,17 @@ class AlpineTestCase(TestCase):
     @classmethod
     def tearDownClass(cls):
         print("Test Class teardown")
+
+    def fake_urlopen(request):
+        """
+        A stub urlopen() implementation that load json responses from
+        the filesystem.
+        """
+        # Map path from url to a file
+        parsed_url = urlparse(request.get_full_url())
+        resource_file = os.path.normpath('resources%s' % parsed_url.path)
+        try:
+            return open(resource_file, mode='rb')
+        except IOError:
+            return open('resources/404.json', mode='rb')
 
