@@ -272,6 +272,7 @@ class TestJob(AlpineTestCase):
         tasks = alpine_client.job.task.get_list(workspace_id, job_info['id'])
         self.assertEqual(1, len(tasks))
         alpine_client.job.task.delete(workspace_id, job_info['id'], task_info['id'])
+        time.sleep(1)
         new_tasks = alpine_client.job.task.get_list(workspace_id, job_info['id'])
         self.assertEqual(0, len(new_tasks))
         try:
