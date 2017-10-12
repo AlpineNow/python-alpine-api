@@ -3,7 +3,7 @@
 <DataSources>
 <DataSource name="miner_demo" type="Database">
 <Parameter key="dbConnectionName" value="miner_demo"/>
-<Parameter key="url" value="jdbc:postgresql://10.10.0.151:5432/miner_demo"/>
+<Parameter key="url" value="jdbc:postgresql://10.0.0.48:5432/miner_demo"/>
 <Parameter key="userName" value="miner_demo"/>
 <Parameter key="useSSL" value="false"/>
 <Parameter key="password" value="bWluZXJfZGVtbw=="/>
@@ -37,13 +37,54 @@
 </Fields>
 </InPutFieldList>
 </Operator>
-<Operator X="166" Y="218" name="credit" type="com.alpine.miner.gef.runoperator.datasource.DbTableOperator" uuid="1484569443418">
+<Operator X="166" Y="118" name="credit" type="com.alpine.miner.gef.runoperator.datasource.DbTableOperator" uuid="1484569443418">
 <Note/>
 <Parameter key="dbConnectionName" value="miner_demo"/>
 <Parameter key="schemaName" value="demo"/>
 <Parameter key="tableName" value="credit"/>
+<Parameter key="userName" value="miner_demo"/>
+<Parameter key="url" value="jdbc:postgresql://10.0.0.48:5432/miner_demo"/>
+<Parameter key="password" value="bWluZXJfZGVtbw=="/>
+<Parameter key="system" value="Greenplum"/>
+<Parameter key="useSSL" value="false"/>
 </Operator>
-<Link source="credit" target="Row Filter"/>
+<Operator name="golfnew" uuid="1507711401830" type="com.alpine.miner.gef.runoperator.datasource.DbTableOperator" Y="230" X="160">
+<Note></Note>
+<Parameter value="miner_demo" key="dbConnectionName"></Parameter>
+<Parameter value="demo" key="schemaName"></Parameter>
+<Parameter value="golfnew" key="tableName"></Parameter>
+<Parameter key="userName" value="miner_demo"/>
+<Parameter key="url" value="jdbc:postgresql://10.0.0.48:5432/miner_demo"/>
+<Parameter key="password" value="bWluZXJfZGVtbw=="/>
+<Parameter key="system" value="Greenplum"/>
+<Parameter key="useSSL" value="false"/>
+</Operator>
+<Operator name="Row Filter-1" uuid="1507711411470" type="com.alpine.miner.gef.runoperator.field.FilterOperator" Y="208" X="454">
+<Note></Note>
+<Parameter value="TABLE" key="outputType"></Parameter>
+<Parameter value="@default_schema" key="outputSchema"></Parameter>
+<Parameter value="alp@user_id_@flow_id_rowfil_0" key="outputTable"></Parameter>
+<StorageParameters appendOnly="false" compressionLevel="1" isDistributedRandomly="true" compression="false" columnarStorage="false"></StorageParameters>
+<Parameter value="Yes" key="dropIfExist"></Parameter>
+<RowFilterConditionModel conditionValue="" sqlType="nosql" useAll="true">
+<RowFilterConditionItem condition="=" firstValue="@outlook" columnName="outlook" secondValue=""></RowFilterConditionItem>
+</RowFilterConditionModel>
+<InPutFieldList id="1507711401830">
+<Parameter value="demo" key="schema"></Parameter>
+<Parameter value="golfnew" key="table"></Parameter>
+<Parameter value="TABLE" key="tableType"></Parameter>
+<Parameter value="miner_demo" key="dbConnectionName"></Parameter>
+<Fields>
+<Field name="outlook" type="TEXT"></Field>
+<Field name="temperature" type="INTEGER"></Field>
+<Field name="humidity" type="INTEGER"></Field>
+<Field name="wind" type="TEXT"></Field>
+<Field name="play" type="TEXT"></Field>
+</Fields>
+</InPutFieldList>
+</Operator>
+<Link source="credit" target="Row Filter"></Link>
+<Link source="golfnew" target="Row Filter-1"></Link>
 <VariableModel>
 <Variable>
 <Name>@flow_name</Name>
@@ -80,6 +121,14 @@
 <Variable>
 <Name>@pig_number_of_reducers</Name>
 <Value>-1</Value>
+</Variable>
+<Variable>
+<Name>@default_prefix</Name>
+<Value>ch40</Value>
+</Variable>
+<Variable>
+<Name>@outlook</Name>
+<Value>'rain'</Value>
 </Variable>
 <Variable>
 <Name>@min_credit_line</Name>

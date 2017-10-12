@@ -91,6 +91,12 @@ class TestWorkfile(AlpineTestCase):
         process_id = alpine_client.workfile.process.run(workfile_id, variables)
         alpine_client.workfile.process.wait_until_finished(process_id)
 
+    def test_run_workflow_variable_quote(self):
+        variables = [{"name": "@min_credit_line", "value": "7"}, {"name": "@outlook", "value": "'sunny'"}]
+        workfile_id = alpine_client.workfile.get_id(workfile_name, workspace_id)
+        process_id = alpine_client.workfile.process.run(workfile_id, variables)
+        alpine_client.workfile.process.wait_until_finished(process_id)
+
     def test_query_workflow_status(self):
         valid_workfile_status = ["WORKING", "FINISHED"]
         variables = [{"name": "@min_credit_line", "value": "7"}]
