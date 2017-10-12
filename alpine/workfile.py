@@ -377,8 +377,7 @@ class Workfile(AlpineObject):
                                                         "expected keys 'name' and 'value'.".format(variable))
 
                 workflow_variables = '{{"meta": {{"version": 1}}, "variables": {0}}}' \
-                    .format(variables) \
-                    .replace("\'", "\"")
+                    .format(json.dumps(variables))
 
             response = self.session.post(url, data=workflow_variables, params=querystring, timeout=30)
 
