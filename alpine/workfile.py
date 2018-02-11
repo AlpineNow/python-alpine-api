@@ -52,8 +52,7 @@ class Workfile(AlpineObject):
         url = "{0}/workspaces/{1}/workfiles".format(self.base_url, str(workspace_id))
         url = self._add_token_to_url(url)
 
-        if self.session.headers.get("Content-Type") is not None:
-            self.session.headers.pop("Content-Type")
+        self.session.headers.update({"Content-Type": "application/json"})
         page_current = 0
         while True:
             payload = {"no_published_worklets": True,
@@ -242,6 +241,8 @@ class Workfile(AlpineObject):
             payload.append(("workfile[execution_locations][{0}][id]".format(i), database_id))
 
         # files is used to create a multipart upload content-type with requests, we send in a file object
+        if self.session.headers.get("Content-Type") is not None:
+            self.session.headers.pop("Content-Type")
         files = {"workfile[versions_attributes][0][contents]": open(afm_file, 'rb')}
         self.logger.debug("POSTing to: {0}\n With payload: {1}".format(url, payload))
         response = self.session.post(url, files=files, data=payload, verify=False)

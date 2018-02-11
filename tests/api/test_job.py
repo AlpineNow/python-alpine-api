@@ -43,7 +43,7 @@ class TestJob(AlpineTestCase):
 
         # Upload a DB flow
         base_dir = os.getcwd()
-        afm_path = "{0}/../data/afm/db_row_fil_with_variable.afm".format(base_dir)
+        afm_path = "{0}/data/afm/db_row_fil_with_variable.afm".format(base_dir)
         # afm_path = "db_bat_row_fil.afm"
         try:
             workfile_id = alpine_client.workfile.get_id("db_row_fil_with_variable", workspace_id)
