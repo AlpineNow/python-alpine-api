@@ -43,7 +43,7 @@ class TestJob(AlpineTestCase):
 
         # Upload a DB flow
         base_dir = os.getcwd()
-        afm_path = "{0}/../data/afm/db_row_fil_with_variable.afm".format(base_dir)
+        afm_path = "{0}/data/afm/db_row_fil_with_variable.afm".format(base_dir)
         # afm_path = "db_bat_row_fil.afm"
         try:
             workfile_id = alpine_client.workfile.get_id("db_row_fil_with_variable", workspace_id)
@@ -242,7 +242,7 @@ class TestJob(AlpineTestCase):
         task_info = alpine_client.job.task.create(workspace_id, job_info['id'], workflow_id)
         self.assertIsNotNone(task_info)
         self.assertTrue(task_info['is_valid'])
-        wait_interval_max = 120
+        wait_interval_max = 300
         print("Wait for max to {0} seconds for the scheduled job run finished".format(wait_interval_max))
         for i in range(0, wait_interval_max):
             job_info_new = alpine_client.job.get(workspace_id, job_info['id'])
@@ -271,8 +271,9 @@ class TestJob(AlpineTestCase):
         task_info = alpine_client.job.task.create(workspace_id, job_info['id'], workflow_id)
         tasks = alpine_client.job.task.get_list(workspace_id, job_info['id'])
         self.assertEqual(1, len(tasks))
+        time.sleep(3)
         alpine_client.job.task.delete(workspace_id, job_info['id'], task_info['id'])
-        time.sleep(1)
+        time.sleep(3)
         new_tasks = alpine_client.job.task.get_list(workspace_id, job_info['id'])
         self.assertEqual(0, len(new_tasks))
         try:
@@ -300,8 +301,9 @@ class TestJob(AlpineTestCase):
         task_info = alpine_client.job.task.create(workspace_id, job_info['id'], workflow_id)
         self.assertIsNotNone(task_info)
         self.assertTrue(task_info['is_valid'])
+        time.sleep(1)
         s = alpine_client.job.run(job_info['id'])
-        wait_interval_max = 120
+        wait_interval_max = 300
         print("Wait for max to {0} seconds for the scheduled job run finished".format(wait_interval_max))
         for i in range(0, wait_interval_max):
             job_info_new = alpine_client.job.get(workspace_id, job_info['id'])

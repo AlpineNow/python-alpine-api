@@ -60,6 +60,7 @@ class User(AlpineObject):
             app_role = User.ApplicationRole.BusinessUser
 
         self.session.headers.update({"Content-Type": "application/json"})  # Set special header for this post
+
         url = "{0}/users".format(self.base_url)
         url = self._add_token_to_url(url)
         payload = {"username": username,
@@ -236,8 +237,7 @@ class User(AlpineObject):
         url = "{0}/users/{1}".format(self.base_url, user_id)
         url = self._add_token_to_url(url)
 
-        if self.session.headers.get("Content-Type") is not None:
-            self.session.headers.pop("Content-Type")
+        self.session.headers.update({"Content-Type": "application/json"})
 
         r = self.session.get(url, verify=False)
         user_response = r.json()
@@ -270,8 +270,9 @@ class User(AlpineObject):
         url = self._add_token_to_url(url)
         page_current = 0
         users_list = None
-        if self.session.headers.get("Content-Type") is not None:
-            self.session.headers.pop("Content-Type")
+
+        self.session.headers.update({"Content-Type": "application/json"})
+
         while True:
             payload = {"per_page": per_page, "page": page_current + 1}
             user_list_response = self.session.get(url, params=payload, verify=False).json()

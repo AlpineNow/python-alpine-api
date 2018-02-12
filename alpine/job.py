@@ -66,6 +66,8 @@ class Job(AlpineObject):
         url = "{0}/workspaces/{1}/jobs".format(self.base_url, workspace_id)
         url = self._add_token_to_url(url)
 
+        self.session.headers.update({"Content-Type": "application/x-www-form-urlencoded"})
+
         # Building the payload information to send with our HTTP POST to create the job
         payload = {"name": job_name,
                    "interval_unit": schedule_type,
@@ -279,6 +281,8 @@ class Job(AlpineObject):
             url = self._add_token_to_url(url)
             self.logger.debug("The URL that we will be posting is: {0}".format(url))
 
+            self.session.headers.update({"Content-Type": "application/x-www-form-urlencoded"})
+
             # constructing the payload for adding a task
             payload = {"action": task_type, "workfile_id": workfile_id}
 
@@ -345,6 +349,9 @@ class Job(AlpineObject):
             # Constructing the URL to retrieve the contents
             url = "{0}/workspaces/{1}/jobs/{2}".format(self.base_url, workspace_id, job_id)
             url = self._add_token_to_url(url)
+
+            if self.session.headers.get("Content-Type") is not None:
+                self.session.headers.pop("Content-Type")
 
             # Doing a HTTP GET
             self.logger.debug("POSTing a HTTP GET to retrieve the tasks on the workspace.")

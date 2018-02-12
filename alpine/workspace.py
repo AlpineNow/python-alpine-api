@@ -47,6 +47,9 @@ class Workspace(AlpineObject):
         str_public = "false"
         if public:
             str_public = "true"
+
+        self.session.headers.update({"Content-Type": "application/x-www-form-urlencoded"})
+
         payload = {"name": workspace_name,
                    "public": str_public,
                    "summary": summary}
@@ -121,8 +124,7 @@ class Workspace(AlpineObject):
         url = "{0}/workspaces".format(self.base_url)
         url = self._add_token_to_url(url)
 
-        if self.session.headers.get("Content-Type") is not None:
-            self.session.headers.pop("Content-Type")
+        self.session.headers.update({"Content-Type": "application/json"})
 
         payload = {"user_id": user_id,
                    "active": active_state,
@@ -166,8 +168,7 @@ class Workspace(AlpineObject):
         url = "{0}/workspaces/{1}".format(self.base_url, workspace_id)
         url = self._add_token_to_url(url)
 
-        if self.session.headers.get("Content-Type") is not None:
-            self.session.headers.pop("Content-Type")
+        self.session.headers.update({"Content-Type": "application/json"})
 
         r = self.session.get(url, verify=False)
         workspace_response = r.json()
@@ -306,6 +307,9 @@ class Workspace(AlpineObject):
             url = self._add_token_to_url(url)
             member_list = None
             page_current = 0
+
+            self.session.headers.update({"Content-Type": "application/json"})
+
             while True:
                 payload = {"per_page": per_page,
                            "page": page_current + 1,

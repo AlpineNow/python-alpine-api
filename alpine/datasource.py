@@ -34,6 +34,7 @@ class DataSource(AlpineObject):
         """
         db_datasource_list = None
         hd_datasource_list = None
+        self.session.headers.update({"Content-Type": "application/json"})
         if not type == "Hadoop":
             try:
                 url = "{0}/data_sources".format(self.base_url)
@@ -116,8 +117,7 @@ class DataSource(AlpineObject):
                             )
         url = self._add_token_to_url(url)
 
-        if self.session.headers.get("Content-DSType") is not None:
-            self.session.headers.pop("Content-DSType")
+        self.session.headers.update({"Content-Type": "application/json"})
 
         r = self.session.get(url, verify=False)
         ds_response = r.json()
@@ -175,6 +175,9 @@ class DataSource(AlpineObject):
         url = self._add_token_to_url(url)
         self.logger.debug("Getting list of databases from {0}".format(url))
         page_current = 0
+
+        self.session.headers.update({"Content-Type": "application/json"})
+
         while True:
             payload = {
                 "all": True,
