@@ -53,6 +53,7 @@ class Workfile(AlpineObject):
         url = self._add_token_to_url(url)
 
         self.session.headers.update({"Content-Type": "application/json"})
+
         page_current = 0
         while True:
             payload = {"no_published_worklets": True,
@@ -89,8 +90,7 @@ class Workfile(AlpineObject):
         url = "{0}/workfiles/{1}".format(self.base_url, workfile_id)
         url = self._add_token_to_url(url)
 
-        if self.session.headers.get("Content-Type") is not None:
-            self.session.headers.pop("Content-Type")
+        self.session.headers.update({"Content-Type": "application/json"})
 
         r = self.session.get(url, verify=False)
         workfile_response = r.json()
