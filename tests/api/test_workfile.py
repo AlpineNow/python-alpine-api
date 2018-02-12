@@ -157,6 +157,7 @@ class TestWorkfile(AlpineTestCase):
         variables = [{"name": "@min_credit_line", "value": "7"}]
         workfile_id = alpine_client.workfile.get_id(workfile_name, workspace_id)
         process_id = alpine_client.workfile.process.run(workfile_id, variables)
+        time.sleep(1)
         finish_state = alpine_client.workfile.process.stop(process_id)
         self.assertEqual(finish_state, "STOPPED")
 

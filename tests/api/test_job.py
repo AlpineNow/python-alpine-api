@@ -271,8 +271,9 @@ class TestJob(AlpineTestCase):
         task_info = alpine_client.job.task.create(workspace_id, job_info['id'], workflow_id)
         tasks = alpine_client.job.task.get_list(workspace_id, job_info['id'])
         self.assertEqual(1, len(tasks))
+        time.sleep(3)
         alpine_client.job.task.delete(workspace_id, job_info['id'], task_info['id'])
-        time.sleep(5)
+        time.sleep(3)
         new_tasks = alpine_client.job.task.get_list(workspace_id, job_info['id'])
         self.assertEqual(0, len(new_tasks))
         try:
@@ -300,6 +301,7 @@ class TestJob(AlpineTestCase):
         task_info = alpine_client.job.task.create(workspace_id, job_info['id'], workflow_id)
         self.assertIsNotNone(task_info)
         self.assertTrue(task_info['is_valid'])
+        time.sleep(1)
         s = alpine_client.job.run(job_info['id'])
         wait_interval_max = 300
         print("Wait for max to {0} seconds for the scheduled job run finished".format(wait_interval_max))
