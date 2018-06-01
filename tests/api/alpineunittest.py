@@ -25,8 +25,8 @@ class AlpineTestCase(TestCase):
         self.host = "alpineqa2.alpinenow.local"
         self.port = "8443"
         self.regex_alpine_version_string = "6.4.*"
-        self.username = "ggao"
-        self.password = "1*Alpine"
+        self.username = "demoadmin"
+        self.password = "4*DemoAdmin"
 
     def tearDown(self):
         pass

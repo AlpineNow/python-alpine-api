@@ -100,7 +100,6 @@ class APIClient(AlpineObject):
         url = "{0}/sessions?session_id=NULL".format(self.base_url)
         # url = self.base_url + "/sessions?session_id=NULL"
         body = {"username": username, "password": password}
-        # TODO login with cert.
         self.session.headers.update({"Content-Type": "application/x-www-form-urlencoded"})
 
         if self.protocol == 'http':
