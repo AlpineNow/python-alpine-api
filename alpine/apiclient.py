@@ -41,8 +41,8 @@ class APIClient(AlpineObject):
         :param str username: Username to log in with.
         :param str password: Password to log in with.
         :param bool is_secure: True for HTTPS, else false.
-        :param bool validate_certs:
-        :param ca_certs:
+        :param bool validate_certs: True for SSL Verification, else false
+        :param ca_certs: If String, Path to SSL client certificate file(.pem). If Tuple, ('cert', 'key') pair
         :param str token: Alpine API authentication token.
         :param str logging_level: Use to set the logging level.
         See https://docs.python.org/2/howto/logging.html#logging-levels.
