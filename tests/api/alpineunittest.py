@@ -19,11 +19,14 @@ from alpine import APIClient
 class AlpineTestCase(TestCase):
 
     def setUp(self):
-        self.host = "10.0.0.205"
-        self.port = "8080"
-        self.regex_alpine_version_string = "6.3.*"
-        self.username = "demoadmin"
-        self.password = "4*DemoAdmin"
+        self.is_secure = True
+        self.validate_certs = False
+        self.ca_certs = None
+        self.host = "alpineqa2.alpinenow.local"
+        self.port = "8443"
+        self.regex_alpine_version_string = "6.4.*"
+        self.username = "ggao"
+        self.password = "1*Alpine"
 
     def tearDown(self):
         pass

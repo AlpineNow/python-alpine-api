@@ -16,7 +16,10 @@ class TestJob(AlpineTestCase):
         # Creating Alpine Client in setUp Function for tests
         global alpine_client
         global login_info
-        alpine_client = APIClient(self.host, self.port)
+        alpine_client = APIClient(self.host, self.port,
+                                  is_secure=self.is_secure,
+                                  validate_certs=self.validate_certs,
+                                  ca_certs=self.ca_certs)
         login_info = alpine_client.login(self.username, self.password)
 
         global workspace_id

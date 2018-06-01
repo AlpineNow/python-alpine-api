@@ -51,7 +51,6 @@ class APIClient(AlpineObject):
 
         super(APIClient, self).__init__(token=token)
         self._setup_logging(default_level=logging_level)
-        self.is_secure = is_secure
 
         if is_secure:
             self.protocol = 'https'
@@ -64,13 +63,20 @@ class APIClient(AlpineObject):
             self.host = host
         else:
             self.host = "{0}:{1}".format(host, port)
-
+        ### disable InsecureRequestWarning
+        requests.packages.urllib3.disable_warnings()
         self.session = requests.Session()  # instantiate a session for requests
 
         self.base_url = "{0}://{1}/api".format(self.protocol, self.host)
 
-        self.ca_certs = ca_certs
-        self.validate_certs = validate_certs
+        self.verify = False
+        if validate_certs == False or ca_certs is None:
+            self.verify = validate_certs
+        else:
+            self.verify = ca_certs
+
+        self.session.verify = self.verify
+
         self.user_id = None
         if username and password:
             self.login(username, password)
@@ -95,19 +101,12 @@ class APIClient(AlpineObject):
         # url = self.base_url + "/sessions?session_id=NULL"
         body = {"username": username, "password": password}
         # TODO login with cert.
-        cert_path = os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])),
-                                 "../host_deploy/resource/ssl/certificates/test.crt")
-
-        key_path = os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])),
-                                "../host_deploy/resource/ssl/certificates/test.key")
-
         self.session.headers.update({"Content-Type": "application/x-www-form-urlencoded"})
 
         if self.protocol == 'http':
             login_response = self.session.post(url, data=body)
         else:
             login_response = self.session.post(url, data=body,
-                                               verify=self.validate_certs, cert=(cert_path, key_path),
                                                headers={'Connection': 'close'})
         if login_response.status_code == 201:
             response = login_response.json()

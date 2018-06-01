@@ -17,7 +17,10 @@ class TestWorkfile(AlpineTestCase):
         # Creating Alpine Client in setUp Function for tests
         global alpine_client
         global login_info
-        alpine_client = APIClient(self.host, self.port)
+        alpine_client = APIClient(self.host, self.port,
+                                  is_secure=self.is_secure,
+                                  validate_certs=self.validate_certs,
+                                  ca_certs=self.ca_certs)
         login_info = alpine_client.login(self.username, self.password)
         
         global workspace_name
@@ -126,6 +129,13 @@ class TestWorkfile(AlpineTestCase):
         workfile_id = alpine_client.workfile.get_id(workfile_name, workspace_id)
         process_id = alpine_client.workfile.process.run(workfile_id, variables)
         alpine_client.workfile.process.wait_until_finished(workfile_id, process_id)
+        
+    def test_run_workflow_variable_single_quote_in_variable(self):
+        variables = [{"name": "@min_credit_line", "value": "7"}, {"name": "@outlook", "value": "'su\'nny'"}]
+        workfile_id = alpine_client.workfile.get_id(workfile_name, workspace_id)
+        process_id = alpine_client.workfile.process.run(workfile_id, variables)
+        alpine_client.workfile.process.wait_until_finished(workfile_id, process_id)
+
 
     def test_query_workflow_status(self):
         valid_workfile_status = ["WORKING", "FINISHED"]
@@ -151,7 +161,21 @@ class TestWorkfile(AlpineTestCase):
         while workfile_status != "FINISHED":
             time.sleep(1)
             workfile_status = alpine_client.workfile.process.query_status(process_id)
-        response = alpine_client.workfile.process.download_results(workfile_id, process_id)
+        results = alpine_client.workfile.process.download_results(workfile_id, process_id)
+        results_metadata = alpine_client.workfile.process.get_metadata(results)
+        start_time = results_metadata['startTime']  #u'2018-03-14T06:15:42.828-0700'
+        end_time = results_metadata['endTime']  #u'2018-03-14T06:15:51.480-0700'
+        status = results_metadata['status'] #Could be either u'FAILURE' or u'SUCCESS'
+        print(status)
+        numberOfError = results_metadata['noOfError']
+        if results_metadata['noOfError'] != 0:
+            for log_step in results["logs"]:
+                errorMessage = log_step["errMessage"]
+                if errorMessage != 'null':
+                    nodeName = log_step["nodeName"]
+                    uuid = log_step["uuid"]
+                    print("Error Message of Node {0} is: {1}".format(uuid, errorMessage))
+        print (status)
 
     def test_stop_workflow(self):
         variables = [{"name": "@min_credit_line", "value": "7"}]
