@@ -20,8 +20,8 @@ Setup:
    pip install alpine
 
 Requirements:
-   Using this package requires access to an Alpine instance. For more information, see the Alpine homepage:
-   http://alpinedata.com/
+   Using this package requires access to a TIBCO Spotfire® Data Science instance. For more information, see the TIBCO Spotfire® Data Science homepage:
+   https://community.tibco.com/products/tibco-spotfire-data-science
 
 License:
    We use the MIT license. See the LICENSE file on GitHub for details.
