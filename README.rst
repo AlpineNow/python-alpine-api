@@ -35,5 +35,5 @@ Running a workflow and downloading the results::
     >>> session = AlpineAPI.APIClient(host, port, username, password)
     >>> process_id = session.workfile.process.run(workfile_id)
     >>> session.workfile.process.wait_until_finished(workfile_id, process_id)
-    >>> results = session.workfile.process.download(workfile_id, process_id)
+    >>> results = session.workfile.process.download_results(workfile_id, process_id)
 
